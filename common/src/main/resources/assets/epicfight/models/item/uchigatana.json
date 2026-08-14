@@ -1,0 +1,62 @@
+{
+	"loader": "neoforge:separate_transforms",
+	"gui_light": "front",
+	"base": {
+		"parent": "item/generated",
+		"textures": {
+			"layer0": "epicfight:item/uchigatana"
+		},
+		"display": {
+			"thirdperson_righthand": {
+				"rotation": [0, -90, 55],
+				"translation": [0, 13, -1.5],
+				"scale": [1.7, 1.7, 0.85]
+			},
+			"thirdperson_lefthand": {
+				"rotation": [0, 90, -55],
+				"translation": [0, 13.25, -1.75],
+				"scale": [1.7, 1.7, 0.85]
+			},
+			"firstperson_righthand": {
+				"rotation": [0, -90, 25],
+				"translation": [1.13, 9.2, 1.13],
+				"scale": [1.7, 1.7, 0.85]
+			},
+			"firstperson_lefthand": {
+				"rotation": [0, 90, -25],
+				"translation": [1.13, 9.2, 1.13],
+				"scale": [1.7, 1.7, 0.85]
+			},
+			"head": {
+				"rotation": [0, 180, 0],
+				"translation": [0, 13, 7]
+			}
+		}
+	},
+	"perspectives": {
+		"gui": {
+			"parent": "item/generated",
+			"textures": {
+				"layer0": "epicfight:item/uchigatana_gui"
+			},
+			"display": {
+				"gui": {
+					"rotation": [0, 0, 0],
+					"translation": [0, 0.5, 0]
+				}
+			}
+		},
+		"fixed": {
+			"parent": "item/generated",
+			"textures": {
+				"layer0": "epicfight:item/uchigatana_gui"
+			}
+		},
+		"ground": {
+			"parent": "item/generated",
+			"textures": {
+				"layer0": "epicfight:item/uchigatana_gui"
+			}
+		}
+	}
+}

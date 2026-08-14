@@ -1,0 +1,18 @@
+{
+    "id": "26.1-snapshot-7",
+    "name": "26.1 Snapshot 7",
+    "world_version": 4775,
+    "series_id": "main",
+    "protocol_version": 1073742117,
+    "pack_version": {
+        "resource_major": 81,
+        "resource_minor": 0,
+        "data_major": 99,
+        "data_minor": 1
+    },
+    "build_time": "2026-02-11T09:24:14+00:00",
+    "java_component": "java-runtime-epsilon",
+    "java_version": 25,
+    "stable": false,
+    "use_editor": false
+}

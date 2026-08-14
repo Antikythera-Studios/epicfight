@@ -1,0 +1,66 @@
+{
+  "gui.akythera_editor.save": "Save",
+  "gui.akythera_editor.quit": "Quit",
+  "gui.akythera_editor.cancel": "Cancel",
+
+  "gui.akythera_editor.main_screen.title": "Editor Main Layout",
+  "gui.akythera_editor.blend_space_2d_screen.title": "BlendSpace 2D",
+
+  "gui.akythera_editor.widget.details": "Details",
+
+  "gui.akythera_editor.project_load_screen.title": "Select Project",
+  "gui.akythera_editor.project_load_screen.widget.open": "Open",
+  "gui.akythera_editor.project_load_screen.label.project_location": "Project Location",
+  "gui.akythera_editor.project_load_screen.label.last_edit": "Last Edit: ",
+  "gui.akythera_editor.project_load_screen.tooltip.add_project": "Add a new project",
+  "gui.akythera_editor.project_load_screen.message.delete_confirm": "Do you want to delete \"%s\" project?",
+  "gui.akythera_editor.project_load_screen.message.tip": "Select a project to load or create new one",
+
+  "gui.akythera_editor.main_screen.widget.gameplay_viewport": "Gameplay Viewport",
+  "gui.akythera_editor.main_screen.widget.explorer": "Explorer",
+  "gui.akythera_editor.main_screen.widget.content_browser": "Content Browser (%d items)",
+  "gui.akythera_editor.main_screen.widget.project_settings": "%s Project Settings",
+  "gui.akythera_editor.main_screen.message.quit_without_save": "Save the project?",
+
+  "gui.akythera_editor.blend_space_2d_screen.widget.fade_in": "Fade In",
+  "gui.akythera_editor.blend_space_2d_screen.widget.fade_out": "Fade Out",
+  "gui.akythera_editor.blend_space_2d_screen.widget.smooth_x": "Smooth X",
+  "gui.akythera_editor.blend_space_2d_screen.widget.smooth_y": "Smooth Y",
+  "gui.akythera_editor.blend_space_2d_screen.widget.loops": "Loops",
+  "gui.akythera_editor.blend_space_2d_screen.widget.node_details": "Node Details",
+  "gui.akythera_editor.blend_space_2d_screen.widget.min_x": "Grid Min X",
+  "gui.akythera_editor.blend_space_2d_screen.widget.min_y": "Grid Min Y",
+  "gui.akythera_editor.blend_space_2d_screen.widget.max_x": "Grid Max X",
+  "gui.akythera_editor.blend_space_2d_screen.widget.max_y": "Grid Max Y",
+  "gui.akythera_editor.blend_space_2d_screen.widget.nodes": "Nodes (%d)",
+  "gui.akythera_editor.blend_space_2d_screen.widget.animation": "Animation",
+
+  "gui.akythera_editor.message.empty_searchbar": "Search...",
+  "gui.akythera_editor.message.open_editor": "Open Akythera editor",
+  "gui.akythera_editor.message.already_opened": "Akythera editor is already opened",
+  "gui.akythera_editor.message.not_a_singleplayer": "You can open Akythera editor only in singleplayer",
+  "gui.akythera_editor.message.project_load_screen.enter_project_name": "Enter a project name to start",
+  "gui.akythera_editor.message.ask_to_save": "Save %s?",
+
+  "gui.akythera_editor.blend_space_2d_screen.message.place_node": "Add Node Here",
+  "gui.akythera_editor.blend_space_2d_screen.message.remove_node": "Remove Selected",
+
+  "key.category.epicfight.system": "Epic Fight Systemical Keys",
+
+  "gui.epicfight.item_patch_screen.row.default_stance": "Default Stance",
+  "gui.epicfight.item_patch_screen.row.default_properties": "Default Properties",
+  "gui.epicfight.item_patch_screen.row.stance": "Stance",
+  "gui.epicfight.item_patch_screen.row.condition": "Condition",
+  "gui.epicfight.item_patch_screen.row.properties": "Properties",
+  "gui.epicfight.item_patch_screen.row.dash": "Dash Attack",
+  "gui.epicfight.item_patch_screen.row.air_slash": "Air Slash",
+  "gui.epicfight.item_patch_screen.row.swing_sound": "Swing Sound",
+  "gui.epicfight.item_patch_screen.row.hit_sound": "Hit Sound",
+  "gui.epicfight.item_patch_screen.row.hit_particle": "Hit Particle",
+  "gui.epicfight.item_patch_screen.row.offhand_equippable": "Offhand Equippable",
+  "gui.epicfight.item_patch_screen.row.montage": "Montage",
+  "gui.epicfight.item_patch_screen.row.category": "Category",
+  "gui.epicfight.item_patch_screen.section.conditional_stances": "Conditional Stances",
+  "gui.epicfight.item_patch_screen.section.combo_attacks": "Combo Attacks",
+  "gui.epicfight.item_patch_screen.section.categories": "Categories"
+}

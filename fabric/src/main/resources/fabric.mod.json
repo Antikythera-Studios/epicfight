@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "id": "${modId}",
+  "version": "${modVersion}",
+  "name": "${displayName}",
+  "description": "${description}",
+  "authors": [ ${authorEntries} ],
+  "contact": {
+    "homepage": "${displayUrl}",
+    "sources": "${sourceCode}",
+    "issues": "${issueTracker}"
+  },
+  "license": "${license}",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "com.yesman.epicfight.fabric.EpicFightFabric"
+      }
+    ],
+    "client": [
+      {
+        "value": "com.yesman.epicfight.fabric.client.EpicFightFabricClient"
+      }
+    ],
+    "fabric-datagen": [
+      {
+        "value": "com.yesman.epicfight.fabric.EpicFightFabricDataGen"
+      }
+    ],
+    "enumerable_data_block_initializer": [
+      {
+        "value": "com.yesman.epicfight.fabric.EpicFightDataBlockInitializer"
+      }
+    ]
+  },
+  "accessWidener": "epicfight.accesswidener",
+  "mixins": [
+    "epicfight.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabricLoader}",
+    "minecraft": ">=${minecraft}",
+    "java": ">=${javaVersion}",
+    "fabric-api": "*",
+    "akythera": ">=${akytheraVersion}-"
+  },
+  "suggests": {
+    "player_animation_library": ">=1.1.6"
+  }
+}

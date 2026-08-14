@@ -1,0 +1,78 @@
+[versions]
+mod = "16.0.0-SNAPSHOT.1"
+java = "25"
+
+# Minecraft
+minecraft = "26.2"
+
+# NeoForge
+# https://projects.neoforged.net/neoforged/neoforge
+neoforge = "26.2.0.59"
+# https://projects.neoforged.net/neoforged/moddevgradle
+moddevgradle = "2.0.143"
+# https://projects.neoforged.net/neoforged/neoform
+neoform = "26.2-2"
+
+# Fabric
+# Check versions at https://fabricmc.net/develop/
+fabric-loader = "0.19.3"
+fabric-api = "0.157.0+26.2"
+fabric-loom = "1.17-SNAPSHOT"
+fabric-modmenu = "20.0.1"
+
+# SpongePowered Mixin
+mixin = "0.8.7"
+asm = "9.7"
+
+# Akythera
+akythera = "0.1.0"
+
+# Third-party mods
+forgeconfigapiport = "26.2.1"
+
+jei = "19.21.2.313"
+
+# Helper Gradle-plugins
+mcSafeResources = "0.0.2"
+modPublish = "1.1.0"
+
+[libraries]
+# Fabric
+fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
+fabric-minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
+fabric-modmenu = { module = "com.terraformersmc:modmenu", version.ref = "fabric-modmenu" }
+
+mixin = { module = "org.spongepowered:mixin", version.ref = "mixin" }
+asm-tree = { module = "org.ow2.asm:asm-tree", version.ref = "asm" }
+
+forgeconfigapiport-common = { module = "fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi", version.ref = "forgeconfigapiport" }
+forgeconfigapiport-fabric = { module = "fuzs.forgeconfigapiport:forgeconfigapiport-fabric", version.ref = "forgeconfigapiport" }
+
+# jei-common-api = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
+# jei-neoforge-api = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
+# jei-neoforge = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
+
+# sodium = { module = "maven.modrinth:sodium", version.ref = "sodium" }
+# iris = { module = "maven.modrinth:iris", version.ref = "iris" }
+
+# kubejs = { module = "dev.latvian.mods:kubejs-neoforge", version.ref = "kubejs" }
+# rhino = { module = "dev.latvian.mods:rhino-neoforge", version.ref = "rhino" }
+# architectury = { module = "dev.architectury:architectury-neoforge", version.ref = "architectury" }
+
+# shoulderSurfing = { module = "maven.modrinth:shoulder-surfing-reloaded", version.ref = "shoulderSurfing" }
+# controlify = { module = "dev.isxander:controlify", version.ref = "controlify" }
+
+# Declared only in libraries[], not plugins[], as it's used only by Gradle convention plugins.
+modPublish-gradle-plugin = { module = "me.modmuss50.mod-publish-plugin:me.modmuss50.mod-publish-plugin.gradle.plugin", version.ref = "modPublish" }
+
+[plugins]
+# Mod-loader plugins
+moddevgradle = { id = "net.neoforged.moddev", version.ref = "moddevgradle" }
+fabric-loom = { id = "net.fabricmc.fabric-loom", version.ref = "fabric-loom" }
+
+# Akythera
+akythera = { id = "io.github.yesssssman.akythera", version.ref = "akythera" }
+
+# Helper plugins
+mcSafeResources = { id = "dev.echoellet.mc-safe-resources", version.ref = "mcSafeResources" }

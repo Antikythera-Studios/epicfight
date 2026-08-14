@@ -1,0 +1,30 @@
+{
+	"loader": "neoforge:separate_transforms",
+	"gui_light": "front",
+	"base": {
+		"parent": "epicfight:item/greatsword",
+		"textures": {
+			"layer0": "epicfight:item/golden_greatsword"
+		}
+	},
+	"perspectives": {
+		"gui": {
+			"parent": "epicfight:item/greatsword",
+			"textures": {
+				"layer0": "epicfight:item/golden_greatsword_gui"
+			}
+		},
+		"fixed": {
+			"parent": "epicfight:item/greatsword",
+			"textures": {
+				"layer0": "epicfight:item/golden_greatsword_gui"
+			}
+		},
+		"ground": {
+			"parent": "epicfight:item/greatsword",
+			"textures": {
+				"layer0": "epicfight:item/golden_greatsword_gui"
+			}
+		}
+	}
+}

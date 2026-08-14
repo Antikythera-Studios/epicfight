@@ -1,0 +1,30 @@
+{
+	"loader": "neoforge:separate_transforms",
+	"gui_light": "front",
+	"base": {
+		"parent": "epicfight:item/longsword",
+		"textures": {
+			"layer0": "epicfight:item/netherite_longsword"
+		}
+	},
+	"perspectives": {
+		"gui": {
+			"parent": "epicfight:item/longsword",
+			"textures": {
+				"layer0": "epicfight:item/netherite_longsword_gui"
+			}
+		},
+		"fixed": {
+			"parent": "epicfight:item/longsword",
+			"textures": {
+				"layer0": "epicfight:item/netherite_longsword_gui"
+			}
+		},
+		"ground": {
+			"parent": "epicfight:item/longsword",
+			"textures": {
+				"layer0": "epicfight:item/netherite_longsword_gui"
+			}
+		}
+	}
+}
