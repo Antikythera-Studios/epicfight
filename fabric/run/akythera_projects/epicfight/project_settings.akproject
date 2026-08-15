@@ -1,0 +1,33 @@
+{
+    "name": "epicfight",
+    "version": "0.1.0+alpha.1",
+    "export_data_path": "C:/Users/yesman/Desktop/mcdev/26.1/epicfight_26_1_multiloader/fabric/run/akythera_projects/epicfight",
+    "export_resource_path": "C:/Users/yesman/Desktop/mcdev/26.1/epicfight_26_1_multiloader/fabric/run/akythera_projects/epicfight",
+    "source_data_path": "C:/Users/yesman/Desktop/mcdev/26.1/epicfight_26_1_multiloader/common/src/main/java/com/yesman/epicfight/akythera",
+    "source_resource_path": "C:/Users/yesman/Desktop/mcdev/26.1/epicfight_26_1_multiloader/common/src/main/resources",
+    "focused": "assets/animmodels/meshes",
+    "folder_states": {
+        "assets": true,
+        "animations": true,
+        "humanoid": true,
+        "data": true,
+        "anim_sequence": true,
+        "blend_space_2d": true,
+        "item_patch": true,
+        "script": true,
+        "entity_patch": true,
+        "datablock": false
+    },
+    "armature_mappings": {
+        "minecraft:player": "epicfight:animmodels/armatures/humanoid"
+    },
+    "layouts": {
+        "com.yesman.akytheralabs.gui.screen.MainEditorScreen": [60, 25],
+        "com.yesman.akytheralabs.gui.screen.BlendSpace2DEditorScreen": [62, 70, 55],
+        "com.yesman.akytheralabs.gui.screen.AnimationSequenceEditorScreen": [60, 75, 70],
+        "com.yesman.akytheralabs.gui.screen.EntityPatchEditorScreen": [23, 67, 45],
+        "com.yesman.akytheralabs.gui.screen.AnimatorScriptEditorScreen": [24, 74, 48, 48],
+        "com.yesman.akytheralabs.gui.screen.AnimationAssetEditorScreen": [70],
+        "com.yesman.akytheralabs.gui.screen.MeshAssetEditorScreen": [70]
+    }
+}

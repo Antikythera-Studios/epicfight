@@ -1,0 +1,190 @@
+{
+  "fade_in_time": 0.25,
+  "fade_out_time": 0.25,
+  "smooth_x": 0.0,
+  "smooth_y": 50.0,
+  "min_x": -180.0,
+  "min_y": 0.0,
+  "max_x": 180.0,
+  "max_y": 1.0,
+  "loops": true,
+  "nodes": [
+    {
+      "x": 0.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 45.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 90.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 135.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 180.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -45.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -90.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -135.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -180.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 0.0,
+      "y": 0.85,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/walk_forward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -45.0,
+      "y": 0.85,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/walk_forward_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 45.0,
+      "y": 0.85,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/walk_forward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -90.0,
+      "y": 0.85,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/walk_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 90.0,
+      "y": 0.85,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/walk_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 180.0,
+      "y": 0.85,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/walk_backward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -180.0,
+      "y": 0.85,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/walk_backward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -135.0,
+      "y": 0.85,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/walk_backward_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 135.0,
+      "y": 0.85,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/walk_backward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 0.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/run_forward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 45.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/run_forward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -45.168533,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/run_forward_left",
+        "type": "sequence"
+      }
+    }
+  ],
+  "preview_model": {
+    "model_id": "minecraft:player",
+    "model_type": "vanilla_entity"
+  },
+  "vertical_division": 2,
+  "axis_names": {
+    "x": "Direction",
+    "y": "Speed"
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "parent": "akythera:player_patch_ctor",
+  "components": {
+    "entity_model": {
+      "mesh_getter": {
+        "nodes": [
+          {
+            "id": 0,
+            "x": -210,
+            "y": -95,
+            "out_labels": [
+              "owner"
+            ],
+            "kind": "entry"
+          },
+          {
+            "id": 1,
+            "x": 445,
+            "y": -35,
+            "kind": "transition_result"
+          },
+          {
+            "id": 2,
+            "x": -90,
+            "y": -95,
+            "function": "minecraft:player_patch_get_player_skin",
+            "kind": "pure_function"
+          },
+          {
+            "id": 3,
+            "x": 50,
+            "y": -95,
+            "function": "minecraft:player_skin_model",
+            "kind": "pure_function"
+          },
+          {
+            "id": 4,
+            "x": 175,
+            "y": -95,
+            "function": "minecraft:is_slim_player_model",
+            "kind": "pure_function"
+          },
+          {
+            "id": 5,
+            "x": 310,
+            "y": -35,
+            "function": "akythera:select",
+            "kind": "pure_function"
+          },
+          {
+            "id": 6,
+            "x": 180,
+            "y": 65,
+            "asset": "epicfight:humanoid",
+            "kind": "mesh_asset"
+          },
+          {
+            "id": 7,
+            "x": 180,
+            "y": -15,
+            "asset": "epicfight:humanoid",
+            "kind": "mesh_asset"
+          }
+        ],
+        "wires": [
+          {
+            "from": 0,
+            "from_pin": 0,
+            "to": 2,
+            "to_pin": 0
+          },
+          {
+            "from": 2,
+            "from_pin": 0,
+            "to": 3,
+            "to_pin": 0
+          },
+          {
+            "from": 3,
+            "from_pin": 0,
+            "to": 4,
+            "to_pin": 0
+          },
+          {
+            "from": 4,
+            "from_pin": 0,
+            "to": 5,
+            "to_pin": 0
+          },
+          {
+            "from": 5,
+            "from_pin": 0,
+            "to": 1,
+            "to_pin": 0
+          },
+          {
+            "from": 6,
+            "from_pin": 0,
+            "to": 5,
+            "to_pin": 2
+          },
+          {
+            "from": 7,
+            "from_pin": 0,
+            "to": 5,
+            "to_pin": 1
+          }
+        ]
+      },
+      "renderer": "pal",
+      "type": "akythera:entity_model"
+    },
+    "armature": {
+      "armature": "epicfight:humanoid",
+      "script": {
+        "animator_type": "epicfight:player",
+        "type": "datapack"
+      },
+      "use_root_motion": true,
+      "components": {
+        "left_hand_socket": {
+          "bone_name": "left_hand_itemholder",
+          "transform": {
+            "location": [
+              -1.7734895500195337E-10,
+              0.004540337072647088,
+              -0.13185158055753782
+            ],
+            "rotation": [
+              -0.6101083819057139,
+              -1.7886598406747174E-9,
+              -9.72448516846721E-10,
+              0.7923179679449353
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": {
+            "equipment": {
+              "slot": "offhand",
+              "display_context": "thirdperson_righthand",
+              "preview_item": "minecraft:golden_sword",
+              "type": "akythera:equipment"
+            }
+          },
+          "type": "akythera:bone_socket"
+        },
+        "right_hand_socket": {
+          "bone_name": "right_hand_itemholder",
+          "transform": {
+            "location": [
+              2.892508312539157E-10,
+              0.013201830954008148,
+              -0.14794967411235663
+            ],
+            "rotation": [
+              -0.6155962991833089,
+              7.391416356615752E-9,
+              -5.439789745245038E-10,
+              0.7880616704496001
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": {
+            "equipment": {
+              "slot": "mainhand",
+              "display_context": "thirdperson_righthand",
+              "preview_item": "minecraft:diamond_sword",
+              "type": "akythera:equipment"
+            }
+          },
+          "type": "akythera:bone_socket"
+        }
+      },
+      "type": "akythera:armature"
+    }
+  },
+  "event_graph": {
+    "nodes": [
+      {
+        "id": 0,
+        "x": 60,
+        "y": 60,
+        "op": "ON_CONSTRUCT",
+        "kind": "entity_patch_entry"
+      },
+      {
+        "id": 1,
+        "x": 60,
+        "y": 190,
+        "op": "ON_JOIN_WORLD",
+        "kind": "entity_patch_entry"
+      },
+      {
+        "id": 2,
+        "x": 60,
+        "y": 320,
+        "op": "UPDATE",
+        "kind": "entity_patch_entry"
+      }
+    ]
+  },
+  "preview_model": {
+    "model_id": "minecraft:player",
+    "model_type": "vanilla_entity"
+  }
+}

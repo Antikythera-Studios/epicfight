@@ -1,0 +1,25 @@
+{
+  "armature": "epicfight:animmodels/armatures/humanoid",
+  "bone_mappings": {
+    "Torso": "body",
+    "Arm_L": "left_arm",
+    "Chest": "body_bend",
+    "Head": "head",
+    "Tool_L": "left_hand_itemholder",
+    "Elbow_L": "left_elbow",
+    "Root": "pelvis",
+    "Elbow_R": "right_elbow",
+    "Leg_L": "left_leg_bend",
+    "Hand_R": "right_arm_bend",
+    "Arm_R": "right_arm",
+    "Shoulder_R": "right_shoulder",
+    "Knee_L": "left_knee",
+    "Tool_R": "right_hand_itemholder",
+    "Knee_R": "right_knee",
+    "Thigh_R": "right_leg",
+    "Thigh_L": "left_leg",
+    "Shoulder_L": "left_shoulder",
+    "Leg_R": "right_leg_bend",
+    "Hand_L": "left_arm_bend"
+  }
+}

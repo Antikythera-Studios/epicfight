@@ -1,0 +1,18 @@
+{
+  "animation_path": "epicfight:humanoid/locomotion/walk_forward_left",
+  "fade_in_time": 0.25,
+  "fade_out_time": 0.25,
+  "loops": false,
+  "root_motion": false,
+  "preview_model": {
+    "model_id": "minecraft:player",
+    "model_type": "vanilla_entity"
+  },
+  "notify_tracks": {
+    "tracks": [
+      {
+        "name": "Track1"
+      }
+    ]
+  }
+}

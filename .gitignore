@@ -19,9 +19,13 @@ build
 
 # other
 eclipse
-run
+**/run/**
 run-data
 generated
+
+# Epic Fight as Akythera project
+!akythera_projects
+!**/akythera_projects/**
 
 repo
 .kotlin
