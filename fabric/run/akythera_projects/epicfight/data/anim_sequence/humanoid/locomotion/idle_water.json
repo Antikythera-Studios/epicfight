@@ -1,7 +1,7 @@
 {
   "animation_path": "epicfight:humanoid/locomotion/idle_water",
   "fade_in_time": 0.25,
-  "fade_out_time": 0.25,
+  "fade_out_time": 0.0,
   "loops": true,
   "root_motion": false,
   "preview_model": {

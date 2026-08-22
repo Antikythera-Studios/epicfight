@@ -1,8 +1,8 @@
 {
   "animation_path": "epicfight:humanoid/locomotion/walk_backward_left",
   "fade_in_time": 0.25,
-  "fade_out_time": 0.25,
-  "loops": false,
+  "fade_out_time": 0.0,
+  "loops": true,
   "root_motion": false,
   "preview_model": {
     "model_id": "minecraft:player",

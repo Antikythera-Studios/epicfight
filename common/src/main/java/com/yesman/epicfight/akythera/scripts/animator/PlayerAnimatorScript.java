@@ -17,17 +17,17 @@ package com.yesman.epicfight.akythera.scripts.animator;
 // Import section is empty. Use auto import feature in IDE
 
 import com.yesman.akythera.api.animation.animator.AnimationLayer;
+import com.yesman.akythera.core.animation.AnimationLayerSignature;
 import com.yesman.akythera.core.animation.animator.BlendingAnimator;
-import com.yesman.akythera.core.animation.driver.AnimationDriver;
-import com.yesman.akythera.core.animation.driver.AnimationLayerSignature;
-import com.yesman.akythera.core.animation.driver.AnimationStateMachine;
-import com.yesman.akythera.core.animation.driver.CachedPoseReference;
+import com.yesman.akythera.core.animation.driver.*;
 import com.yesman.akythera.core.animation.keyframe.Pose;
 import com.yesman.akythera.core.blueprint.script.AnimatorScript;
 import com.yesman.akythera.core.reflection.ScriptField;
-import com.yesman.akythera.core.util.helper.MathUtils;
+import com.yesman.akythera.core.registry.AkytheraRegistries;
 import com.yesman.akythera.core.util.helper.VectorUtils;
+import com.yesman.epicfight.akythera.datablocks.EpicfightFSMAnimationState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Map;
@@ -52,22 +52,65 @@ public final class PlayerAnimatorScript implements AnimatorScript {
     public void construct(final Map<AnimationLayerSignature, AnimationLayer> animLayerMap, final Map<String, AnimationDriver> poseCaches, final BlendingAnimator animator) {
         this.animator = animator;
         lastPosition = this.animator.getOwner().position();
-        animLayerMap.put(AnimationLayerSignature.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:base")), AnimationLayer.create(new CachedPoseReference("Locomotion", this.animator)));
+        animLayerMap.put(AnimationLayerSignature.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:base")), AnimationLayer.create(new CachedPoseReference("Locomotion", this.animator, false)));
         poseCaches.put("Locomotion", new AnimationStateMachine<>(
     this.animator.getOwner(),
     AnimationStateMachine.stateModelBuilder()
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_AIR, (from, _) -> (this.animator.getOwner().isFlying() || !(this.animator.getOwner().onGround())), null, 0, 0.2F, false, 1))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.IN_WATER, (from, _) -> this.animator.getOwner().isUnderWater(), null, 0, 0.2F, false, 1))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_GROUND, (from, _) -> true, null, 0, 0.2F, false, 0))
+        .addState(EpicfightFSMAnimationState.ON_AIR, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.ON_AIR, new AnimationStateMachine<>(
+    this.animator.getOwner(),
+    AnimationStateMachine.stateModelBuilder()
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> !(this.animator.getOwner().isFlying()), null, 0, 0.2F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FLY, (from, _) -> this.animator.getOwner().isFlying(), null, 0, 0.2F, false, 0))
+        .addState(EpicfightFSMAnimationState.FALL, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.FALL, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/fall")))))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FLY, (from, _) -> this.animator.getOwner().isFlying(), null, 0, 0.2F, false, 0))
+        .addState(EpicfightFSMAnimationState.FLY, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.FLY, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/idle_air")))))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> !(this.animator.getOwner().isFlying()), null, 0, 0.2F, false, 0))
+)))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_GROUND, (from, _) -> (!(this.animator.getOwner().isFlying()) && this.animator.getOwner().onGround()), null, 0, 0.2F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.IN_WATER, (from, _) -> (!(this.animator.getOwner().isFlying()) && this.animator.getOwner().isUnderWater()), null, 0, 0.2F, false, 0))
+        .addState(EpicfightFSMAnimationState.IN_WATER, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.IN_WATER, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/idle_water")))))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_AIR, (from, _) -> (this.animator.getOwner().isFlying() && !(this.animator.getOwner().isUnderWater())), null, 0, 0.2F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_GROUND, (from, _) -> (this.animator.getOwner().onGround() && !(this.animator.getOwner().isUnderWater())), null, 0, 0.2F, false, 0))
+        .addState(EpicfightFSMAnimationState.ON_GROUND, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.ON_GROUND, new AnimationStateMachine<>(
+    this.animator.getOwner(),
+    AnimationStateMachine.stateModelBuilder()
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_GROUND, (from, _) -> true, null, 0, 0.2F, false, 0))
+        .addState(EpicfightFSMAnimationState.ON_GROUND, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.ON_GROUND, new CachedPoseReference("GroundMove", this.animator, false)))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.JUMP, (from, _) -> !(this.animator.getOwner().onGround()), null, 0, 0.2F, false, 0))
+        .addState(EpicfightFSMAnimationState.JUMP, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.JUMP, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/jump")))))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> AnimationStateMachine.driverOf(from).isFinished(), null, 0, 0.4F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND, (from, _) -> this.animator.getOwner().onGround(), null, 0, 0.1F, false, 0))
+        .addState(EpicfightFSMAnimationState.FALL, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.FALL, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/fall")))))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND, (from, _) -> this.animator.getOwner().onGround(), null, 0, 0.1F, false, 0))
+        .addState(EpicfightFSMAnimationState.LAND, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.LAND, new AdditiveBlendDriver(new CachedPoseReference("GroundMove", this.animator, false), AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/land"))), () -> 1.0F)))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_GROUND, (from, _) -> AnimationStateMachine.driverOf(from).isFinished(), null, 0, 0.2F, false, 0))
+)))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_AIR, (from, _) -> (this.animator.getOwner().isFlying() && !(this.animator.getOwner().onGround())), null, 0, 0.2F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.IN_WATER, (from, _) -> (!(this.animator.getOwner().onGround()) && this.animator.getOwner().isUnderWater()), null, 0, 0.2F, false, 0))
+));
+        poseCaches.put("GroundMove", new AnimationStateMachine<>(
+    this.animator.getOwner(),
+    AnimationStateMachine.stateModelBuilder()
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.IDLE, (from, _) -> !(isMoving), null, 0, 0.2F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.MOVE, (from, _) -> isMoving, null, 0, 0.2F, false, 0))
+        .addState(EpicfightFSMAnimationState.IDLE, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.IDLE, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/idle")))))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.MOVE, (from, _) -> isMoving, null, 0, 0.2F, true, 0))
+        .addState(EpicfightFSMAnimationState.MOVE, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.MOVE, AnimatorScript.instantiateBlendSpace2D(ResourceKey.create(AkytheraRegistries.DataPack.BLEND_SPACE_2D_KEY, Identifier.parse("epicfight:humanoid/locomotion/walk_run")), () -> moveYRot, () -> (float) (speed))))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.IDLE, (from, _) -> !(isMoving), null, 0, 0.2F, true, 0))
 ));
     }
 
     @Override
     public void update(final float frameTime, final float partialTick) {
-        var cse_6_0 = this.animator.getOwner().getPosition(partialTick);
-        var cse_7_0 = cse_6_0.subtract(lastPosition);
-        speed = (cse_7_0.length() * (1.0D / frameTime));
-        lastPosition = cse_6_0;
+        var cse_15_0 = this.animator.getOwner();
+        speed = cse_15_0.getAnimationSpeed(partialTick);
         isMoving = (speed > 0.05D);
-        var cse_20_0 = this.animator.getOwner();
-        moveYRot = (float) (VectorUtils.getAngleBetween(cse_7_0, cse_20_0.calculateViewVector(0.0F, cse_20_0.getYRot(partialTick)), MathUtils.YP, 3));
+        var cse_6_0 = this.animator.getOwner().getPosition(partialTick);
+        moveYRot = (float) (VectorUtils.getHorizontalAngleBetween(cse_6_0.subtract(lastPosition), cse_15_0.calculateViewVector(0.0F, cse_15_0.getYRot(partialTick)), 3));
+        lastPosition = cse_6_0;
     }
 
     @Override

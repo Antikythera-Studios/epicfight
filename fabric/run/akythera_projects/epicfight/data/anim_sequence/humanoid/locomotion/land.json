@@ -1,0 +1,18 @@
+{
+  "animation_path": "epicfight:humanoid/locomotion/land",
+  "fade_in_time": 0.1,
+  "fade_out_time": 0.0,
+  "loops": false,
+  "root_motion": false,
+  "preview_model": {
+    "model_id": "minecraft:player",
+    "model_type": "vanilla_entity"
+  },
+  "notify_tracks": {
+    "tracks": [
+      {
+        "name": "Track1"
+      }
+    ]
+  }
+}

@@ -15,9 +15,6 @@ dependencies {
     compileOnly(libs.asm.tree) // Manual import for implementations of IMixinConfigPlugin
     compileOnly(libs.forgeconfigapiport.common)
 
-    //api(libs.playerAnimationLibrary)
-    //api(libs.bendableCuboids)
-
     api("io.github.yesssssman.akythera:common")
     implementation("io.github.yesssssman.akytheralabs:common")
 }

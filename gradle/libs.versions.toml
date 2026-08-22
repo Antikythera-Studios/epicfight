@@ -1,5 +1,5 @@
 [versions]
-mod = "16.0.0-SNAPSHOT.1"
+mod = "16.0.0-SNAPSHOT.3"
 java = "25"
 
 # Minecraft
@@ -55,10 +55,6 @@ forgeconfigapiport-fabric = { module = "fuzs.forgeconfigapiport:forgeconfigapipo
 
 # sodium = { module = "maven.modrinth:sodium", version.ref = "sodium" }
 # iris = { module = "maven.modrinth:iris", version.ref = "iris" }
-
-# kubejs = { module = "dev.latvian.mods:kubejs-neoforge", version.ref = "kubejs" }
-# rhino = { module = "dev.latvian.mods:rhino-neoforge", version.ref = "rhino" }
-# architectury = { module = "dev.architectury:architectury-neoforge", version.ref = "architectury" }
 
 # shoulderSurfing = { module = "maven.modrinth:shoulder-surfing-reloaded", version.ref = "shoulderSurfing" }
 # controlify = { module = "dev.isxander:controlify", version.ref = "controlify" }

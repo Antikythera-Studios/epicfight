@@ -1,4 +1,4 @@
-package com.yesman.epicfight.compat;
+package com.yesman.epicfight.akytheralabs.compat;
 
 import com.yesman.akythera.client.compat.IClientModPlugin;
 import com.yesman.akytheralabs.SourceTemplateEngine;

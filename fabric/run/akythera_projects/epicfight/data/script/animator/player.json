@@ -156,27 +156,13 @@
       },
       {
         "id": 20,
-        "x": 785,
-        "y": 375,
-        "function": "akythera:vector_utils_get_angle_between",
-        "kind": "pure_function"
-      },
-      {
-        "id": 21,
         "x": 750,
         "y": 330,
         "variable_type": "minecraft:double",
         "kind": "reroute"
       },
       {
-        "id": 22,
-        "x": 650,
-        "y": 535,
-        "function": "akythera:math_utils_get_yp",
-        "kind": "pure_function"
-      },
-      {
-        "id": 23,
+        "id": 21,
         "x": 1030,
         "y": 195,
         "variable": "moveYRot",
@@ -184,7 +170,7 @@
         "kind": "variable_setter"
       },
       {
-        "id": 24,
+        "id": 22,
         "x": 955,
         "y": 320,
         "variable_type": "minecraft:double",
@@ -192,19 +178,26 @@
         "kind": "type_convert"
       },
       {
-        "id": 25,
+        "id": 23,
         "x": 490,
         "y": 215,
         "function": "minecraft:entity_patch_get_animation_speed",
         "kind": "pure_function"
       },
       {
-        "id": 26,
+        "id": 24,
         "x": 650,
-        "y": 580,
+        "y": 535,
         "literal_type": "minecraft:integer",
         "literal_value": "3",
         "kind": "literal"
+      },
+      {
+        "id": 25,
+        "x": 780,
+        "y": 375,
+        "function": "akythera:vector_utils_get_horizontal_angle_between",
+        "kind": "pure_function"
       }
     ],
     "wires": [
@@ -213,18 +206,6 @@
         "from_pin": 0,
         "to": 2,
         "to_pin": 0
-      },
-      {
-        "from": 3,
-        "from_pin": 0,
-        "to": 4,
-        "to_pin": 0
-      },
-      {
-        "from": 4,
-        "from_pin": 0,
-        "to": 2,
-        "to_pin": 1
       },
       {
         "from": 5,
@@ -317,61 +298,37 @@
         "to_pin": 1
       },
       {
-        "from": 18,
-        "from_pin": 0,
-        "to": 20,
-        "to_pin": 1
-      },
-      {
-        "from": 7,
-        "from_pin": 0,
-        "to": 20,
-        "to_pin": 0
-      },
-      {
         "from": 9,
         "from_pin": 1,
-        "to": 21,
-        "to_pin": 0
-      },
-      {
-        "from": 21,
-        "from_pin": 0,
-        "to": 13,
-        "to_pin": 0
-      },
-      {
-        "from": 22,
-        "from_pin": 0,
         "to": 20,
-        "to_pin": 2
-      },
-      {
-        "from": 12,
-        "from_pin": 0,
-        "to": 23,
         "to_pin": 0
       },
       {
         "from": 20,
         "from_pin": 0,
-        "to": 24,
+        "to": 13,
         "to_pin": 0
       },
       {
-        "from": 24,
+        "from": 12,
         "from_pin": 0,
-        "to": 23,
+        "to": 21,
+        "to_pin": 0
+      },
+      {
+        "from": 22,
+        "from_pin": 0,
+        "to": 21,
         "to_pin": 1
       },
       {
         "from": 0,
         "from_pin": 2,
-        "to": 25,
+        "to": 23,
         "to_pin": 1
       },
       {
-        "from": 25,
+        "from": 23,
         "from_pin": 0,
         "to": 9,
         "to_pin": 1
@@ -379,7 +336,7 @@
       {
         "from": 15,
         "from_pin": 0,
-        "to": 25,
+        "to": 23,
         "to_pin": 0
       },
       {
@@ -389,16 +346,46 @@
         "to_pin": 0
       },
       {
-        "from": 23,
+        "from": 21,
         "from_pin": 0,
         "to": 10,
         "to_pin": 0
       },
       {
-        "from": 26,
+        "from": 3,
         "from_pin": 0,
-        "to": 20,
-        "to_pin": 3
+        "to": 4,
+        "to_pin": 0
+      },
+      {
+        "from": 4,
+        "from_pin": 0,
+        "to": 2,
+        "to_pin": 1
+      },
+      {
+        "from": 18,
+        "from_pin": 0,
+        "to": 25,
+        "to_pin": 1
+      },
+      {
+        "from": 7,
+        "from_pin": 0,
+        "to": 25,
+        "to_pin": 0
+      },
+      {
+        "from": 25,
+        "from_pin": 0,
+        "to": 22,
+        "to_pin": 0
+      },
+      {
+        "from": 24,
+        "from_pin": 0,
+        "to": 25,
+        "to_pin": 2
       }
     ]
   },
@@ -413,14 +400,14 @@
       {
         "id": 1,
         "x": 345,
-        "y": 170,
+        "y": 195,
         "variable": "Locomotion",
         "kind": "cached_pose"
       },
       {
         "id": 2,
-        "x": 205,
-        "y": 170,
+        "x": 210,
+        "y": 195,
         "variable": "Locomotion",
         "kind": "state_machine"
       },
@@ -437,6 +424,20 @@
         "y": 300,
         "variable": "akythera:base",
         "kind": "anim_layer"
+      },
+      {
+        "id": 5,
+        "x": 210,
+        "y": 95,
+        "variable": "Ground",
+        "kind": "state_machine"
+      },
+      {
+        "id": 6,
+        "x": 345,
+        "y": 95,
+        "variable": "GroundMove",
+        "kind": "cached_pose"
       }
     ],
     "wires": [
@@ -457,6 +458,12 @@
         "from_pin": 0,
         "to": 0,
         "to_pin": 0
+      },
+      {
+        "from": 5,
+        "from_pin": 0,
+        "to": 6,
+        "to_pin": 0
       }
     ]
   },
@@ -469,23 +476,43 @@
             "nodes": [
               {
                 "id": 0,
-                "x": 360,
+                "x": 510,
                 "y": 100,
                 "kind": "transition_result"
               },
               {
                 "id": 1,
-                "x": 75,
+                "x": -5,
                 "y": 100,
                 "function": "akythera:animator_get_owner",
                 "kind": "pure_function"
               },
               {
                 "id": 2,
-                "x": 230,
+                "x": 150,
                 "y": 100,
                 "function": "minecraft:entity_patch_is_flying",
                 "kind": "pure_function"
+              },
+              {
+                "id": 3,
+                "x": 150,
+                "y": 160,
+                "function": "minecraft:entity_patch_on_ground",
+                "kind": "pure_function"
+              },
+              {
+                "id": 4,
+                "x": 265,
+                "y": 160,
+                "kind": "not"
+              },
+              {
+                "id": 5,
+                "x": 390,
+                "y": 100,
+                "op": "OR",
+                "kind": "logical_operation"
               }
             ],
             "wires": [
@@ -496,13 +523,38 @@
                 "to_pin": 0
               },
               {
+                "from": 1,
+                "from_pin": 0,
+                "to": 3,
+                "to_pin": 0
+              },
+              {
+                "from": 3,
+                "from_pin": 0,
+                "to": 4,
+                "to_pin": 0
+              },
+              {
                 "from": 2,
+                "from_pin": 0,
+                "to": 5,
+                "to_pin": 0
+              },
+              {
+                "from": 4,
+                "from_pin": 0,
+                "to": 5,
+                "to_pin": 1
+              },
+              {
+                "from": 5,
                 "from_pin": 0,
                 "to": 0,
                 "to_pin": 0
               }
             ]
-          }
+          },
+          "transition_priority": 1
         },
         {
           "to": "epicfight:in_water",
@@ -543,7 +595,8 @@
                 "to_pin": 0
               }
             ]
-          }
+          },
+          "transition_priority": 1
         },
         {
           "to": "epicfight:on_ground",
@@ -557,28 +610,16 @@
               },
               {
                 "id": 1,
-                "x": 90,
+                "x": 240,
                 "y": 100,
-                "function": "akythera:animator_get_owner",
-                "kind": "pure_function"
-              },
-              {
-                "id": 2,
-                "x": 235,
-                "y": 100,
-                "function": "minecraft:entity_patch_on_ground",
-                "kind": "pure_function"
+                "literal_type": "minecraft:boolean",
+                "literal_value": "true",
+                "kind": "literal"
               }
             ],
             "wires": [
               {
                 "from": 1,
-                "from_pin": 0,
-                "to": 2,
-                "to_pin": 0
-              },
-              {
-                "from": 2,
                 "from_pin": 0,
                 "to": 0,
                 "to_pin": 0
@@ -602,10 +643,10 @@
               },
               {
                 "id": 1,
-                "x": 160,
+                "x": 220,
                 "y": 100,
-                "asset": "epicfight:humanoid/locomotion/idle_air",
-                "kind": "anim_sequence_player"
+                "variable": "OnAir",
+                "kind": "state_machine"
               }
             ],
             "wires": [
@@ -1001,14 +1042,14 @@
               {
                 "id": 0,
                 "x": 360,
-                "y": 100,
+                "y": 35,
                 "kind": "output_pose"
               },
               {
                 "id": 1,
-                "x": 205,
-                "y": 100,
-                "variable": "Ground",
+                "x": 225,
+                "y": 35,
+                "variable": "GroundAndJump",
                 "kind": "state_machine"
               }
             ],
@@ -1327,7 +1368,8 @@
                     "to_pin": 0
                   }
                 ]
-              }
+              },
+              "transfer_elapsed_time": true
             }
           ]
         },
@@ -1437,6 +1479,652 @@
                   },
                   {
                     "from": 2,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "transfer_elapsed_time": true
+            }
+          ]
+        }
+      ]
+    },
+    "GroundAndJump": {
+      "entry_x": 50,
+      "entry_y": 265,
+      "entry_transitions": [
+        {
+          "to": "epicfight:on_ground",
+          "condition_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "transition_result"
+              },
+              {
+                "id": 1,
+                "x": 235,
+                "y": 100,
+                "literal_type": "minecraft:boolean",
+                "literal_value": "true",
+                "kind": "literal"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          }
+        }
+      ],
+      "states": [
+        {
+          "state": "epicfight:on_ground",
+          "x": 160,
+          "y": 265,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 135,
+                "y": 100,
+                "variable": "GroundMove",
+                "kind": "cached_pose_getter"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          },
+          "transitions": [
+            {
+              "to": "epicfight:jump",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 110,
+                    "y": 100,
+                    "function": "minecraft:entity_patch_on_ground",
+                    "kind": "pure_function"
+                  },
+                  {
+                    "id": 2,
+                    "x": 235,
+                    "y": 100,
+                    "kind": "not"
+                  },
+                  {
+                    "id": 3,
+                    "x": -35,
+                    "y": 100,
+                    "function": "akythera:animator_get_owner",
+                    "kind": "pure_function"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 2,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 2,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 3,
+                    "from_pin": 0,
+                    "to": 1,
+                    "to_pin": 0
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "state": "epicfight:jump",
+          "x": 395,
+          "y": 265,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 185,
+                "y": 100,
+                "asset": "epicfight:humanoid/locomotion/jump",
+                "kind": "anim_sequence_player"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          },
+          "transitions": [
+            {
+              "to": "epicfight:fall",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 105,
+                    "y": 100,
+                    "kind": "source_driver"
+                  },
+                  {
+                    "id": 2,
+                    "x": 240,
+                    "y": 100,
+                    "function": "akythera:animation_driver_is_finished",
+                    "kind": "pure_function"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 2,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 2,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.4
+            }
+          ],
+          "group": "Air"
+        },
+        {
+          "state": "epicfight:fall",
+          "x": 400,
+          "y": 340,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 205,
+                "y": 100,
+                "asset": "epicfight:humanoid/locomotion/fall",
+                "kind": "anim_sequence_player"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          },
+          "group": "Air"
+        },
+        {
+          "state": "epicfight:land",
+          "x": 180,
+          "y": 340,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 240,
+                "y": 100,
+                "kind": "additive_blend"
+              },
+              {
+                "id": 2,
+                "x": 40,
+                "y": 100,
+                "variable": "GroundMove",
+                "kind": "cached_pose_getter"
+              },
+              {
+                "id": 3,
+                "x": 65,
+                "y": 155,
+                "asset": "epicfight:humanoid/locomotion/land",
+                "kind": "anim_sequence_player"
+              },
+              {
+                "id": 4,
+                "x": 105,
+                "y": 200,
+                "literal_type": "minecraft:float",
+                "literal_value": "1.0",
+                "kind": "literal"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              },
+              {
+                "from": 2,
+                "from_pin": 0,
+                "to": 1,
+                "to_pin": 0
+              },
+              {
+                "from": 3,
+                "from_pin": 0,
+                "to": 1,
+                "to_pin": 1
+              },
+              {
+                "from": 4,
+                "from_pin": 0,
+                "to": 1,
+                "to_pin": 2
+              }
+            ]
+          },
+          "transitions": [
+            {
+              "to": "epicfight:on_ground",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 105,
+                    "y": 100,
+                    "kind": "source_driver"
+                  },
+                  {
+                    "id": 2,
+                    "x": 240,
+                    "y": 100,
+                    "function": "akythera:animation_driver_is_finished",
+                    "kind": "pure_function"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 2,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 2,
+                    "to_pin": 0
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "name": "Air",
+          "transitions": [
+            {
+              "to": "epicfight:land",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 230,
+                    "y": 100,
+                    "function": "minecraft:entity_patch_on_ground",
+                    "kind": "pure_function"
+                  },
+                  {
+                    "id": 2,
+                    "x": 85,
+                    "y": 100,
+                    "function": "akythera:animator_get_owner",
+                    "kind": "pure_function"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 2,
+                    "from_pin": 0,
+                    "to": 1,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.1
+            }
+          ]
+        }
+      ]
+    },
+    "OnAir": {
+      "entry_transitions": [
+        {
+          "to": "epicfight:fall",
+          "condition_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "transition_result"
+              },
+              {
+                "id": 1,
+                "x": -15,
+                "y": 100,
+                "function": "akythera:animator_get_owner",
+                "kind": "pure_function"
+              },
+              {
+                "id": 2,
+                "x": 120,
+                "y": 100,
+                "function": "minecraft:entity_patch_is_flying",
+                "kind": "pure_function"
+              },
+              {
+                "id": 3,
+                "x": 240,
+                "y": 100,
+                "kind": "not"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 2,
+                "to_pin": 0
+              },
+              {
+                "from": 2,
+                "from_pin": 0,
+                "to": 3,
+                "to_pin": 0
+              },
+              {
+                "from": 3,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          }
+        },
+        {
+          "to": "epicfight:fly",
+          "condition_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "transition_result"
+              },
+              {
+                "id": 1,
+                "x": 110,
+                "y": 100,
+                "function": "akythera:animator_get_owner",
+                "kind": "pure_function"
+              },
+              {
+                "id": 2,
+                "x": 245,
+                "y": 100,
+                "function": "minecraft:entity_patch_is_flying",
+                "kind": "pure_function"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 2,
+                "to_pin": 0
+              },
+              {
+                "from": 2,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          }
+        }
+      ],
+      "states": [
+        {
+          "state": "epicfight:fall",
+          "x": 240,
+          "y": 60,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 185,
+                "y": 100,
+                "asset": "epicfight:humanoid/locomotion/fall",
+                "kind": "anim_sequence_player"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          },
+          "transitions": [
+            {
+              "to": "epicfight:fly",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 60,
+                    "y": 100,
+                    "function": "akythera:animator_get_owner",
+                    "kind": "pure_function"
+                  },
+                  {
+                    "id": 2,
+                    "x": 220,
+                    "y": 100,
+                    "function": "minecraft:entity_patch_is_flying",
+                    "kind": "pure_function"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 2,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 2,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "state": "epicfight:fly",
+          "x": 245,
+          "y": 120,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 180,
+                "y": 100,
+                "asset": "epicfight:humanoid/locomotion/idle_air",
+                "kind": "anim_sequence_player"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          },
+          "transitions": [
+            {
+              "to": "epicfight:fall",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 370,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": -5,
+                    "y": 100,
+                    "function": "akythera:animator_get_owner",
+                    "kind": "pure_function"
+                  },
+                  {
+                    "id": 2,
+                    "x": 130,
+                    "y": 100,
+                    "function": "minecraft:entity_patch_is_flying",
+                    "kind": "pure_function"
+                  },
+                  {
+                    "id": 3,
+                    "x": 250,
+                    "y": 100,
+                    "kind": "not"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 2,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 2,
+                    "from_pin": 0,
+                    "to": 3,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 3,
                     "from_pin": 0,
                     "to": 0,
                     "to_pin": 0

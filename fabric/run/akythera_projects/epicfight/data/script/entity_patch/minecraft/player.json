@@ -107,14 +107,14 @@
           }
         ]
       },
-      "renderer": "pal",
+      "renderer": "skm",
       "type": "akythera:entity_model"
     },
     "armature": {
       "armature": "epicfight:humanoid",
       "script": {
-        "animator_type": "epicfight:player",
-        "type": "datapack"
+        "animator_type": "epicfight:player_animator_script",
+        "type": "class"
       },
       "use_root_motion": true,
       "components": {

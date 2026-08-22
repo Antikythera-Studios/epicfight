@@ -1,4 +1,8 @@
 {
   "import_type": "common",
-  "ref_pose_timestamp": 0.0
+  "ref_pose_timestamp": 0.0,
+  "preview_model": {
+    "model_id": "minecraft:player",
+    "model_type": "vanilla_entity"
+  }
 }

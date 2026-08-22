@@ -3,6 +3,7 @@ package com.yesman.epicfight.compat;
 import com.yesman.akythera.client.compat.IClientModPlugin;
 import com.yesman.akythera.compat.IModPlugin;
 import com.yesman.akythera.core.Akythera;
+import com.yesman.epicfight.akytheralabs.compat.AkytheraLabsPlugin;
 import com.yesman.epicfight.platform.ModPlatform;
 import com.yesman.epicfight.platform.ModPlatformProvider;
 import org.jetbrains.annotations.NotNull;
