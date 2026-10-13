@@ -10,12 +10,12 @@ where all entities have new and challenging fighting mechanics.
 <img src="https://i.imgur.com/CWsUfxt.jpg" alt="Bold Breakline" width="1344" height="48" />
 
 <p align="center">
-  <a title="Patreon" href="https://www.patreon.com/bePatron?u=53051224" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/patreon.svg" alt="Patreon" width="100" height="100" /></a>
-  <a title="Discord" href="https://discord.com/invite/NbAJwj8RHg" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/discord.svg" alt="Discord" width="100" height="100" /></a>
-  <a title="YouTube" href="https://www.youtube.com/@yesman4100" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/youtube.svg" alt="YouTube" width="100" height="100" /></a>
-  <a title="GitHub" href="https://github.com/Yesssssman/epicfightmod/" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/github.svg" alt="GitHub" width="100" height="100" /></a>
-  <a title="CurseForge" href="https://www.curseforge.com/minecraft/mc-mods/epic-fight-mod" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/curseforge.svg" alt="CurseForge" width="100" height="100" /></a>
-  <a title="Modrinth" href="https://modrinth.com/mod/epic-fight" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/modrinth.svg" alt="Modrinth" width="100" height="100" /></a>
+  <a title="Patreon" href="https://www.patreon.com/bePatron?u=53051224" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Antikythera-Studios/atk-resources/Wiki-Images/Icons/SVG/patreon.svg" alt="Patreon" width="100" height="100" /></a>
+  <a title="Discord" href="https://discord.com/invite/NbAJwj8RHg" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Antikythera-Studios/atk-resources/Wiki-Images/Icons/SVG/discord.svg" alt="Discord" width="100" height="100" /></a>
+  <a title="YouTube" href="https://www.youtube.com/@yesman4100" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Antikythera-Studios/atk-resources/Wiki-Images/Icons/SVG/youtube.svg" alt="YouTube" width="100" height="100" /></a>
+  <a title="GitHub" href="https://github.com/Antikythera-Studios/epicfight" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Antikythera-Studios/atk-resources/Wiki-Images/Icons/SVG/github.svg" alt="GitHub" width="100" height="100" /></a>
+  <a title="CurseForge" href="https://www.curseforge.com/minecraft/mc-mods/epic-fight-mod" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Antikythera-Studios/atk-resources/Wiki-Images/Icons/SVG/curseforge.svg" alt="CurseForge" width="100" height="100" /></a>
+  <a title="Modrinth" href="https://modrinth.com/mod/epic-fight" target="_blank" rel="noopener noreferrer"><img src="https://raw.githubusercontent.com/Antikythera-Studios/atk-resources/Wiki-Images/Icons/SVG/modrinth.svg" alt="Modrinth" width="100" height="100" /></a>
 </p>
 
 <img src="https://i.imgur.com/CWsUfxt.jpg" alt="Bold Breakline" width="1344" height="48" />
@@ -219,7 +219,7 @@ If you encounter any crashes or bugs in **Epic Fight**:
 
 1. **Reproduce the issue** in a fresh Minecraft instance with as few mods as possible.
 2. **Generate a crash/log report** using [mclo.gs](https://mclo.gs/).
-3. **Submit the report** by sending the link along with detailed relevant information (e.g., Epic Fight version) to [**this GitHub repository**](https://github.com/Epic-Fight/epicfight/issues/new/choose).
+3. **Submit the report** by sending the link along with detailed relevant information (e.g., Epic Fight version) to [**this GitHub repository**](https://github.com/Antikythera-Studios/epicfight/issues/new/choose).
 
 > ⚠️ **Important:** Always reproduce the crash or bug with a **minimal set of mods**.  
 > Sharing reports from instances with 100+ mods makes it nearly impossible to debug each mod individually due to the high volume of reports and limited resources.
@@ -251,11 +251,6 @@ entity patches, armor fixes, resource pack integrations and more, visit
 the [Epic Fight WIKI](https://epicfight-docs.readthedocs.io/).
 
 <img src="https://i.imgur.com/CWsUfxt.jpg" alt="Bold Breakline" width="1344" height="48" />
-
-## **Contributing**
-
-For contribution guidelines,
-please refer to the [Contributing Guide](https://github.com/Epic-Fight/epicfight/blob/1.21.1/CONTRIBUTING.md).
 
 ## **License**
 
