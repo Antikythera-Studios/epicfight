@@ -41,8 +41,6 @@ idea {
 repositories {
     mavenCentral()
 
-    flatDir { dir(rootProject.file("libs")) }
-
     // Modrinth maven: https://support.modrinth.com/en/articles/8801191-modrinth-maven
     // Note: Prefer Maven repositories provided by the mod dependencies over Modrinth.
     strictMaven(
@@ -51,33 +49,11 @@ repositories {
         "maven.modrinth",
     )
 
-    // Curse maven: https://cursemaven.com
-    // Note: Prefer Modrinth or Maven repositories provided by the mod dependencies over Curse Maven.
-    strictMaven(
-        "CurseMaven",
-        "https://cursemaven.com",
-        "curse.maven",
-    )
-
     strictMaven(
         "Fuzs Mod Resources (Forge Config API)",
         "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/",
         "fuzs.forgeconfigapiport",
     )
-
-    // JEI
-    strictMaven("Jared", "https://maven.blamejared.com", "mezz.jei")
-    strictMaven("Architectury", "https://maven.architectury.dev", "dev.architectury")
-
-    // KubeJS
-    strictMaven("Latvian", "https://maven.latvian.dev/releases", "dev.latvian.mods")
-
-    strictMaven("IsXander", "https://maven.isxander.dev/releases", "dev.isxander")
-
-    strictMaven("AzureDoom Mods", "https://maven.azuredoom.com/mods", "mod.azure.azurelib", "mod.azure.azurelibarmor")
-    strictMaven("GeckoLib", "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/", "software.bernie.geckolib")
-    strictMaven("Illusive Soulworks (Curios API)", "https://maven.theillusivec4.top/", "top.theillusivec4.curios")
-    strictMaven("playerAnimator", "https://maven.kosmx.dev", "dev.kosmx.player-anim")
 }
 
 tasks.jar {

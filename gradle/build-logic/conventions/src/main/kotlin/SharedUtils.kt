@@ -15,14 +15,6 @@ fun RepositoryHandler.strictMaven(name: String, url: String, vararg includeGroup
     }
 }
 
-fun RepositoryHandler.parchmentMcRepository() {
-    strictMaven(
-        "ParchmentMC",
-        "https://maven.parchmentmc.org",
-        "org.parchmentmc", "org.parchmentmc.data",
-    )
-}
-
 fun RepositoryHandler.terraformersRepository() {
     strictMaven(
         "Terraformers (Mod Menu)",
@@ -30,8 +22,6 @@ fun RepositoryHandler.terraformersRepository() {
         "com.terraformersmc",
     )
 }
-
-const val generationTaskGroup = "generation"
 
 private val Project.versionCatalog: VersionCatalog
     get() = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
@@ -71,9 +61,6 @@ private val Project.modSourceCode: String
 
 private val Project.modDescription: String
     get() = gradleProperty("description")
-
-private val Project.modCredits: String
-    get() = gradleProperty("credits")
 
 private val Project.modAuthors: String
     get() = gradleProperty("authors")
@@ -144,13 +131,10 @@ val Project.modPlatformMetadataReplaceProperties: Map<String, Any>
                 prefix = "\"",
                 postfix = "\""
             ) { it.trim() },
-        "credits" to modCredits,
         "sourceCode" to modSourceCode,
         "minecraft" to mcVersion,
         "neoforgeVersion" to neoForgeVersion,
         "javaVersion" to javaVersion,
-        // TODO: when forgeconfigapiport ported to 26.1 import the project
-        // "forgeconfigapiportVersion" to catalogVersion("forgeconfigapiport"),
         "fabricLoader" to fabricLoaderVersion,
         "akytheraVersion" to akytheraVersion,
     )
