@@ -31,3 +31,8 @@ repo
 .kotlin
 .DS_STORE
 .vscode
+
+# publishing secrets
+publish-secrets.sh
+.env
+.env.*

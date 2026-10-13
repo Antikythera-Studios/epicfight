@@ -68,8 +68,6 @@ tasks.processResources {
     }
 }
 
-configureModPublish(ModLoader.Fabric) { tasks.jar.get().archiveFile }
-
 fabricApi {
     configureDataGeneration {
         client = true

@@ -1,5 +1,6 @@
 [versions]
-mod = "16.0.0-SNAPSHOT.3"
+# patch only, the full version is <minecraft year>.<minecraft drop>.<mod>
+mod = "0"
 java = "25"
 
 # Minecraft
@@ -34,7 +35,7 @@ jei = "19.21.2.313"
 
 # Helper Gradle-plugins
 mcSafeResources = "0.0.2"
-modPublish = "1.1.0"
+modPublish = "2.2.0"
 
 [libraries]
 # Fabric
