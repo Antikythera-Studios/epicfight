@@ -12,8 +12,6 @@ public final class EpicFightFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        EpicFight.onModInitialized();
-
         // Initialize networking payload types & receivers
         ServerBoundNetworkReceiverRegistrar.registerTypes();
         ServerBoundNetworkReceiverRegistrar.registerReceivers();

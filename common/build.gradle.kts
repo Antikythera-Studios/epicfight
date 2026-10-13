@@ -16,7 +16,6 @@ dependencies {
     compileOnly(libs.forgeconfigapiport.common)
 
     api("io.github.yesssssman.akythera:common")
-    implementation("io.github.yesssssman.akytheralabs:common")
 }
 
 mcSafeResources {

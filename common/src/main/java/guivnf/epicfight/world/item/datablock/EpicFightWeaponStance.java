@@ -1,5 +1,7 @@
 package guivnf.epicfight.world.item.datablock;
 
+import com.yesman.akythera.api.world.patch.item.WeaponStance;
+
 public enum EpicFightWeaponStance implements WeaponStance {
     /// A *wildcard* weapon stance to get a root itempatch properties
     COMMON(true),
