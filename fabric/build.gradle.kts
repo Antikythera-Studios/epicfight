@@ -34,8 +34,6 @@ loom {
     // Removed due to lack of NeoForge support: https://github.com/neoforged/ModDevGradle/issues/3 and https://neoforged.net/news/21.5release/#split-sourcesets
     // splitEnvironmentSourceSets()
 
-    accessWidenerPath = file("../common/src/main/resources/epicfight.accesswidener")
-
     mods {
         register(modId) {
             sourceSet(sourceSets.main.get())

@@ -10,8 +10,6 @@ configureBaseArchive("neoforge")
 neoForge {
     version = neoforgeVersion
 
-    accessTransformers.from("../common/src/main/resources/META-INF/accesstransformer.cfg")
-
     runs {
         create("client") {
             client()

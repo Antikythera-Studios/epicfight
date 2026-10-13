@@ -1,24 +1,17 @@
 package guivnf.epicfight.fabric;
 
+import com.yesman.akythera.core.registry.AkytheraRegistries;
 import guivnf.epicfight.EpicFight;
-import guivnf.epicfight.fabric.networking.ServerBoundNetworkReceiverRegistrar;
+import guivnf.epicfight.akythera.registries.EpicFightScriptTypes;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 
 public final class EpicFightFabric implements ModInitializer {
-    public EpicFightFabric() {
-        EpicFight.onModConstructed();
-    }
-
     @Override
     public void onInitialize() {
-        // Initialize networking payload types & receivers
-        ServerBoundNetworkReceiverRegistrar.registerTypes();
-        ServerBoundNetworkReceiverRegistrar.registerReceivers();
-
-        // Register commands
-        CommandRegistrationCallback.EVENT.register((dispatcher, _, _) -> {
-            EpicFight.onRegisterCommands(dispatcher);
-        });
+        EpicFightScriptTypes.register((name, type) ->
+            Registry.register(AkytheraRegistries.Frozen.SCRIPT_TYPE, Identifier.fromNamespaceAndPath(EpicFight.MODID, name), type)
+        );
     }
 }

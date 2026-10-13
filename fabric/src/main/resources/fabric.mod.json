@@ -18,11 +18,6 @@
         "value": "guivnf.epicfight.fabric.EpicFightFabric"
       }
     ],
-    "client": [
-      {
-        "value": "guivnf.epicfight.fabric.client.EpicFightFabricClient"
-      }
-    ],
     "fabric-datagen": [
       {
         "value": "guivnf.epicfight.fabric.EpicFightFabricDataGen"
@@ -34,18 +29,11 @@
       }
     ]
   },
-  "accessWidener": "epicfight.accesswidener",
-  "mixins": [
-    "epicfight.mixins.json"
-  ],
   "depends": {
     "fabricloader": ">=${fabricLoader}",
     "minecraft": ">=${minecraft}",
     "java": ">=${javaVersion}",
     "fabric-api": "*",
     "akythera": ">=${akytheraVersion}-"
-  },
-  "suggests": {
-    "player_animation_library": ">=1.1.6"
   }
 }

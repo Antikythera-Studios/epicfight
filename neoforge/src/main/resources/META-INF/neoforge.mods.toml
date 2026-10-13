@@ -11,16 +11,6 @@ displayURL = "${displayUrl}"
 bannerFile = "${modId}_logo.png"
 authors = "${authors}"
 description = "${description}"
-# enumExtensions = "META-INF/enum_extensions.json"
-
-[[mixins]]
-config = "${modId}.mixins.json"
-
-[[mixins]]
-config = "${modId}-platform.neoforged.mixins.json"
-
-[[accessTransformers]]
-file="META-INF/accesstransformer.cfg"
 
 [[dependencies."${modId}"]]
 modId = "neoforge"

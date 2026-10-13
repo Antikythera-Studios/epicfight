@@ -11,8 +11,6 @@ neoForge {
 }
 
 dependencies {
-    compileOnly(libs.mixin)
-    compileOnly(libs.asm.tree) // Manual import for implementations of IMixinConfigPlugin
     compileOnly(libs.forgeconfigapiport.common)
 
     api("io.github.yesssssman.akythera:common")

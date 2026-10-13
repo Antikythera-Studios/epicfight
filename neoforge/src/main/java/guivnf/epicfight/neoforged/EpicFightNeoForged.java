@@ -1,31 +1,20 @@
 package guivnf.epicfight.neoforged;
 
+import com.yesman.akythera.api.data.modularize.ScriptType;
+import com.yesman.akythera.core.registry.AkytheraRegistries;
 import guivnf.epicfight.EpicFight;
-import guivnf.epicfight.neoforged.networking.NeoForgedNetworkingHelper;
-import guivnf.epicfight.platform.ModPlatformProvider;
-import guivnf.epicfight.platform.neoforged.NeoForgedModPlatform;
+import guivnf.epicfight.akythera.registries.EpicFightScriptTypes;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 @Mod(EpicFight.MODID)
-public class EpicFightNeoForged {
-    public EpicFightNeoForged(IEventBus modEventBus, ModContainer modContainer) {
-        NeoForgedModPlatform neoForgedModPlatform = (NeoForgedModPlatform) ModPlatformProvider.get();
-        EpicFight.onModConstructed();
+public final class EpicFightNeoForged {
+    public EpicFightNeoForged(final IEventBus modEventBus) {
         EpicFight.registerDataBlockEnumClasses();
 
-        // Register mod bus events
-        modEventBus.addListener(NeoForgedNetworkingHelper::register);
-        neoForgedModPlatform.addListeners(modEventBus);
-
-        // Register game bus events
-        NeoForge.EVENT_BUS.addListener(this::registerCommands);
-	}
-
-    private void registerCommands(final RegisterCommandsEvent event) {
-        EpicFight.onRegisterCommands(event.getDispatcher());
+        DeferredRegister<ScriptType> scriptTypes = DeferredRegister.create(AkytheraRegistries.Frozen.SCRIPT_TYPE_KEY, EpicFight.MODID);
+        EpicFightScriptTypes.register((name, type) -> scriptTypes.register(name, () -> type));
+        scriptTypes.register(modEventBus);
     }
 }
