@@ -21,7 +21,7 @@ dependencies {
 
 mcSafeResources {
     namespace.set(modId)
-    outputPackage.set("com.yesman.${modId}.generated")
+    outputPackage.set("guivnf.${modId}.generated")
 }
 
 sourceSets.main.get().java {}

@@ -3,7 +3,7 @@
   "version": "0.1.0+alpha.1",
   "export_data_path": "C:/Users/yesman/Desktop/mcdev/26.1/epicfight_26_1_multiloader/fabric/run/akythera_projects/epicfight",
   "export_resource_path": "C:/Users/yesman/Desktop/mcdev/26.1/epicfight_26_1_multiloader/fabric/run/akythera_projects/epicfight",
-  "source_data_path": "C:/Users/yesman/Desktop/mcdev/26.1/epicfight_26_1_multiloader/common/src/main/java/com/yesman/epicfight/akythera",
+  "source_data_path": "C:/Users/yesman/Desktop/mcdev/26.1/epicfight_26_1_multiloader/common/src/main/java/guivnf/epicfight/akythera",
   "source_resource_path": "C:/Users/yesman/Desktop/mcdev/26.1/epicfight_26_1_multiloader/common/src/main/resources",
   "focused": "assets/animmodels/animations/humanoid/locomotion",
   "folder_states": {

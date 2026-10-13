@@ -15,22 +15,22 @@
   "entrypoints": {
     "main": [
       {
-        "value": "com.yesman.epicfight.fabric.EpicFightFabric"
+        "value": "guivnf.epicfight.fabric.EpicFightFabric"
       }
     ],
     "client": [
       {
-        "value": "com.yesman.epicfight.fabric.client.EpicFightFabricClient"
+        "value": "guivnf.epicfight.fabric.client.EpicFightFabricClient"
       }
     ],
     "fabric-datagen": [
       {
-        "value": "com.yesman.epicfight.fabric.EpicFightFabricDataGen"
+        "value": "guivnf.epicfight.fabric.EpicFightFabricDataGen"
       }
     ],
     "enumerable_data_block_initializer": [
       {
-        "value": "com.yesman.epicfight.fabric.EpicFightDataBlockInitializer"
+        "value": "guivnf.epicfight.fabric.EpicFightDataBlockInitializer"
       }
     ]
   },
