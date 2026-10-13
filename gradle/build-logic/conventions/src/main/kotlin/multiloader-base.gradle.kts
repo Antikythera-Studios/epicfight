@@ -13,6 +13,12 @@ plugins {
 version = modVersion
 group = groupId
 
+// epic fight renders through akythera's own pipeline, never player animation library
+configurations.configureEach {
+    exclude(group = "maven.modrinth", module = "player-animation-library")
+    exclude(group = "maven.modrinth", module = "bendable-cuboids")
+}
+
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(javaVersion))
