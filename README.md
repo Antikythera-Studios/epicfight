@@ -259,32 +259,20 @@ please refer to the [Contributing Guide](https://github.com/Epic-Fight/epicfight
 
 ## **License**
 
-- **Source Code (Java, Kotlin, C++, C, Groovy, etc.):** [GNU GPLv3](./LICENSE)
-    - Applies only to the source code in this repository.
-
-- **Assets (images, models, textures, sounds, translations, animations, native libraries, etc.):**
-  [All Rights Reserved](./LICENSE-ASSETS)
-    - Applies only to the mod assets (under `src/main/resources/assets`) in this repository.
+Epic Fight is **All Rights Reserved**. See [LICENSE](./LICENSE) for the full terms.
 
 ### **You CAN**
 
-- Use this mod in a modpack.
-- Write your own code that uses this code as a dependency (such as addons, resource packs or datapacks).
-- Submit Pull Requests to this repository.
-- Fork and modify the code as long as modifications are not distributed publicly.
-- Third-party redistribution is allowed only if all the following conditions are met:
-    - All assets under `src/main/resources/assets` are removed and replaced with custom, original-made assets.
-    - The mod and project use a different name to avoid confusion with Epic Fight.
-    - Credit and a link to the original Epic Fight project are provided.
-    - You grant the Epic Fight project a non-exclusive, royalty-free, worldwide license to use, copy, modify, and
-      distribute your modifications, provided that appropriate credit or attribution is given to you.
+- Download and play the mod for personal, non-commercial use.
+- Include the original, unmodified mod in a modpack, as long as the modpack doesn't charge for access to it and credit
+  is kept.
+- Make addons, resource packs and datapacks that depend on Epic Fight without including any of its code or assets.
 
 ### **You CANNOT**
 
-- Redistribute ANY assets from this mod (located under `src/main/resources/assets`).
-    - **Note:** You may replace all original assets with your own to redistribute your fork publicly.
-- Sell addons, mods, or other derivative works that use any Epic Fight assets, including but not limited to animations,
-  textures, sounds, or models.
+- Reupload or redistribute the mod or any of its assets.
+- Copy, modify, or publish the source code or assets, in whole or in part, without written permission.
+- Sell anything that contains Epic Fight code or assets.
 
 ### **Disclaimer**
 
