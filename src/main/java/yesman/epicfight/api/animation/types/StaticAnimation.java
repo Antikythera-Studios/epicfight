@@ -268,12 +268,16 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
 
                         if (renderitembase != null && renderitembase.trailInfo() != null) {
                             trailInfo = renderitembase.trailInfo().overwrite(trailInfo);
+                        } else {
+                            EpicFight.LOGGER.info("[trail-debug] {} no item-skin trail (renderer={}, stack={})", this.getRegistryName(), renderitembase, stack.getItem());
                         }
                     }
 
                     if (!trailInfo.playable()) {
+                        EpicFight.LOGGER.info("[trail-debug] {} trail NOT playable: joint={} type={} tex={} lifetime={} interpol={} interval={}", this.getRegistryName(), trailInfo.joint(), trailInfo.particle(), trailInfo.texturePath(), trailInfo.trailLifetime(), trailInfo.interpolateCount(), trailInfo.updateInterval());
                         continue;
                     }
+                    EpicFight.LOGGER.info("[trail-debug] {} spawning trail joint={}", this.getRegistryName(), trailInfo.joint());
 
                     entitypatch.getOriginal().level().addParticle(trailInfo.particle(), eid, 0, animid, jointId, index, 0);
                 }

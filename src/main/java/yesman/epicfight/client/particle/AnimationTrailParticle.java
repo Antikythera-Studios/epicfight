@@ -145,7 +145,11 @@ public class AnimationTrailParticle extends AbstractTrailParticle<LivingEntityPa
 	@Override
 	protected boolean canContinue() {
 		AnimationPlayer animPlayer = this.owner.getAnimator().getPlayerFor(this.animation);
-		return this.owner.getOriginal().isAlive() && this.animation == animPlayer.getRealAnimation() && animPlayer.getElapsedTime() <= this.trailInfo.endTime();
+		boolean cont = this.owner.getOriginal().isAlive() && this.animation == animPlayer.getRealAnimation() && animPlayer.getElapsedTime() <= this.trailInfo.endTime();
+		if (!cont && Provider.DBG.add("cc" + this.hashCode())) {
+			yesman.epicfight.EpicFight.LOGGER.info("[trail-provider] canContinue=false anim={} alive={} match={} elapsed={} endTime={} edges={}", this.animation, this.owner.getOriginal().isAlive(), this.animation == animPlayer.getRealAnimation(), animPlayer.getElapsedTime(), this.trailInfo.endTime(), this.trailEdges.size());
+		}
+		return cont;
 	}
 	
 	@Override
@@ -262,9 +266,18 @@ public class AnimationTrailParticle extends AbstractTrailParticle<LivingEntityPa
 		}
 		
 		this.makeTrailEdges(finalStartPositions, finalEndPositions, visibleTrail ? this.trailEdges : this.invisibleTrailEdges);
+
+		if (Provider.DBG.add("v" + this.hashCode()) && !this.trailEdges.isEmpty()) {
+			yesman.epicfight.EpicFight.LOGGER.info("[trail-provider] visible edges={} invisible={} anim={} elapsed={}", this.trailEdges.size(), this.invisibleTrailEdges.size(), this.animation, animPlayer.getElapsedTime());
+		}
 	}
 	
 	public static class Provider implements ParticleProvider<SimpleParticleType> {
+		static final java.util.Set<String> DBG = new java.util.HashSet<>();
+		private static void dbg(String key, String msg, Object... args) {
+			if (DBG.add(key)) yesman.epicfight.EpicFight.LOGGER.info("[trail-provider] " + msg, args);
+		}
+
 		@Override
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			int eid = (int)Double.doubleToRawLongBits(x);
@@ -272,26 +285,30 @@ public class AnimationTrailParticle extends AbstractTrailParticle<LivingEntityPa
 			int jointId = (int)Double.doubleToRawLongBits(xSpeed);
 			int idx = (int)Double.doubleToRawLongBits(ySpeed);
 			Entity entity = level.getEntity(eid);
-			
+
 			if (entity == null) {
+				dbg("e" + eid, "entity {} not in client level", eid);
 				return null;
 			}
-			
+
 			LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(entity, LivingEntityPatch.class);
-			
+
 			if (entitypatch == null) {
+				dbg("p" + eid, "no entitypatch for {}", entity);
 				return null;
 			}
-			
+
 			AnimationAccessor<? extends StaticAnimation> animation = AnimationManager.byId(animid);
-			
+
 			if (animation == null) {
+				dbg("a" + animid, "no animation accessor for id {}", animid);
 				return null;
 			}
-			
+
 			Optional<List<TrailInfo>> trailInfo = animation.get().getProperty(ClientAnimationProperties.TRAIL_EFFECT);
-			
+
 			if (trailInfo.isEmpty()) {
+				dbg("t" + animid, "no TRAIL_EFFECT on {}", animation.get().getRegistryName());
 				return null;
 			}
 			
@@ -321,8 +338,10 @@ public class AnimationTrailParticle extends AbstractTrailParticle<LivingEntityPa
 					Joint mirroredJoint = entitypatch.getArmature().searchJointByName(yesman.epicfight.api.animation.PoseMirror.mirrorJointName(trailJoint.getName()));
 					if (mirroredJoint != null) trailJoint = mirroredJoint;
 				}
+				dbg("c" + animid, "created trail particle anim={} joint={}", animation.get().getRegistryName(), trailJoint.getName());
 				return new AnimationTrailParticle(level, entitypatch, trailJoint, animation, result);
 			} else {
+				dbg("np" + animid, "overwritten trail not playable on {}", animation.get().getRegistryName());
 				return null;
 			}
 		}
