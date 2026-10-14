@@ -286,31 +286,31 @@ public class TransformSheet {
 			return InterpolationInfo.INVALID;
 		}
 		
+		if (Float.isNaN(currentTime)) {
+			currentTime = 0.0F;
+		}
+		
 		if (currentTime < 0.0F) {
 			currentTime = this.keyframes[this.keyframes.length - 1].time() + currentTime;
 		}
 		
-		// Binary search
+		// Binary search; each iteration must shrink the interval or the loop cannot end.
 		int begin = 0, end = this.keyframes.length - 1;
 		
 		while (end - begin > 1) {
-			int i = begin + (end - begin) / 2;
+			int mid = begin + (end - begin) / 2;
 			
-			if (this.keyframes[i].time() <= currentTime && this.keyframes[i+1].time() > currentTime) {
-				begin = i;
-				end = i+1;
-				break;
+			if (this.keyframes[mid].time() > currentTime) {
+				end = mid;
 			} else {
-				if (this.keyframes[i].time() > currentTime) {
-					end = i;
-				} else if (this.keyframes[i+1].time() <= currentTime) {
-					begin = i;
-				}
+				begin = mid;
 			}
 		}
 		
-		float progression = Mth.clamp((currentTime - this.keyframes[begin].time()) / (this.keyframes[end].time() - this.keyframes[begin].time()), 0.0F, 1.0F);
-		return new InterpolationInfo(begin, end, Float.isNaN(progression) ? 1.0F : progression);
+		float span = this.keyframes[end].time() - this.keyframes[begin].time();
+		float progression = span <= 0.0F || !Float.isFinite(span) ? 1.0F
+			: Mth.clamp((currentTime - this.keyframes[begin].time()) / span, 0.0F, 1.0F);
+		return new InterpolationInfo(begin, end, progression);
 	}
 	
 	public float maxFrameTime() {
