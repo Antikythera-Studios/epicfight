@@ -301,23 +301,21 @@ public interface EpicFightClientBoundPayloadHandler {
 	
 	static void handleSkillFeedback(final SPSkillFeedback data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), PlayerPatch.class).ifPresent(playerpatch -> {
-			switch(data.feedbackType()) {
-			case EXECUTED -> {
-				SkillContainer skillContainer = playerpatch.getSkill(data.skillSlot());
-				skillContainer.getSkill().executeOnClient(skillContainer, data.arguments());
+			SkillContainer skillContainer = playerpatch.getSkill(data.skillSlot());
+			
+			if (skillContainer == null || skillContainer.getSkill() == null) {
+				return;
 			}
+			
+			switch(data.feedbackType()) {
+			case EXECUTED -> skillContainer.getSkill().executeOnClient(skillContainer, data.arguments());
 			case HOLDING_START -> {
-				SkillContainer container = playerpatch.getSkill(data.skillSlot());
-				
-				if (container.getSkill() instanceof HoldableSkill holdableSkill) {
+				if (skillContainer.getSkill() instanceof HoldableSkill holdableSkill) {
 					playerpatch.startSkillHolding(holdableSkill);
-					ControlEngine.getInstance().setHoldingKey(container.getSlot(), holdableSkill.getKeyMapping());
+					ControlEngine.getInstance().setHoldingKey(skillContainer.getSlot(), holdableSkill.getKeyMapping());
 				}
 			}
-			case EXPIRED -> {
-				SkillContainer skillContainer = playerpatch.getSkill(data.skillSlot());
-				skillContainer.getSkill().cancelOnClient(skillContainer, data.arguments());
-			}
+			case EXPIRED -> skillContainer.getSkill().cancelOnClient(skillContainer, data.arguments());
 			default -> {}
 			}
 		});
