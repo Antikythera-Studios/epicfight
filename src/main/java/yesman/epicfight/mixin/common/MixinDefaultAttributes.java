@@ -1,6 +1,8 @@
 package yesman.epicfight.mixin.common;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -52,25 +54,41 @@ public abstract class MixinDefaultAttributes {
     /// Uses AttributeSupplier.builder() to create a new supplier that combines the base
     /// attributes with our custom Epic Fight attributes.
     private static AttributeSupplier applyModifications(EntityType<?> entityType, AttributeSupplier base) {
-        Map<Holder<Attribute>, Double> mods = EntityAttributeModificationEvent.getPendingModifications().get(entityType);
-        if (mods == null) {
-            return base;
+        // Normalize modification keys to canonical registry holders as well: DeferredHolderShim
+        // keys stored before binding must still compare equal to the Holder.Reference keys used
+        // by the runtime attribute map.
+        Map<Holder<Attribute>, Double> mods = new java.util.HashMap<>();
+        for (Map.Entry<Holder<Attribute>, Double> entry : EntityAttributeModificationEvent.getPendingModifications().getOrDefault(entityType, Map.of()).entrySet()) {
+            mods.put(epicfight$canonicalAttributeHolder(entry.getKey()), entry.getValue());
         }
-
         AttributeSupplier.Builder builder = AttributeSupplier.builder();
 
-        // Copy existing attribute base values from the base supplier
+        // Copy existing attribute base values from the base supplier. Attribute holders must
+        // be canonical registry holders: packets resolve attributes to Holder.Reference, and
+        // DeferredHolderShim keys are not reachable from Holder.Reference HashMap lookups.
+        // Base entries whose canonical holder is overridden by a modification are skipped so
+        // the builder never sees duplicate keys and the modification value wins.
         for (Map.Entry<Holder<Attribute>, AttributeInstance> entry : base.instances.entrySet()) {
-            builder.add(entry.getKey(), entry.getValue().getBaseValue());
-        }
-
-        // Add our custom Epic Fight attributes
-        for (Map.Entry<Holder<Attribute>, Double> entry : mods.entrySet()) {
-            if (!base.hasAttribute(entry.getKey())) {
-                builder.add(entry.getKey(), entry.getValue());
+            Holder<Attribute> attribute = epicfight$canonicalAttributeHolder(entry.getKey());
+            if (!mods.containsKey(attribute)) {
+                builder.add(attribute, entry.getValue().getBaseValue());
             }
         }
 
+        // Add our custom Epic Fight attributes (modifications override base values, matching
+        // NeoForge's EntityAttributeModificationEvent semantics)
+        for (Map.Entry<Holder<Attribute>, Double> entry : mods.entrySet()) {
+            builder.add(epicfight$canonicalAttributeHolder(entry.getKey()), entry.getValue());
+        }
+
         return builder.build();
+    }
+
+    private static Holder<Attribute> epicfight$canonicalAttributeHolder(Holder<Attribute> holder) {
+        ResourceKey<Attribute> key = holder.unwrapKey().orElse(null);
+        if (key == null) {
+            return holder;
+        }
+        return BuiltInRegistries.ATTRIBUTE.getHolder(key).map(reference -> (Holder<Attribute>)reference).orElse(holder);
     }
 }
