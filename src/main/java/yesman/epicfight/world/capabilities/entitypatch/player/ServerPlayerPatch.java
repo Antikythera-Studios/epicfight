@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -137,15 +138,17 @@ public class ServerPlayerPatch extends PlayerPatch<ServerPlayer> {
 		if (!ItemStack.isSameItemSameComponents(this.prevHeldItem, currentMain)) {
 			CapabilityItem fromCap = EpicFightCapabilities.getItemStackCapability(this.prevHeldItem);
 			CapabilityItem toCap = this.getHoldingItemCapability(InteractionHand.MAIN_HAND);
-			this.updateHeldItem(fromCap, toCap, this.prevHeldItem, this.original.getMainHandItem(), InteractionHand.MAIN_HAND);
+			ItemStack previous = this.prevHeldItem;
 			this.prevHeldItem = currentMain.copy();
+			this.updateHeldItem(fromCap, toCap, previous, currentMain, InteractionHand.MAIN_HAND);
 		}
 
 		if (!ItemStack.isSameItemSameComponents(this.prevHeldItemOffHand, currentOff)) {
 			CapabilityItem fromCap = EpicFightCapabilities.getItemStackCapability(this.prevHeldItemOffHand);
 			CapabilityItem toCap = this.getHoldingItemCapability(InteractionHand.OFF_HAND);
-			this.updateHeldItem(fromCap, toCap, this.prevHeldItemOffHand, this.original.getOffhandItem(), InteractionHand.OFF_HAND);
+			ItemStack previous = this.prevHeldItemOffHand;
 			this.prevHeldItemOffHand = currentOff.copy();
+			this.updateHeldItem(fromCap, toCap, previous, currentOff, InteractionHand.OFF_HAND);
 		}
 	}
 
@@ -206,23 +209,35 @@ public class ServerPlayerPatch extends PlayerPatch<ServerPlayer> {
 			if (!to.isEmpty()) {
 				to.getOrDefault(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS, net.minecraft.world.item.component.ItemAttributeModifiers.EMPTY).forEach(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
 					if (Attributes.ATTACK_SPEED.equals(attribute)) {
-						this.original.getAttribute(EpicFightAttributes.OFFHAND_ATTACK_SPEED).addTransientModifier(modifier);
+						this.applyOffhandModifier(EpicFightAttributes.OFFHAND_ATTACK_SPEED, modifier);
 					}
 				});
 			}
 			
 			if (!toCap.isEmpty()) {
 				Multimap<Holder<Attribute>, AttributeModifier> modifiers = toCap.getAttributeModifiers(this);
-				modifiers.get(EpicFightAttributes.ARMOR_NEGATION).forEach(this.original.getAttribute(EpicFightAttributes.OFFHAND_ARMOR_NEGATION)::addTransientModifier);
-				modifiers.get(EpicFightAttributes.IMPACT).forEach(this.original.getAttribute(EpicFightAttributes.OFFHAND_IMPACT)::addTransientModifier);
-				modifiers.get(EpicFightAttributes.MAX_STRIKES).forEach(this.original.getAttribute(EpicFightAttributes.OFFHAND_MAX_STRIKES)::addTransientModifier);
-				modifiers.get(Attributes.ATTACK_SPEED).forEach(this.original.getAttribute(EpicFightAttributes.OFFHAND_ATTACK_SPEED)::addTransientModifier);
+				modifiers.get(EpicFightAttributes.ARMOR_NEGATION).forEach(modifier -> this.applyOffhandModifier(EpicFightAttributes.OFFHAND_ARMOR_NEGATION, modifier));
+				modifiers.get(EpicFightAttributes.IMPACT).forEach(modifier -> this.applyOffhandModifier(EpicFightAttributes.OFFHAND_IMPACT, modifier));
+				modifiers.get(EpicFightAttributes.MAX_STRIKES).forEach(modifier -> this.applyOffhandModifier(EpicFightAttributes.OFFHAND_MAX_STRIKES, modifier));
+				modifiers.get(Attributes.ATTACK_SPEED).forEach(modifier -> this.applyOffhandModifier(EpicFightAttributes.OFFHAND_ATTACK_SPEED, modifier));
 			}
 		}
 		
 		this.modifyLivingMotionByCurrentItem(true);
 		
 		super.updateHeldItem(fromCap, toCap, from, to, hand);
+	}
+	
+	/// Applies an offhand attribute modifier idempotently: updateHeldItem can run
+	/// more than once per equipment change (collectEquipmentChanges hook plus the
+	/// preTick hotbar-switch detector), and AttributeInstance.addTransientModifier
+	/// throws when the same modifier id is applied twice.
+	private void applyOffhandModifier(Holder<Attribute> attribute, AttributeModifier modifier) {
+		AttributeInstance instance = this.original.getAttribute(attribute);
+		if (instance != null) {
+			instance.removeModifier(modifier.id());
+			instance.addTransientModifier(modifier);
+		}
 	}
 	
 	public void modifyLivingMotionByCurrentItem() {
