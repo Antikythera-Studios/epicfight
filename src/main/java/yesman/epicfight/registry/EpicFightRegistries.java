@@ -54,7 +54,7 @@ public abstract class EpicFightRegistries {
         EpicFightCreativeTabs.REGISTRY, EpicFightDataComponentTypes.REGISTRY, EpicFightEntityTypes.REGISTRY,
         EpicFightExpandedEntityDataAccessors.REGISTRY, EpicFightItems.REGISTRY, EpicFightLootItemFunctions.REGISTRY,
         EpicFightMobEffects.REGISTRY, EpicFightParticles.REGISTRY, EpicFightPotions.REGISTRY,
-        EpicFightSkillDataKeys.REGISTRY, EpicFightSkills.REGISTRY, EpicFightSounds.REGISTRY,
+        EpicFightSkillDataKeys.REGISTRY, EpicFightSounds.REGISTRY, EpicFightSkills.REGISTRY,
         EpicFightSynchedAnimationVariableKeys.REGISTRY, EpicFightMovesets.REGISTRY,
         EpicFightProviderConditionals.REGISTRY, EpicFightItemCapabilityPresets.REGISTRY,
         EpicFightModifiers.REGISTRY, EpicFightMovesetData.REGISTER
