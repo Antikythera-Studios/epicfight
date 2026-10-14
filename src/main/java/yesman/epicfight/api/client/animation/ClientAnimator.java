@@ -171,7 +171,13 @@ public class ClientAnimator extends Animator {
 	}
 
 	public AssetAccessor<? extends StaticAnimation> getLivingMotion(LivingMotion motion) {
-		return this.livingAnimations.getOrDefault(motion, this.livingAnimations.get(LivingMotions.IDLE));
+		// SPChangeLivingMotion replaces the whole map with the item capability's modifier
+		// set. When that set is empty or lacks both the queried motion and IDLE, every
+		// animation lookup in tick() used to NPE and freeze the animator (stuck walk
+		// animation). Fall back to biped idle instead of returning null.
+		AssetAccessor<? extends StaticAnimation> animation =
+			this.livingAnimations.getOrDefault(motion, this.livingAnimations.get(LivingMotions.IDLE));
+		return animation != null ? animation : Animations.BIPED_IDLE;
 	}
 	
 	public AssetAccessor<? extends StaticAnimation> getCompositeLivingMotion(LivingMotion motion) {
