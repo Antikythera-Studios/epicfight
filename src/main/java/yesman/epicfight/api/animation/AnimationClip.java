@@ -74,27 +74,27 @@ public class AnimationClip {
             time = this.clipTime + time;
         }
 
+		if (Float.isNaN(time)) {
+			time = 0.0F;
+		}
+
 		if (this.bakedTimes != null && this.bakedTimes.length > 0) {
-			// Binary search
+			// Binary search; each iteration must shrink the interval or the loop cannot end.
 			int begin = 0, end = this.bakedTimes.length - 1;
 			
 			while (end - begin > 1) {
-				int i = begin + (end - begin) / 2;
+				int mid = begin + (end - begin) / 2;
 				
-				if (this.bakedTimes[i] <= time && this.bakedTimes[i+1] > time) {
-					begin = i;
-					end = i+1;
-					break;
+				if (this.bakedTimes[mid] > time) {
+					end = mid;
 				} else {
-					if (this.bakedTimes[i] > time) {
-						end = i;
-					} else if (this.bakedTimes[i+1] <= time) {
-						begin = i;
-					}
+					begin = mid;
 				}
 			}
 			
-			float delta = Mth.clamp((time - this.bakedTimes[begin]) / (this.bakedTimes[end] - this.bakedTimes[begin]), 0.0F, 1.0F);
+			float span = this.bakedTimes[end] - this.bakedTimes[begin];
+			float delta = span <= 0.0F || !Float.isFinite(span) ? 0.0F
+				: Mth.clamp((time - this.bakedTimes[begin]) / span, 0.0F, 1.0F);
 			TransformSheet.InterpolationInfo iInfo = new TransformSheet.InterpolationInfo(begin, end, delta);
 			
 			for (String jointName : this.jointTransforms.keySet()) {

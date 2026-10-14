@@ -119,6 +119,15 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
 
     @Override
     public void onConstructed(T original) {
+        // Client PlayerPatch construction happens before the Player's inventory is
+        // assigned; skip animator/armature work then — onJoinWorld retries once the
+        // subclass object is fully constructed. Server entities and fakes keep the
+        // normal path.
+        if (original instanceof net.minecraft.world.entity.player.Player player
+            && this.isLogicalClient() && !this.isFakeEntity() && player.getInventory() == null) {
+            return;
+        }
+
         // Armature loading requires assets/ resources which are only available on the client.
         // On the dedicated server, this will fail — wrap in try-catch so the animator can still be created.
         try {
@@ -154,6 +163,13 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
 
     @Override
     public void onJoinWorld(T entity, Level level, boolean worldgenSpawn) {
+        // Constructor-deferred client players: finish animator/armature init now
+        // that the inventory exists.
+        if (this.animator == null && entity instanceof net.minecraft.world.entity.player.Player
+            && this.isLogicalClient() && !this.isFakeEntity()) {
+            this.onConstructed(entity);
+        }
+
         super.onJoinWorld(entity, level, worldgenSpawn);
 
         if (entity.getAttributeBaseValue(EpicFightAttributes.WEIGHT) == 0.0D) {
