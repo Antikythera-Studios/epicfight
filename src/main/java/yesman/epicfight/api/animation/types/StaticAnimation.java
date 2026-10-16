@@ -234,6 +234,11 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
     public void begin(LivingEntityPatch<?> entitypatch) {
         // Load if null
         this.getAnimationClip();
+        if (this.accessor != null && entitypatch.isLogicalClient() && EpicFight.LOGGER.isDebugEnabled()) {
+            EpicFight.LOGGER.debug("[EFDBG] anim begin {} id={} obj={} tickEvents={} beginEvents={}", this.getRegistryName(), this.getId(), System.identityHashCode(this),
+                this.getProperty(StaticAnimationProperty.TICK_EVENTS).map(e -> ((java.util.Collection<?>) e).size()).orElse(0),
+                this.getProperty(StaticAnimationProperty.ON_BEGIN_EVENTS).map(e -> ((java.util.Collection<?>) e).size()).orElse(0));
+        }
 
         // Please fix this implementation when minecraft supports any mixinable method that returns noPhysics variable
         this.getProperty(StaticAnimationProperty.NO_PHYSICS).ifPresent(val -> {
@@ -268,16 +273,12 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
 
                         if (renderitembase != null && renderitembase.trailInfo() != null) {
                             trailInfo = renderitembase.trailInfo().overwrite(trailInfo);
-                        } else {
-                            EpicFight.LOGGER.info("[trail-debug] {} no item-skin trail (renderer={}, stack={})", this.getRegistryName(), renderitembase, stack.getItem());
                         }
                     }
 
                     if (!trailInfo.playable()) {
-                        EpicFight.LOGGER.info("[trail-debug] {} trail NOT playable: joint={} type={} tex={} lifetime={} interpol={} interval={}", this.getRegistryName(), trailInfo.joint(), trailInfo.particle(), trailInfo.texturePath(), trailInfo.trailLifetime(), trailInfo.interpolateCount(), trailInfo.updateInterval());
                         continue;
                     }
-                    EpicFight.LOGGER.info("[trail-debug] {} spawning trail joint={}", this.getRegistryName(), trailInfo.joint());
 
                     entitypatch.getOriginal().level().addParticle(trailInfo.particle(), eid, 0, animid, jointId, index, 0);
                 }
@@ -487,6 +488,9 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
 
     @SuppressWarnings("unchecked")
     public <A extends StaticAnimation> A addEvents(AnimationEvent<?, ?>... events) {
+        if (this.accessor != null && EpicFight.LOGGER.isDebugEnabled()) {
+            EpicFight.LOGGER.debug("[EFDBG] addEvents on {} obj={} count={}", this.getRegistryName(), System.identityHashCode(this), events.length);
+        }
         this.properties.computeIfPresent(StaticAnimationProperty.TICK_EVENTS, (k, v) -> {
             return Stream.concat(((Collection<?>)v).stream(), List.of(events).stream()).toList();
         });

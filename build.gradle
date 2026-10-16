@@ -35,6 +35,11 @@ repositories {
         }
     }
 
+    // Local neoforge-compat shim (published to its repo's local-maven)
+    maven {
+        url = layout.projectDirectory.dir('../neoforge-compat/local-maven')
+    }
+
 }
 
 dependencies {
@@ -50,6 +55,8 @@ dependencies {
     include implementation("com.electronwill.night-config:toml:3.8.0")
 
     // Compat mods — modImplementation for runtime availability
+    // NeoForge-API shim: bus events (Event/IEventBus), RegisterEvent, MOD_BUS
+    modImplementation "neoforge_compat:neoforge_compat:${project.neoforge_compat_version}"
     // Transitive dep for SimplyTooltips (needs architectury)
     modImplementation "maven.modrinth:architectury-api:13.0.8+fabric"
 
@@ -72,10 +79,13 @@ dependencies {
     modCompileOnly "curse.maven:skin-layers-3d-521480:${project.skinlayers_file_id}"
 
     // Mods with complex transitive deps — kept as modCompileOnly until deps are resolved:
-    // - Trinkets: needs cardinal-components-base/entity (CCA nested jars stripped by Loom, Ladysnake maven unavailable)
+    // - Trinkets: needs cardinal-components-base/entity — RESOLVED via run/mods/
+    //   (cardinal-components-api-6.1.3.jar; Loom strips JIJ from classpath mods, Ladysnake maven is dead)
+    // - neoforge_compat: needs forgeconfigapiport — RESOLVED via run/mods/
+    //   (ForgeConfigAPIPort-v21.1.6-1.21.1-Fabric.jar from Modrinth)
     // - SimplyTooltips: needs fzzy_config → fabric-language-kotlin (Kotlin runtime)
     // - BetterThirdPerson + ShoulderSurfing: mod-level conflict (ShoulderSurfing breaks BetterThirdPerson)
-    modCompileOnly "curse.maven:trinkets-341284:${project.trinkets_file_id}"
+    modImplementation "curse.maven:trinkets-341284:${project.trinkets_file_id}"
     modCompileOnly "curse.maven:simply-tooltips-1475755:${project.simplytooltips_file_id}"
     modCompileOnly "curse.maven:better-third-person-435044:${project.betterthirdperson_file_id}"
     modCompileOnly "curse.maven:shoulder-surfing-reloaded-243190:${project.shouldersurfing_file_id}"
@@ -90,6 +100,8 @@ dependencies {
     // Checker Framework annotations
     compileOnly "org.checkerframework:checker-qual:3.43.0"
 
+    testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.11.4"
 }
 
 loom {
@@ -143,6 +155,10 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jar {

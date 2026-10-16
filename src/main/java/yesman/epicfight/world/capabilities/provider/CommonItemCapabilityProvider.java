@@ -52,12 +52,21 @@ public final class CommonItemCapabilityProvider {
 	}
 	
 	public CapabilityItem get(Item item) {
-		return capabilities.getOrDefault(item, getDefault(item));
+		CapabilityItem capability = capabilities.get(item);
+		if (capability != null) {
+			return capability;
+		}
+		for (Class<?> clazz = item.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
+			if (this.typedCapabilities.containsKey(clazz)) {
+				return getDefault(item, clazz);
+			}
+		}
+		return null;
 	}
 
-	private CapabilityItem getDefault(Item item)
+	private CapabilityItem getDefault(Item item, Class<?> clazz)
 	{
-		DeferredPreset<? extends CapabilityItem.Builder<?>> builderEntry = this.typedCapabilities.getOrDefault(item.getClass(), null);
+		DeferredPreset<? extends CapabilityItem.Builder<?>> builderEntry = this.typedCapabilities.getOrDefault(clazz, null);
 		CapabilityItem.Builder<?> result = null;
 		if (builderEntry != null)
 		{
@@ -108,7 +117,7 @@ public final class CommonItemCapabilityProvider {
 
 				for (; clazz != null && capability == null; clazz = clazz.getSuperclass()) {
 					if (this.typedCapabilities.containsKey(clazz)) {
-						capability = getDefault(item);
+						capability = getDefault(item, clazz);
 					}
 				}
 

@@ -16,6 +16,7 @@ import yesman.epicfight.data.conditions.entity.RandomChance;
 import yesman.epicfight.data.conditions.entity.TargetInDistance;
 import yesman.epicfight.data.conditions.entity.TargetInEyeHeight;
 import yesman.epicfight.data.conditions.entity.TargetInPov;
+import yesman.epicfight.data.conditions.itemstack.TagValueCondition;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.registry.EpicFightRegistries;
 
@@ -48,4 +49,7 @@ public final class EpicFightConditions {
 	public static final DeferredHolderShim<Supplier<Condition<?>>, Supplier<Condition<?>>> TARGET_IN_EYE_HEIGHT = REGISTRY.register("within_eye_height", () -> TargetInEyeHeight::new);
 	public static final DeferredHolderShim<Supplier<Condition<?>>, Supplier<Condition<?>>> TARGET_IN_POV = REGISTRY.register("within_angle", () -> TargetInPov::new);
 	public static final DeferredHolderShim<Supplier<Condition<?>>, Supplier<Condition<?>>> TARGET_IN_POV_HORIZONTAL = REGISTRY.register("within_angle_horizontal", () -> TargetInPov.TargetInPovHorizontal::new);
+
+	//Itemstack conditions — upstream 1.20.1 API restored for datapack compat
+	public static final DeferredHolderShim<Supplier<Condition<?>>, Supplier<Condition<?>>> TAG_VALUE = REGISTRY.register("tag_value", () -> TagValueCondition::new);
 }

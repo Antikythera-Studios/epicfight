@@ -107,6 +107,16 @@ public abstract class EpicFightRegistries {
      * Call this during mod initialization, before any reloads happen.
      */
     public static void registerDynamicCallbacks() {
+        // Skills registered after bakeRegistries() (datapack-driven skills, late shim binds)
+        // would otherwise keep holder=null and fail to sync to clients via SPChangeSkill.
+        RegistryEntryAddedCallback.event(SKILL).register((id, resourceLocation, value) -> {
+            try {
+                var resourceKey = ResourceKey.create(Keys.SKILL, resourceLocation);
+                SKILL.getHolder(resourceKey).ifPresent(value::setHolder);
+            } catch (Throwable e) {
+                EpicFight.LOGGER.warn("Failed to set holder for late-registered skill {}", resourceLocation, e);
+            }
+        });
         RegistryEntryAddedCallback.event(SKILL_DATA_KEY).register((id, resourceLocation, value) -> {
             try {
                 var resourceKey = ResourceKey.create(Keys.SKILL_DATA_KEY, resourceLocation);

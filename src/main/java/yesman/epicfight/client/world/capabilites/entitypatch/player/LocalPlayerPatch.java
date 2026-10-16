@@ -19,6 +19,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.Pose;
@@ -395,6 +396,12 @@ public class LocalPlayerPatch extends AbstractClientPlayerPatch<LocalPlayer> {
 	public void openSkillBook(ItemStack itemstack, InteractionHand hand) {
 		if (itemstack.has(EpicFightDataComponentTypes.SKILL.get())) {
             Holder<Skill> skill = itemstack.get(EpicFightDataComponentTypes.SKILL.get());
+
+            if (skill == null || !skill.isBound()) {
+                EpicFight.LOGGER.warn("Skill book contains an unbound skill holder, not opening screen: {}", skill);
+                return;
+            }
+
 			Minecraft.getInstance().setScreen(new SkillBookScreen(this.original, skill.value(), hand, null));
 		}
 	}

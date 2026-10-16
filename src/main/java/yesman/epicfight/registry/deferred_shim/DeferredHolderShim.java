@@ -24,6 +24,21 @@ public class DeferredHolderShim<T, I extends T> implements Holder<T> {
         this.supplier = supplier;
     }
 
+    /// Aliases an already-bound registry entry: returns a shim over the existing
+    /// holder, or null when `location` is absent or the reference is not yet
+    /// bound (e.g. the registry has not been frozen). Never mutates the registry.
+    public static <T> DeferredHolderShim<T, T> lookup(Registry<T> registry, ResourceLocation location) {
+        Holder.Reference<T> reference = registry.getHolder(ResourceKey.create(registry.key(), location)).orElse(null);
+        if (reference == null || !reference.isBound()) {
+            return null;
+        }
+        T value = reference.value();
+        DeferredHolderShim<T, T> result = new DeferredHolderShim<>(registry.key(), location, () -> value);
+        result.value = value;
+        result.holder = reference;
+        return result;
+    }
+
     @SuppressWarnings("unchecked")
     void bind(Registry<T> registry) {
         I supplied = supplier.get();

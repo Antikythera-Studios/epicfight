@@ -98,12 +98,21 @@ public class Armatures {
 	}
 	
 	public static void registerEntityTypeArmature(EntityType<?> entityType, AssetAccessor<? extends Armature> armatureAccessor) {
+		if (entityType == null) {
+			yesman.epicfight.EpicFight.LOGGER.warn("Skipping armature mapping: entity type holder not bound yet");
+			return;
+		}
 		ENTITY_TYPE_ARMATURE_MAPPER.put(entityType, armatureAccessor);
 	}
 	
 	//For presets
 	public static void registerEntityTypeArmatureByPreset(EntityType<?> entityType, String presetName) {
-		EntityType<?> presetEntityType = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(presetName));
+		ResourceLocation presetKey = ResourceLocation.parse(presetName);
+		if (!BuiltInRegistries.ENTITY_TYPE.containsKey(presetKey)) {
+			yesman.epicfight.EpicFight.LOGGER.warn("No armature preset entity named {} — skipping", presetKey);
+			return;
+		}
+		EntityType<?> presetEntityType = BuiltInRegistries.ENTITY_TYPE.get(presetKey);
 		ENTITY_TYPE_ARMATURE_MAPPER.put(entityType, ENTITY_TYPE_ARMATURE_MAPPER.get(presetEntityType));
 	}
 	

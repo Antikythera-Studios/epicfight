@@ -84,6 +84,13 @@ public class ExtensibleEnumManager<T extends ExtensibleEnum> {
         String key = ParseUtil.toLowerCase(name);
 
         if (!this.enumMapByName.containsKey(key)) {
+            // Addon enum classes may register via registerEnumCls after the first
+            // loadEnum pass (mod construction order is not guaranteed). Pull in any
+            // pending enum classes before declaring the identifier missing.
+            loadPendingEnums();
+        }
+
+        if (!this.enumMapByName.containsKey(key)) {
             throw new NoSuchElementException("Enum identifier " + key + " does not exist in " + this.enumName);
         }
 
@@ -95,7 +102,24 @@ public class ExtensibleEnumManager<T extends ExtensibleEnum> {
     }
 
     public T get(String name) {
-        return this.enumMapByName.get(ParseUtil.toLowerCase(name));
+        String key = ParseUtil.toLowerCase(name);
+        T value = this.enumMapByName.get(key);
+
+        if (value == null) {
+            loadPendingEnums();
+            value = this.enumMapByName.get(key);
+        }
+
+        return value;
+    }
+
+    private int loadedEnumCount;
+
+    private void loadPendingEnums() {
+        if (this.enums.size() != this.loadedEnumCount) {
+            loadEnum();
+            this.loadedEnumCount = this.enums.size();
+        }
     }
 
     public Collection<T> universalValues() {

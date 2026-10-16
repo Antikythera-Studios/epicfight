@@ -65,6 +65,7 @@ import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.skill.PlayerSkills;
 import yesman.epicfight.world.gamerule.EpicFightGameRules;
+import yesman.epicfight.world.item.SkillBookItem;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -459,7 +460,10 @@ public class ControlEngine implements IEventBasedEngine {
 
         if (this.playerpatch.isHoldingAny()) {
             shouldCancelGuard = true;
-        } else if (ShieldItem.class.isAssignableFrom(this.player.getMainHandItem().getItem().getClass()) || ShieldItem.class.isAssignableFrom(this.player.getOffhandItem().getItem().getClass())) {
+        } else if (ShieldItem.class.isAssignableFrom(this.player.getMainHandItem().getItem().getClass())
+                || ShieldItem.class.isAssignableFrom(this.player.getOffhandItem().getItem().getClass())
+                || this.player.getMainHandItem().getItem() instanceof SkillBookItem
+                || this.player.getOffhandItem().getItem() instanceof SkillBookItem) {
             shouldCancelGuard = true;
         }
 
@@ -842,9 +846,13 @@ public class ControlEngine implements IEventBasedEngine {
         // vanilla use here, the player can neither guard nor block — a deadlock.
         // Letting vanilla blocking proceed matches the intent: shields use vanilla blocking,
         // the guard skill is for weapons with guard motions.
+        // Same for SkillBookItem: right-clicking it opens the skill book screen, and
+        // cancelling use here would leave the book silently dead while in EpicFight mode.
         LocalPlayer player = playerpatch.getOriginal();
         if (ShieldItem.class.isAssignableFrom(player.getMainHandItem().getItem().getClass())
-                || ShieldItem.class.isAssignableFrom(player.getOffhandItem().getItem().getClass())) {
+                || ShieldItem.class.isAssignableFrom(player.getOffhandItem().getItem().getClass())
+                || player.getMainHandItem().getItem() instanceof SkillBookItem
+                || player.getOffhandItem().getItem() instanceof SkillBookItem) {
             return false;
         }
 

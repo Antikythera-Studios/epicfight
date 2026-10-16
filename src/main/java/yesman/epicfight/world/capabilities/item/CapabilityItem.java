@@ -349,6 +349,7 @@ public class CapabilityItem {
 	
 	public void changeWeaponInnateSkill(ServerPlayerPatch playerpatch, ItemStack itemstack) {
 		Skill weaponInnateSkill = this.getInnateSkill(playerpatch, itemstack);
+		EpicFight.LOGGER.debug("[EFDBG] changeWeaponInnateSkill: item={} -> innate={}", itemstack.getItem(), weaponInnateSkill);
 		SkillContainer weaponInnateSkillContainer = playerpatch.getSkill(SkillSlots.WEAPON_INNATE);
 		PayloadBundleBuilder toLocal = PayloadBundleBuilder.create();
 		PayloadBundleBuilder toRemote = PayloadBundleBuilder.create();

@@ -544,6 +544,11 @@ public abstract class Skill implements IdentifierProvider {
 	}
 	
 	public Holder<Skill> holder() {
+		if (this.holder == null && this.registryName != null) {
+			this.holder = EpicFightRegistries.SKILL.getHolder(
+				net.minecraft.resources.ResourceKey.create(EpicFightRegistries.Keys.SKILL, this.registryName)
+			).orElse(null);
+		}
 		return this.holder;
 	}
 	

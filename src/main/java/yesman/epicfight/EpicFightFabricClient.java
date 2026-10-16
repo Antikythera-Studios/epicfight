@@ -25,6 +25,7 @@ import yesman.epicfight.client.gui.widgets.ColorDeterminator;
 import yesman.epicfight.client.gui.widgets.common.WidgetTheme;
 import yesman.epicfight.client.input.EpicFightKeyMappings;
 import yesman.epicfight.client.model.SeparateTransformsModelLoadingPlugin;
+import yesman.epicfight.client.model.SkillBookModelLoadingPlugin;
 import yesman.epicfight.client.particle.AirBurstParticle;
 import yesman.epicfight.client.particle.AnimationTrailParticle;
 import yesman.epicfight.client.particle.AshDirectionalParticle;
@@ -132,6 +133,7 @@ public class EpicFightFabricClient implements ClientModInitializer {
         IEventBasedEngine.init(null, null);
         EpicFightReloadListeners.registerClient();
         ModelLoadingPlugin.register(new SeparateTransformsModelLoadingPlugin());
+        ModelLoadingPlugin.register(new SkillBookModelLoadingPlugin());
 
         // Register built-in resource pack
         net.fabricmc.fabric.api.resource.ResourceManagerHelper.registerBuiltinResourcePack(

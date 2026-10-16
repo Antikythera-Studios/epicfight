@@ -83,9 +83,16 @@ public final class CommonEntityPatchProvider {
 
         this.typedCapabilities.put(AbstractArrow.class, entity -> new ArrowPatch<>((AbstractArrow) entity));
 
+        this.capabilities.putAll(registry);
+    }
+
+    /// Fired lazily at [DeferredInitPhase] — mod entity types are only bound after all
+    /// Fabric entrypoints run, so addon holders (e.g. cdmoveset CORRUPTDOG) resolve to
+    /// real types instead of defaulted-registry fallbacks (missing -> minecraft:pig).
+    public void fireEntityPatchRegistryEvent() {
+        Map<EntityType<?>, Function<Entity, EntityPatch<?>>> registry = new HashMap<> ();
         EntityPatchRegistryEvent entitypatchRegistryEvent = new EntityPatchRegistryEvent(registry);
         EpicFightEventHooks.Registry.ENTITY_PATCH.post(entitypatchRegistryEvent);
-
         this.capabilities.putAll(registry);
     }
 
@@ -96,6 +103,10 @@ public final class CommonEntityPatchProvider {
             @NotNull EntityType<T> entityType,
             @NotNull Function<T, EntityPatch<T>> entityPatchFactory
     ) {
+        if (entityType == null) {
+            EpicFightMod.LOGGER.warn("Skipping entity patch registration: entity type holder not bound yet");
+            return;
+        }
         //noinspection unchecked
         registry.put(
                 entityType, (entity) -> entityPatchFactory.apply((T) entity)

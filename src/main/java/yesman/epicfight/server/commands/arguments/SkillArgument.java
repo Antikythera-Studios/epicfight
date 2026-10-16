@@ -25,11 +25,11 @@ import java.util.concurrent.CompletableFuture;
 public class SkillArgument implements ArgumentType<Holder<Skill>> {
 	private static final Collection<String> EXAMPLES = Arrays.asList("epicfight:dodge");
 	private static final DynamicCommandExceptionType ERROR_UNKNOWN_SKILL = new DynamicCommandExceptionType((obj) -> {
-		return Component.translatable("epicfight.skillNotFound", obj);
+		return Component.translatableEscape("epicfight.skillNotFound", obj);
 	});
-	
+
 	private static final DynamicCommandExceptionType ERROR_INAPPROPRICATE_SKILL = new DynamicCommandExceptionType((obj) -> {
-		return Component.translatable("epicfight.invalid_skill", obj);
+		return Component.translatableEscape("epicfight.invalid_skill", obj);
 	});
 	
 	public static SkillArgument skill() {
