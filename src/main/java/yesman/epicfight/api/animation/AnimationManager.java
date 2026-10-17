@@ -535,7 +535,7 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
 	/// Posted on the shared mod bus once all mod construction is done — lets addon
 	/// mods contribute builders via {@code @SubscribeEvent} handlers (upstream
 	/// semantics), instead of only the hardcoded registrations in EpicFightFabric.
-	public static class AnimationRegistryEvent extends net.neoforged.bus.api.Event {
+	public static class AnimationRegistryEvent {
 		private final List<AnimationBuilder> builders = Lists.newArrayList();
 		private final Set<String> namespaces = Sets.newHashSet();
 		

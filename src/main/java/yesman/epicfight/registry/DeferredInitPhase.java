@@ -2,11 +2,8 @@ package yesman.epicfight.registry;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.neoforge.internal.fabric.NeoForgeCompat;
-import net.neoforged.neoforge.registries.RegisterEvent;
+import net.fabricmc.loader.api.FabricLoader;
 import yesman.epicfight.EpicFight;
-import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.registry.deferred_shim.DeferredRegisterShim;
 
 /**
@@ -32,32 +29,23 @@ public final class DeferredInitPhase {
     private static final AtomicBoolean ANIMATION_EVENT_FIRED = new AtomicBoolean(false);
 
     public static void run() {
-        if (ANIMATION_EVENT_FIRED.compareAndSet(false, true)) {
-            AnimationManager.AnimationRegistryEvent event = new AnimationManager.AnimationRegistryEvent();
+        boolean compatPresent = FabricLoader.getInstance().isModLoaded("neoforge_compat");
+        if (compatPresent && ANIMATION_EVENT_FIRED.compareAndSet(false, true)) {
             try {
-                NeoForgeCompat.MOD_BUS.post(event);
+                NeoForgeCompatBridge.postAnimationRegistryEvent();
             } catch (Throwable t) {
-                EpicFight.LOGGER.warn("AnimationRegistryEvent listeners failed", t);
+                EpicFight.LOGGER.warn("AnimationRegistryEvent dispatch failed", t);
             }
-            EpicFight.LOGGER.info(
-                "AnimationRegistryEvent collected builders: {}",
-                event.getBuilders().stream().map(AnimationManager.AnimationBuilder::namespace).toList()
-            );
-            event.getBuilders().forEach(b -> {
-                try {
-                    b.task().accept(b);
-                } catch (Throwable t) {
-                    EpicFight.LOGGER.warn("Animation builder task failed", t);
-                }
-            });
         }
 
         // RegisterEvent(SKILL) is safe to re-fire: virtualization helpers are
         // idempotent on already-created virtual ids.
-        try {
-            NeoForgeCompat.MOD_BUS.post(new RegisterEvent(EpicFightRegistries.SKILL));
-        } catch (Throwable t) {
-            EpicFight.LOGGER.warn("Deferred RegisterEvent(SKILL) failed", t);
+        if (compatPresent) {
+            try {
+                NeoForgeCompatBridge.postSkillRegisterEvent();
+            } catch (Throwable t) {
+                EpicFight.LOGGER.warn("Deferred RegisterEvent(SKILL) dispatch failed", t);
+            }
         }
 
         DeferredRegisterShim.drainLate();
@@ -74,14 +62,12 @@ public final class DeferredInitPhase {
         // Re-fire load-complete once: animation modifiers/virtual-config passes
         // (EDP's onModifierAnimations, virtualization config defs) skipped any
         // animations that didn't exist at bootstrap — now everything resolves.
-        if (LOAD_COMPLETE_REFIRED.compareAndSet(false, true)) {
-            FMLLoadCompleteEvent complete = new FMLLoadCompleteEvent();
+        if (compatPresent && LOAD_COMPLETE_REFIRED.compareAndSet(false, true)) {
             try {
-                NeoForgeCompat.MOD_BUS.post(complete);
+                NeoForgeCompatBridge.postLoadComplete();
             } catch (Throwable t) {
-                EpicFight.LOGGER.warn("Deferred FMLLoadCompleteEvent listeners failed", t);
+                EpicFight.LOGGER.warn("Deferred FMLLoadCompleteEvent dispatch failed", t);
             }
-            complete.drainWork();
         }
     }
 

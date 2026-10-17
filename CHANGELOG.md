@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced NeoForge config stubs with NightConfig-backed config implementation
 - Moved internal NeoForge-shaped compatibility types into Epic Fight's own namespace to avoid classpath collisions
 - Required initialization now fails fast instead of silently catching errors
+- `neoforge_compat` is now a fully optional integration: dropped from `depends`, removed from the build classpath, and all event bridging goes through `NeoForgeCompatBridge` via reflection when the mod is present
 
 ### Fixed
 - Config class collision with ForgeConfigAPIPort causing `NoSuchMethodError` on startup
@@ -24,6 +25,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Inverted block outline cancellation logic
 - Held-item flat shading caused by misread baked lightmap normals
 - Baked-light UV offset in patched item rendering
+- `/epicfight skill add` crashing system-chat encoding by passing raw `ResourceLocation` into translatable components
+- Combo arithmetic crash on movesets containing only two entries
+- Skill Book right-click opening a blurred screen without the parchment content; restored the original book layout
+- Skill Book category colors, symbols, and held/inventory/creative-tab rendering; category models now resolve to quads via the Fabric model-loading path
+- GLFW error from polling unbound keys (`GLFW_KEY_UNKNOWN`) in combat mode input checks
+- Client boot failure caused by stale diagnostic mixins
+- `NoClassDefFoundError: net/neoforged/bus/api/Event` on plain Fabric instances without `neoforge_compat`
+
+### For Devs
+- `AnimationManager.AnimationRegistryEvent` is a plain class on Fabric; when `neoforge_compat` is present it is posted on `NeoForgeCompat.MOD_BUS` via `postAny`, so listeners must match the concrete event type rather than `Event` supertypes
+- Addons that rely on NeoForge-style events must declare `neoforge_compat` themselves — Epic Fight no longer ships or requires it
 
 ### Known Limitations
 - Controlify and KubeJS are not currently supported on Fabric

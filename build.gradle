@@ -35,11 +35,12 @@ repositories {
         }
     }
 
-    // Local neoforge-compat shim (published to its repo's local-maven)
-    maven {
-        url = layout.projectDirectory.dir('../neoforge-compat/local-maven')
-    }
+}
 
+// Local artifacts are republished in place; never let Gradle cache
+// changing modules from the project-local Maven repositories.
+configurations.configureEach {
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 dependencies {
@@ -54,9 +55,6 @@ dependencies {
     include implementation("com.electronwill.night-config:core:3.8.0")
     include implementation("com.electronwill.night-config:toml:3.8.0")
 
-    // Compat mods — modImplementation for runtime availability
-    // NeoForge-API shim: bus events (Event/IEventBus), RegisterEvent, MOD_BUS
-    modImplementation "neoforge_compat:neoforge_compat:${project.neoforge_compat_version}"
     // Transitive dep for SimplyTooltips (needs architectury)
     modImplementation "maven.modrinth:architectury-api:13.0.8+fabric"
 

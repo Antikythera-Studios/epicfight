@@ -274,7 +274,7 @@ public final class InputManager {
         final long windowPointer = Minecraft.getInstance().getWindow().getWindow();
 
         if (key.getType() == InputConstants.Type.KEYSYM) {
-            return GLFW.glfwGetKey(windowPointer, keyValue) > 0;
+            return keyValue != GLFW.GLFW_KEY_UNKNOWN && GLFW.glfwGetKey(windowPointer, keyValue) > 0;
         } else if (key.getType() == InputConstants.Type.MOUSE) {
             return GLFW.glfwGetMouseButton(windowPointer, keyValue) > 0;
         }

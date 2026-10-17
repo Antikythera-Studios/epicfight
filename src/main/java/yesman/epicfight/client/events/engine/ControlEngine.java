@@ -666,7 +666,7 @@ public class ControlEngine implements IEventBasedEngine {
         }
 		InputConstants.Key inputKey = InputUtils.getKey(key);
 		if (inputKey.getType() == InputConstants.Type.KEYSYM) {
-			return key.isDown() || GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getWindow(), inputKey.getValue()) > 0;
+			return key.isDown() || (inputKey.getValue() != GLFW.GLFW_KEY_UNKNOWN && GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getWindow(), inputKey.getValue()) > 0);
 		} else if(inputKey.getType() == InputConstants.Type.MOUSE) {
 			return key.isDown() || GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), inputKey.getValue()) > 0;
 		} else {
