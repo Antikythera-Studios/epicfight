@@ -1,4 +1,5 @@
 package yesman.epicfight.world.damagesource;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -8,7 +9,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.neoforged.neoforge.common.extensions.ILevelReaderExtension;
+import net.minecraft.world.level.LevelReader;
+
 import yesman.epicfight.registry.entries.EpicFightSkills;
 import yesman.epicfight.world.capabilities.item.WeaponCapabilityPresets;
 
@@ -36,12 +38,12 @@ public class ExtraDamageInstance {
 	
 	public static final ExtraDamage SWEEPING_EDGE_ENCHANTMENT = new ExtraDamage(
 		(attacker, itemstack, target, baseDamage, params) -> {
-			int i = itemstack.getEnchantmentLevel(attacker.level().holderOrThrow(Enchantments.SWEEPING_EDGE));
+			int i = EnchantmentHelper.getItemEnchantmentLevel(attacker.level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getHolder(Enchantments.SWEEPING_EDGE).orElseThrow(), itemstack);
 			float modifier = (i > 0) ? (float)i / (i + 1.0F) : 0.0F;
 			
 			return baseDamage * modifier;
 		}, (levelReader, itemstack, tooltips, baseDamage, params) -> {
-			int i = itemstack.getEnchantmentLevel(levelReader.holderOrThrow(Enchantments.SWEEPING_EDGE));
+			int i = EnchantmentHelper.getItemEnchantmentLevel(levelReader.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getHolder(Enchantments.SWEEPING_EDGE).orElseThrow(), itemstack);
 			
 			if (i > 0) {
 				double modifier = (double)i / (i + 1.0D);
@@ -78,7 +80,7 @@ public class ExtraDamageInstance {
 		return this.calculator.extraDamage.getBonusDamage(attacker, hurtItem, target, baseDamage, this.params);
 	}
 	
-	public void setTooltips(ILevelReaderExtension levelReader, ItemStack itemstack, MutableComponent tooltip, double baseDamage) {
+	public void setTooltips(LevelReader levelReader, ItemStack itemstack, MutableComponent tooltip, double baseDamage) {
 		this.calculator.tooltip.setTooltip(levelReader, itemstack, tooltip, baseDamage, this.params);
 	}
 	
@@ -89,7 +91,7 @@ public class ExtraDamageInstance {
 	
 	@FunctionalInterface
 	public interface ExtraDamageTooltipFunction {
-		void setTooltip(ILevelReaderExtension levelReader, ItemStack itemstack, MutableComponent tooltips, double baseDamage, float[] params);
+		void setTooltip(LevelReader levelReader, ItemStack itemstack, MutableComponent tooltips, double baseDamage, float[] params);
 	}
 	
 	public static class ExtraDamage {

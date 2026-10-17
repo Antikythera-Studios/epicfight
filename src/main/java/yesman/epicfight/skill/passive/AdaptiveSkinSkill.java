@@ -160,9 +160,11 @@ public class AdaptiveSkinSkill extends PassiveSkill {
 
             if (!EpicFightDamageTypeTags.NONE.equals(resistingDamageTypeTagKey)) {
                 Vec3f color = AdaptiveSkinSkill.this.getGlintColor(resistingDamageTypeTagKey);
-                resultColor.x = color.x;
-                resultColor.y = color.y;
-                resultColor.z = color.z;
+                if (color != null) {
+                    resultColor.x = color.x;
+                    resultColor.y = color.y;
+                    resultColor.z = color.z;
+                }
             }
         });
     }
@@ -198,14 +200,14 @@ public class AdaptiveSkinSkill extends PassiveSkill {
         int stacks = container.getDataManager().getDataValue(EpicFightSkillDataKeys.STACKS);
 
         if (stacks > 1) {
-            guiGraphics.drawString(gui.getFont(), String.valueOf(stacks), x + 18, y + 16, 16777215, true);
+            guiGraphics.drawString(gui.getFont(), String.valueOf(stacks), (int)(x + 18), (int)(y + 16), 16777215, true);
         }
 
         int lastHitTick = container.getDataManager().getDataValueOptional(EpicFightSkillDataKeys.TICK_RECORD).orElse(0);
 
         if (container.getExecutor().getOriginal().tickCount - lastHitTick > 200) {
             int remainseconds = 1 + (100 - (container.getExecutor().getOriginal().tickCount - lastHitTick - 200)) / 20;
-            guiGraphics.drawString(gui.getFont(), String.valueOf(remainseconds), x + 8, y + 8, 16777215, true);
+            guiGraphics.drawString(gui.getFont(), String.valueOf(remainseconds), (int)(x + 8), (int)(y + 8), 16777215, true);
         }
     }
 

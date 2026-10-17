@@ -31,6 +31,7 @@ import yesman.epicfight.api.data.reloader.ItemCapabilityReloadListener;
 import yesman.epicfight.api.event.EpicFightEventHooks;
 import yesman.epicfight.api.event.types.registry.WeaponCapabilityPresetRegistryEvent;
 import yesman.epicfight.api.ex_cap.managers.ItemPresetManager;
+import yesman.epicfight.api.ex_cap.modules.core.events.ExCapBuilderCreationEvent;
 import yesman.epicfight.data.conditions.Condition.EntityPatchCondition;
 import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.network.server.SPDatapackSync;
@@ -49,6 +50,13 @@ import java.util.stream.Stream;
 
 public class WeaponTypeReloadListener extends SimpleJsonResourceReloadListener {
     public static void registerDefaultWeaponTypes() {
+        // Ensure ItemPresetManager.BUILDERS is populated from the registry before exporting.
+        // This is safe to call multiple times — acceptEvent() clears and rebuilds.
+        if (ItemPresetManager.getEntries().isEmpty()) {
+            ExCapBuilderCreationEvent builderEvent = EpicFightEventHooks.Registry.EX_CAP_BUILDER_CREATION.post(new ExCapBuilderCreationEvent());
+            ItemPresetManager.acceptEvent(builderEvent);
+        }
+
         Map<ResourceLocation, Function<Item, ? extends CapabilityItem.Builder<?>>> typeEntry = Maps.newHashMap();
 
         WeaponCapabilityPresetRegistryEvent weaponCapabilityPresetRegistryEvent = new WeaponCapabilityPresetRegistryEvent(typeEntry);

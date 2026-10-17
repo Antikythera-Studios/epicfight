@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -19,7 +21,7 @@ import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotion;
@@ -145,7 +147,7 @@ public abstract class HumanoidMobPatch<T extends PathfinderMob> extends MobPatch
 	/** Heavy additive boost on the vehicle's MOVEMENT_SPEED while a hostile rider is chasing.
 	 *  Applied/removed dynamically from preTick to track the rider's target acquisition state. */
 	private static final AttributeModifier PASSENGER_CHASE_SPEED_BOOST =
-		new AttributeModifier(EpicFightMod.identifier("passenger_chase_speed_boost"), 0.00005D, AttributeModifier.Operation.ADD_VALUE);
+		new AttributeModifier(EpicFight.identifier("passenger_chase_speed_boost"), 0.00005D, AttributeModifier.Operation.ADD_VALUE);
 
 	private boolean drivingVehicle = false;
 
@@ -256,7 +258,7 @@ public abstract class HumanoidMobPatch<T extends PathfinderMob> extends MobPatch
 		
 		if (hand == InteractionHand.OFF_HAND) {
 			if (!from.isEmpty()) {
-                from.getAttributeModifiers().forEach(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
+                from.getOrDefault(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS, net.minecraft.world.item.component.ItemAttributeModifiers.EMPTY).forEach(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
 					if (attribute == Attributes.ATTACK_SPEED) {
 						this.original.getAttribute(EpicFightAttributes.OFFHAND_ATTACK_SPEED).removeModifier(modifier);
 					}
@@ -271,24 +273,35 @@ public abstract class HumanoidMobPatch<T extends PathfinderMob> extends MobPatch
 			}
 			
 			if (!to.isEmpty()) {
-				to.getAttributeModifiers().forEach(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
+				to.getOrDefault(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS, net.minecraft.world.item.component.ItemAttributeModifiers.EMPTY).forEach(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
 					if (attribute == Attributes.ATTACK_SPEED) {
-						this.original.getAttribute(EpicFightAttributes.OFFHAND_ATTACK_SPEED).addTransientModifier(modifier);
+						this.applyOffhandModifier(EpicFightAttributes.OFFHAND_ATTACK_SPEED, modifier);
 					}
 				});
 			}
 			
 			if (!toCap.isEmpty()) {
-				toCap.getAttributeModifiers(this).get(Attributes.ATTACK_SPEED).forEach(this.original.getAttribute(EpicFightAttributes.OFFHAND_ARMOR_NEGATION)::addTransientModifier);
-				toCap.getAttributeModifiers(this).get(EpicFightAttributes.ARMOR_NEGATION).forEach(this.original.getAttribute(EpicFightAttributes.OFFHAND_ARMOR_NEGATION)::addTransientModifier);
-				toCap.getAttributeModifiers(this).get(EpicFightAttributes.IMPACT).forEach(this.original.getAttribute(EpicFightAttributes.OFFHAND_IMPACT)::addTransientModifier);
-				toCap.getAttributeModifiers(this).get(EpicFightAttributes.MAX_STRIKES).forEach(this.original.getAttribute(EpicFightAttributes.OFFHAND_MAX_STRIKES)::addTransientModifier);
+				toCap.getAttributeModifiers(this).get(Attributes.ATTACK_SPEED).forEach(modifier -> this.applyOffhandModifier(EpicFightAttributes.OFFHAND_ATTACK_SPEED, modifier));
+				toCap.getAttributeModifiers(this).get(EpicFightAttributes.ARMOR_NEGATION).forEach(modifier -> this.applyOffhandModifier(EpicFightAttributes.OFFHAND_ARMOR_NEGATION, modifier));
+				toCap.getAttributeModifiers(this).get(EpicFightAttributes.IMPACT).forEach(modifier -> this.applyOffhandModifier(EpicFightAttributes.OFFHAND_IMPACT, modifier));
+				toCap.getAttributeModifiers(this).get(EpicFightAttributes.MAX_STRIKES).forEach(modifier -> this.applyOffhandModifier(EpicFightAttributes.OFFHAND_MAX_STRIKES, modifier));
 			}
 		}
 		
 		this.modifyLivingMotionByCurrentItem(false);
 		
 		super.updateHeldItem(fromCap, toCap, from, to, hand);
+	}
+	
+	/// Applies an offhand attribute modifier idempotently: updateHeldItem can run
+	/// more than once per equipment change, and AttributeInstance.addTransientModifier
+	/// throws when the same modifier id is applied twice.
+	private void applyOffhandModifier(Holder<Attribute> attribute, AttributeModifier modifier) {
+		AttributeInstance instance = this.original.getAttribute(attribute);
+		if (instance != null) {
+			instance.removeModifier(modifier.id());
+			instance.addTransientModifier(modifier);
+		}
 	}
 	
 	public void modifyLivingMotionByCurrentItem(boolean onStartTracking) {

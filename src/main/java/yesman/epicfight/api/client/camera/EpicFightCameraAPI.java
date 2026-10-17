@@ -6,6 +6,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
@@ -21,14 +22,17 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
-import net.neoforged.neoforge.client.event.ViewportEvent;
-import net.neoforged.neoforge.entity.PartEntity;
+
+
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import yesman.epicfight.api.animation.property.MoveCoordFunctions;
+import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.client.animation.AnimationSubFileReader;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
 import yesman.epicfight.api.client.event.types.camera.*;
@@ -65,6 +69,8 @@ import java.util.Set;
 public final class EpicFightCameraAPI {
     private static final EpicFightCameraAPI INSTANCE = new EpicFightCameraAPI();
     private static final int MAX_ZOOM_TICK = 8;
+    private static final Vector3f CAMERA_ROTATION_EULER = new Vector3f();
+    private static final OpenMatrix4f PLAYER_ROTATION = new OpenMatrix4f();
 
     public static EpicFightCameraAPI getInstance() {
         return INSTANCE;
@@ -356,13 +362,15 @@ public final class EpicFightCameraAPI {
         // Select the nearest target on the screen from the given direction
         // Excludes entities out of the view frustum
         // Excludes riding entities
+        Frustum frustum = yesman.epicfight.client.renderer.EpicFightFrustumHolder.get();
         Optional<Pair<LivingEntity, Float>> next = entitiesInLevel.stream()
             .filter(entity ->
                 this.predicateFocusableEntity(entity) &&
                 !entity.is(this.focusingEntity) &&
                 MathUtils.canBeSeen(entity, this.minecraft.player, lockOnRange) &&
                 (
-                    this.minecraft.getEntityRenderDispatcher().shouldRender(entity, this.minecraft.levelRenderer.getFrustum(), cameraLocation.x(), cameraLocation.y(), cameraLocation.z()) || // Excludes entities out of the view frustum
+                    frustum == null || // No frustum captured yet — skip frustum culling, rely on distance + canBeSeen
+                    this.minecraft.getEntityRenderDispatcher().shouldRender(entity, frustum, cameraLocation.x(), cameraLocation.y(), cameraLocation.z()) || // Excludes entities out of the view frustum
                         entity.hasIndirectPassenger(this.minecraft.player)    // Excludes riding entities
                 ) &&
                 entity.distanceToSqr(this.minecraft.player) < lockOnRange * lockOnRange
@@ -626,8 +634,8 @@ public final class EpicFightCameraAPI {
                     if (!(entityHitResult.getEntity() instanceof ArmorStand) && (!this.lockingOnTarget || InputManager.isActionActive(EpicFightInputAction.LOCK_ON_SHIFT_FREELY))) {
                         this.setFocusingEntity(livingentity);
                     }
-                } else if (entityHitResult.getEntity() instanceof PartEntity<?> partEntity) {
-                    Entity parent = partEntity.getParent();
+                } else if (entityHitResult.getEntity() instanceof net.minecraft.world.entity.boss.EnderDragonPart enderDragonPart) {
+                    Entity parent = enderDragonPart.parentMob;
 
                     if (parent instanceof LivingEntity parentLivingEntity && (!this.lockingOnTarget || InputManager.isActionActive(EpicFightInputAction.LOCK_ON_SHIFT_FREELY))) {
                         this.setFocusingEntity(parentLivingEntity);
@@ -817,7 +825,7 @@ public final class EpicFightCameraAPI {
         }
     }
 
-    /// Sets up the camera transform before [ViewportEvent.ComputeCameraAngles] is called, so that Minecraft doesn't calculate the transform twice
+    /// Sets up the camera transform before [Object.ComputeCameraAngles] is called, so that Minecraft doesn't calculate the transform twice
     /// @return the result of the event state
     @ApiStatus.Internal
     public BuildCameraTransform.Pre setupCamera(Camera camera, float partialTick) {
@@ -945,7 +953,62 @@ public final class EpicFightCameraAPI {
         return buildCameraEventPre;
     }
 
-    /// Called after [#setupCamera] to apply a simple transform
+    /// First person camera correction (ported from NeoForge ComputeCameraAnglesEvent)
+    /// Must be called AFTER vanilla camera setup so it can modify the final camera state
+    @ApiStatus.Internal
+    public void computeCameraAngles(Camera camera, float partialTick) {
+        if (ClientConfig.enableFirstPersonCameraMove && this.minecraft.options.getCameraType().isFirstPerson()) {
+            LocalPlayerPatch playerpatch = EpicFightCapabilities.ClientModule.getCachedLocalPlayerPatch();
+
+            if (playerpatch != null && playerpatch.isEpicFightMode() && !playerpatch.getFirstPersonLayer().isOff()) {
+                if (this.isLerpingFpv()) {
+                    float xRot = this.getLerpedFpvXRot(partialTick);
+                    float yRot = this.getLerpedFpvYRot(partialTick);
+                    this.minecraft.cameraEntity.setXRot(xRot);
+                    this.minecraft.cameraEntity.setYRot(yRot);
+                } else {
+                    AnimationSubFileReader.PovSettings.ViewLimit viewLimit = playerpatch.getPovSettings().viewLimit();
+
+                    if (viewLimit != null) {
+                        float pitch = camera.getXRot();
+                        float yaw = camera.getYRot();
+                        float clampedXRot = Mth.clamp(pitch, viewLimit.xRotMin(), viewLimit.xRotMax());
+                        float bodyY = MathUtils.findNearestRotation(yaw, playerpatch.getYRot());
+                        float clampedYRot = Mth.clamp(yaw, bodyY + viewLimit.yRotMin(), bodyY + viewLimit.yRotMax());
+
+                        if (Float.compare(clampedXRot, pitch) != 0 || Float.compare(clampedYRot, yaw) != 0) {
+                            this.fixFpvRotation(clampedXRot, playerpatch.getYRot(), 5);
+                        }
+                    }
+                }
+
+                if (playerpatch.hasCameraAnimation()) {
+                    float time = Mth.lerp(partialTick, playerpatch.getFirstPersonLayer().animationPlayer.getPrevElapsedTime(), playerpatch.getFirstPersonLayer().animationPlayer.getElapsedTime());
+                    JointTransform cameraTransform;
+
+                    if (playerpatch.getFirstPersonLayer().animationPlayer.getAnimation().get().isLinkAnimation() || playerpatch.getPovSettings() == null) {
+                        cameraTransform = playerpatch.getFirstPersonLayer().getLinkCameraTransform().getInterpolatedTransform(time);
+                    } else {
+                        cameraTransform = playerpatch.getPovSettings().cameraTransform().getInterpolatedTransform(time);
+                    }
+
+                    float xRot = playerpatch.getOriginal().getXRot();
+                    float yRot = playerpatch.getOriginal().getYRot();
+
+                    Vec3f translation = OpenMatrix4f.transform3v(OpenMatrix4f.ofRotationDegree(yRot, Vec3f.Y_AXIS, PLAYER_ROTATION).rotate(xRot, Vec3f.X_AXIS), cameraTransform.translation(), null);
+                    Quaternionf rot = cameraTransform.rotation();
+                    rot.getEulerAnglesXYZ(CAMERA_ROTATION_EULER);
+
+                    CAMERA_ROTATION_EULER.x = (float)Math.toDegrees(CAMERA_ROTATION_EULER.x);
+                    CAMERA_ROTATION_EULER.y = (float)Math.toDegrees(CAMERA_ROTATION_EULER.y);
+                    CAMERA_ROTATION_EULER.z = (float)Math.toDegrees(CAMERA_ROTATION_EULER.z);
+
+                    camera.move(translation.x, translation.y, translation.z);
+                    camera.setRotation(camera.getYRot() + CAMERA_ROTATION_EULER.y, camera.getXRot() + CAMERA_ROTATION_EULER.x);
+                }
+            }
+        }
+    }
     @ApiStatus.Internal
     public void fireCameraBuildPost(Camera camera, float partialTick) {
         EpicFightClientEventHooks.Camera.BUILD_TRANSFORM_POST.post(new BuildCameraTransform.Post(this, camera, partialTick));
@@ -957,7 +1020,7 @@ public final class EpicFightCameraAPI {
     ///
     /// This method takes a [Player] instead of [LocalPlayer] because casting
     /// to the client-only [LocalPlayer] inside a mixin (e.g., in [LivingEntity])
-    /// would crash a dedicated server due to Forge's `@OnlyIn(Dist.CLIENT)`.
+    /// would crash a dedicated server when the class loader resolves that client-only type.
     @ApiStatus.Internal
     public float getYRotForHead(Player player) {
         if (!player.isLocalPlayer()) {

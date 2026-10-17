@@ -1,41 +1,25 @@
 package yesman.epicfight.compat.firstperson;
 
-import dev.tr7zw.firstperson.api.ActivationHandler;
 import dev.tr7zw.firstperson.api.FirstPersonAPI;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+
+import yesman.epicfight.client.events.engine.RenderEngine;
 import yesman.epicfight.compat.ICompatModule;
-import yesman.epicfight.config.ClientConfig;
-import yesman.epicfight.world.capabilities.EpicFightCapabilities;
-import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
 public class FirstPersonCompat implements ICompatModule {
 	@Override
-	public void onModEventBusClient(IEventBus eventBus) {
-		eventBus.<FMLClientSetupEvent>addListener(event -> event.enqueueWork(() -> {
-			FirstPersonAPI.getActivationHandlers().add(new ActivationHandler() {
-				public boolean preventFirstperson() {
-					PlayerPatch<?> playerpatch = EpicFightCapabilities.getCachedLocalPlayerPatch();;
-					
-					if (playerpatch != null && (playerpatch.getPlayerMode() == PlayerPatch.PlayerMode.EPICFIGHT || !ClientConfig.enableOriginalModel) && ClientConfig.enableAnimatedFirstPersonModel) {
-						return true;
-					}
-					
-					return false;
-				}
-			});
-		}));
+	public void onInitializeClient() {
+		RenderEngine.setFirstPersonBodyOwner(FirstPersonAPI::isEnabled);
 	}
-	
+
 	@Override
-	public void onGameEventBusClient(IEventBus eventBus) {
+	public void onInitializeClientServer() {
 	}
-	
+
 	@Override
-	public void onModEventBus(IEventBus eventBus) {
+	public void onInitialize() {
 	}
-	
+
 	@Override
-	public void onGameEventBus(IEventBus eventBus) {
+	public void onInitializeServer() {
 	}
 }

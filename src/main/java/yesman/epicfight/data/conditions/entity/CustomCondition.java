@@ -1,9 +1,10 @@
 package yesman.epicfight.data.conditions.entity;
+import net.fabricmc.api.Environment;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+
 import yesman.epicfight.api.utils.side.ClientOnly;
 import yesman.epicfight.data.conditions.Condition;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -35,7 +36,7 @@ public class CustomCondition<T extends LivingEntityPatch<?>> implements Conditio
 	}
 	
 	@Override @ClientOnly
-    @OnlyIn(Dist.CLIENT) // TODO: Remove OnlyIn annotation and completely decouple the widget provider code
+    @Environment(EnvType.CLIENT) // TODO: Remove @Environment annotation and completely decouple the widget provider code
 	public List<ParameterEditor> getAcceptingParameters(Screen screen) {
 		return null;
 	}

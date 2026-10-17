@@ -17,8 +17,7 @@ public class EpicFightRecipeProvider extends VanillaRecipeProvider {
 		super(output, registries);
 	}
 	
-	@Override
-    protected void buildRecipes(RecipeOutput recipeOutput) {
+    public void buildRecipes(RecipeOutput recipeOutput) {
 		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, EpicFightItems.DIAMOND_DAGGER.get())
 			.pattern(" X")
 			.pattern("# ")

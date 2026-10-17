@@ -1,0 +1,225 @@
+plugins {
+    id 'fabric-loom' version '1.17.19'
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.group_id
+
+def modId = project.mod_id
+
+repositories {
+    mavenCentral()
+
+    // CurseMaven — for compat mods
+    maven {
+        name = 'CurseMaven'
+        url = 'https://cursemaven.com'
+        content {
+            includeGroup 'curse.maven'
+        }
+    }
+
+    // Ladysnake maven — Cardinal Components API individual modules
+    maven {
+        name = 'Ladysnake'
+        url = 'https://maven.ladysnake.org/releases/'
+    }
+
+    // Modrinth maven for mod downloads
+    maven {
+        name = 'Modrinth'
+        url = 'https://api.modrinth.com/maven'
+        content {
+            includeGroup 'maven.modrinth'
+        }
+    }
+
+}
+
+// Local artifacts are republished in place; never let Gradle cache
+// changing modules from the project-local Maven repositories.
+configurations.configureEach {
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Fabric API
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    // NightConfig — TOML config read/write for ModConfigSpec stub
+    include implementation("com.electronwill.night-config:core:3.8.0")
+    include implementation("com.electronwill.night-config:toml:3.8.0")
+
+    // Transitive dep for SimplyTooltips (needs architectury)
+    modImplementation "maven.modrinth:architectury-api:13.0.8+fabric"
+
+    // Non-conflicting compat mods with simple deps (runtime + compile)
+    modImplementation "curse.maven:azurelib-817423:${project.azurelib_file_id}"
+    modImplementation "curse.maven:female-gender-456319:${project.fgm_file_id}"
+    modImplementation "curse.maven:geckolib-388172:${project.geckolib_file_id}"
+    modImplementation "curse.maven:jei-238222:${project.jei_file_id}"
+    modImplementation "curse.maven:playeranimator-658587:${project.playeranimator_file_id}"
+
+    // Mods with missing transitive deps or dev-env crashes — kept as modCompileOnly:
+    // - FirstPerson: missing dev.tr7zw.transition.mc.GeneralUtil at runtime
+    // - Iris + Sodium + SkinLayers3D: Iris mixin remapping fails in Loom dev env with Mojang mappings
+    // - Trinkets: needs cardinal-components-base/entity (CCA nested jars stripped by Loom)
+    // - SimplyTooltips: needs fzzy_config → fabric-language-kotlin (Kotlin runtime)
+    // - BetterThirdPerson + ShoulderSurfing: mod-level conflict (ShoulderSurfing breaks BetterThirdPerson)
+    modCompileOnly "curse.maven:first-person-model-333287:${project.firstperson_file_id}"
+    modCompileOnly "curse.maven:irisshaders-455508:${project.iris_file_id}"
+    modCompileOnly "curse.maven:sodium-394468:${project.sodium_file_id}"
+    modCompileOnly "curse.maven:skin-layers-3d-521480:${project.skinlayers_file_id}"
+
+    // Mods with complex transitive deps — kept as modCompileOnly until deps are resolved:
+    // - Trinkets: needs cardinal-components-base/entity — RESOLVED via run/mods/
+    //   (cardinal-components-api-6.1.3.jar; Loom strips JIJ from classpath mods, Ladysnake maven is dead)
+    // - neoforge_compat: needs forgeconfigapiport — RESOLVED via run/mods/
+    //   (ForgeConfigAPIPort-v21.1.6-1.21.1-Fabric.jar from Modrinth)
+    // - SimplyTooltips: needs fzzy_config → fabric-language-kotlin (Kotlin runtime)
+    // - BetterThirdPerson + ShoulderSurfing: mod-level conflict (ShoulderSurfing breaks BetterThirdPerson)
+    modImplementation "curse.maven:trinkets-341284:${project.trinkets_file_id}"
+    modCompileOnly "curse.maven:simply-tooltips-1475755:${project.simplytooltips_file_id}"
+    modCompileOnly "curse.maven:better-third-person-435044:${project.betterthirdperson_file_id}"
+    modCompileOnly "curse.maven:shoulder-surfing-reloaded-243190:${project.shouldersurfing_file_id}"
+    modCompileOnly "maven.modrinth:spatial-gui:1.6-fabric+1.21.1"
+
+    modImplementation "curse.maven:playerrevive-refabric-1675622:${project.playerrevive_file_id}"
+    modImplementation "curse.maven:creativecore-257814:8127283"
+
+    // JSR-305 (javax.annotation) — used for @Nullable etc.
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+
+    // Checker Framework annotations
+    compileOnly "org.checkerframework:checker-qual:3.43.0"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.11.4"
+}
+
+loom {
+    runs {
+        client {
+            client()
+            configName = 'Fabric Client'
+        }
+        server {
+            server()
+            configName = 'Fabric Server'
+        }
+    }
+
+    accessWidenerPath = file('src/main/resources/epicfight.accesswidener')
+}
+
+processResources {
+    def replaceProperties = [
+        modId          : modId,
+        modVersion     : project.mod_version,
+        displayName    : project.display_name,
+        displayUrl     : project.display_url,
+        license        : project.license,
+        authors        : project.authors,
+        description    : project.description,
+        issueTracker   : project.issue_tracker,
+        sourceCode     : project.source_code,
+        credits        : project.credits,
+        minecraft      : project.minecraft_version,
+    ]
+
+    inputs.properties replaceProperties
+
+    filesMatching('fabric.mod.json') {
+        expand replaceProperties
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release = 21
+}
+
+java {
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    from(rootProject.file('LICENSE'))
+    from(rootProject.file('LICENSE-ASSETS'))
+
+    // src/stub/java holds compile-only API shims for optional mods. Fabric loads every
+    // mod through one flat classloader, so shipping a class under someone else's FQCN
+    // makes the winner between our stub and the real mod's class arbitrary. Both are
+    // only ever touched when the real mod is installed (Controlify reads our
+    // META-INF/services entrypoint itself; AzureArmorTransformer is gated behind the
+    // azurelibarmor MinecraftMod entry), so dropping them from the jar is safe.
+    exclude 'dev/isxander/controlify/**'
+    exclude 'mod/azure/azurelibarmor/**'
+    exclude 'META-INF/services/dev.isxander.controlify.api.entrypoint.ControlifyEntrypoint'
+    exclude 'assets/controlify/**'
+}
+
+// Include generated resources, plus the optional-mod API shims. The shims live outside
+// src/main/java so nothing under it claims a package we do not own; the jar task above
+// strips them back out of the published artifact.
+sourceSets.main {
+    java.srcDir layout.projectDirectory.dir('src/stub/java')
+    resources.srcDir layout.projectDirectory.dir('src/generated/resources')
+}
+
+// API JAR — includes only API package
+def apiPackage = 'yesman/epicfight/api/**'
+
+task apiJar(type: Jar) {
+    group = 'build'
+    archiveClassifier.set('api')
+    from(sourceSets.main.output) {
+        include apiPackage
+    }
+}
+
+task apiSourcesJar(type: Jar) {
+    group = 'build'
+    archiveClassifier.set('api-sources')
+    from(sourceSets.main.allSource) {
+        include apiPackage
+    }
+}
+
+artifacts {
+    archives apiJar
+    archives apiSourcesJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.mod_id
+            from components.java
+            artifact apiJar
+            artifact apiSourcesJar
+        }
+    }
+    repositories {
+        maven {
+            name = 'projectLocal'
+            url = layout.projectDirectory.dir('local-maven')
+        }
+    }
+}

@@ -1,27 +1,29 @@
 package yesman.epicfight.config;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.fabricmc.api.EnvType;
+
+import yesman.epicfight.platform.neoforged.fml.config.ModConfig;
+
+import yesman.epicfight.platform.neoforged.common.ModConfigSpec;
 import yesman.epicfight.main.EpicFightMod;
 
-@EventBusSubscriber(modid = EpicFightMod.MODID, value = Dist.DEDICATED_SERVER)
+
 public class ServerConfig {
 	private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 	public static final ModConfigSpec.BooleanValue ALLOW_CUSTOM_ANIMATIONS = BUILDER.define("allow_custom_animations", false);
+	public static final ModConfigSpec.BooleanValue FULL_BOUNDING_BOX_LADDERS = BUILDER.define("full_bounding_box_ladders", false);
 	public static final ModConfigSpec SPEC = BUILDER.build();
 	
 	public static boolean allowCustomAnimations;
+	public static boolean fullBoundingBoxLadders;
 	
-	@SubscribeEvent
-    static void onLoad(final ModConfigEvent.Loading event) {
-		if (event.getConfig().getType() != ModConfig.Type.SERVER) {
+	
+    public static void onLoad(final ModConfig config) {
+		if (config.getType() != ModConfig.Type.SERVER) {
 			return;
 		}
-		
+
 		allowCustomAnimations = ALLOW_CUSTOM_ANIMATIONS.get();
+		fullBoundingBoxLadders = FULL_BOUNDING_BOX_LADDERS.get();
 	}
 }

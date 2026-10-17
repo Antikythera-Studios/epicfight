@@ -1,4 +1,5 @@
 package yesman.epicfight.world.capabilities.emote;
+import yesman.epicfight.EpicFight;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -57,12 +58,12 @@ public class PlayerEmoteSlots {
                     page.emotes[slotIndex.getValue()] = null;
                 } else {
                     ResourceKey<Emote> emoteResourceKey = ResourceKey.create(EpicFightRegistries.Keys.EMOTE, ResourceLocation.parse(emoteName));
-                    Optional<Holder.Reference<Emote>> emoteHolder = registryAccess.holder(emoteResourceKey);
+                    Optional<Holder.Reference<Emote>> emoteHolder = registryAccess.registryOrThrow(yesman.epicfight.registry.EpicFightRegistries.Keys.EMOTE).getHolder(emoteResourceKey);
 
                     emoteHolder.ifPresentOrElse(emote -> {
                         page.emotes[slotIndex.getValue()] = emote;
                     }, () -> {
-                        EpicFightMod.LOGGER.error("Unknown emote: {}. Ignored.", registyNameTag.getAsString());
+                        EpicFight.LOGGER.error("Unknown emote: {}. Ignored.", registyNameTag.getAsString());
                     });
                 }
 
@@ -77,12 +78,12 @@ public class PlayerEmoteSlots {
         // When emote tab is empty, add default emotes
         if (this.emoteTabs.isEmpty()) {
             EmoteTab defaultPage = new EmoteTab();
-            registryAccess.holder(BuiltInEmotes.FRUSTRATED).ifPresent(emote -> defaultPage.emotes[0] = emote);
-            registryAccess.holder(BuiltInEmotes.HOPAK).ifPresent(emote -> defaultPage.emotes[1] = emote);
-            registryAccess.holder(BuiltInEmotes.LAUGH).ifPresent(emote -> defaultPage.emotes[2] = emote);
-            registryAccess.holder(BuiltInEmotes.SALUTE).ifPresent(emote -> defaultPage.emotes[3] = emote);
-            registryAccess.holder(BuiltInEmotes.SLIT_THROAT).ifPresent(emote -> defaultPage.emotes[4] = emote);
-            registryAccess.holder(BuiltInEmotes.WAVE_HAND).ifPresent(emote -> defaultPage.emotes[5] = emote);
+            registryAccess.registryOrThrow(yesman.epicfight.registry.EpicFightRegistries.Keys.EMOTE).getHolder(BuiltInEmotes.FRUSTRATED).ifPresent(emote -> defaultPage.emotes[0] = emote);
+            registryAccess.registryOrThrow(yesman.epicfight.registry.EpicFightRegistries.Keys.EMOTE).getHolder(BuiltInEmotes.HOPAK).ifPresent(emote -> defaultPage.emotes[1] = emote);
+            registryAccess.registryOrThrow(yesman.epicfight.registry.EpicFightRegistries.Keys.EMOTE).getHolder(BuiltInEmotes.LAUGH).ifPresent(emote -> defaultPage.emotes[2] = emote);
+            registryAccess.registryOrThrow(yesman.epicfight.registry.EpicFightRegistries.Keys.EMOTE).getHolder(BuiltInEmotes.SALUTE).ifPresent(emote -> defaultPage.emotes[3] = emote);
+            registryAccess.registryOrThrow(yesman.epicfight.registry.EpicFightRegistries.Keys.EMOTE).getHolder(BuiltInEmotes.SLIT_THROAT).ifPresent(emote -> defaultPage.emotes[4] = emote);
+            registryAccess.registryOrThrow(yesman.epicfight.registry.EpicFightRegistries.Keys.EMOTE).getHolder(BuiltInEmotes.WAVE_HAND).ifPresent(emote -> defaultPage.emotes[5] = emote);
 
             this.emoteTabs.add(defaultPage);
         }
@@ -103,12 +104,12 @@ public class PlayerEmoteSlots {
 
     public void setEmote(int pageIndex, int slotIndex, @Nullable Holder.Reference<Emote> emote) {
         if (this.emoteTabs.size() <= pageIndex) {
-            EpicFightMod.LOGGER.error("Emote page index {} is out of bound {}", pageIndex, this.emoteTabs.size());
+            EpicFight.LOGGER.error("Emote page index {} is out of bound {}", pageIndex, this.emoteTabs.size());
             return;
         }
 
         if (slotIndex < 0 || slotIndex >= 6) {
-            EpicFightMod.LOGGER.error("Emote slot {} is not a valid index (0~6)", slotIndex);
+            EpicFight.LOGGER.error("Emote slot {} is not a valid index (0~6)", slotIndex);
             return;
         }
 

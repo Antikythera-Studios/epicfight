@@ -1,4 +1,5 @@
 package yesman.epicfight.api.data.reloader;
+import yesman.epicfight.EpicFight;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
@@ -15,7 +16,6 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import yesman.epicfight.api.utils.side.ClientOnly;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.network.server.SPDatapackSync;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.registry.entries.EpicFightSkills;
@@ -46,7 +46,7 @@ public class SkillReloadListener extends SimpleJsonResourceReloadListener {
 		if (name.indexOf(':') >= 0) {
 			rl = ResourceLocation.parse(name);
 		} else {
-            rl = EpicFightMod.identifier(name);
+            rl = EpicFight.identifier(name);
 		}
 		
 		if (EpicFightRegistries.SKILL.containsKey(rl)) {
@@ -65,21 +65,27 @@ public class SkillReloadListener extends SimpleJsonResourceReloadListener {
 	}
 	
 	public static void reloadAllSkillsAnimations() {
-		EpicFightRegistries.SKILL.holders().map(Holder::value).forEach((skill) -> skill.registerPropertiesToAnimation());
+		EpicFightRegistries.SKILL.holders().map(Holder::value).forEach((skill) -> {
+			try {
+				skill.registerPropertiesToAnimation();
+			} catch (NullPointerException e) {
+				// Animation accessors may not be loaded yet during early resource reload
+			}
+		});
 	}
 	
     @ClientOnly
 	public static void processServerPacket(SPDatapackSync packet) {
 		for (CompoundTag tag : packet.tags()) {
 			if (!EpicFightRegistries.SKILL.containsKey(ResourceLocation.parse(tag.getString("id")))) {
-				EpicFightMod.LOGGER.warn("Failed to syncronize Datapack for skill: " + tag.getString("id"));
+				EpicFight.LOGGER.warn("Failed to syncronize Datapack for skill: " + tag.getString("id"));
 				continue;
 			}
 			
 			EpicFightRegistries.SKILL.get(ResourceLocation.parse(tag.getString("id"))).loadDatapackParameters(tag);
 		}
 		
-		LocalPlayerPatch localplayerpatch = EpicFightCapabilities.getCachedLocalPlayerPatch();
+		LocalPlayerPatch localplayerpatch = EpicFightCapabilities.ClientModule.getCachedLocalPlayerPatch();
 		
 		if (localplayerpatch != null) {
 			PlayerSkills skillCapability = localplayerpatch.getPlayerSkills();
@@ -104,7 +110,7 @@ public class SkillReloadListener extends SimpleJsonResourceReloadListener {
 			
 			return Pair.of(entry.getKey(), tag);
 		} catch (CommandSyntaxException e) {
-			EpicFightMod.LOGGER.warn("Can't parse skill parameter for " + entry.getKey() + " because of " + e.getMessage());
+			EpicFight.LOGGER.warn("Can't parse skill parameter for " + entry.getKey() + " because of " + e.getMessage());
 			e.printStackTrace();
 			
 			return Pair.of(entry.getKey(), new CompoundTag());
@@ -127,7 +133,7 @@ public class SkillReloadListener extends SimpleJsonResourceReloadListener {
 		
 		objectIn.entrySet().stream().filter((entry) -> {
 			if (!EpicFightRegistries.SKILL.containsKey(entry.getKey())) {
-				EpicFightMod.LOGGER.warn("Skill " + entry.getKey() + " doesn't exist in the registry.");
+				EpicFight.LOGGER.warn("Skill " + entry.getKey() + " doesn't exist in the registry.");
 				return false;
 			}
 			

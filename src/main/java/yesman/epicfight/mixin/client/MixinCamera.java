@@ -44,4 +44,11 @@ public abstract class MixinCamera {
             }
         }
     }
+
+    @Inject(at = @At(value = "TAIL"), method = "setup(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/world/entity/Entity;ZZF)V")
+    public void epicfight$computeCameraAngles(BlockGetter level, Entity entity, boolean detached, boolean thirdPersonReverse, float partialTick, CallbackInfo callbackInfo) {
+        EpicFightCameraAPI cameraApi = EpicFightCameraAPI.getInstance();
+        Camera camera = (Camera)(Object)this;
+        cameraApi.computeCameraAngles(camera, partialTick);
+    }
 }

@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.screen;
+import net.minecraft.client.Minecraft;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
@@ -59,8 +60,8 @@ public class ImportAnimationsScreen extends Screen {
 		super(Component.literal("register_animation_screen"));
 		
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
-		this.font = parentScreen.getMinecraft().font;
+		this.minecraft = Minecraft.getInstance();
+		this.font = Minecraft.getInstance().font;
 		
 		this.userAnimations = DatapackEditScreen.getCurrentScreen().getUserAniamtions();
 		this.fakeAnimations.addAll(this.userAnimations.values().stream().map(PackEntry::getKey).map(EditorAnimation::deepCopy).toList());
@@ -70,7 +71,7 @@ public class ImportAnimationsScreen extends Screen {
 		ScreenRectangle screenRect = parentScreen.getRectangle();
 		int split = screenRect.width() / 2 - 60;
 		
-		this.animationGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.animationGrid = Grid.builder(this, Minecraft.getInstance())
 									.xy1(8, screenRect.top() + 14)
 									.xy2(split - 10, screenRect.height() - 21)
 									.rowHeight(26)

@@ -1,4 +1,5 @@
 package yesman.epicfight.compat.fgm;
+import yesman.epicfight.EpicFight;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -6,7 +7,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.wildfire.api.IGenderArmor;
 import com.wildfire.main.WildfireGender;
 import com.wildfire.main.WildfireHelper;
-import com.wildfire.main.config.GeneralClientConfig;
 import com.wildfire.main.entitydata.Breasts;
 import com.wildfire.main.entitydata.EntityConfig;
 import com.wildfire.physics.BreastPhysics;
@@ -30,6 +30,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
@@ -38,8 +39,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.ClientHooks;
+
+
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -52,23 +53,22 @@ import yesman.epicfight.client.renderer.patched.entity.PPlayerRenderer;
 import yesman.epicfight.client.renderer.patched.layer.PatchedLayer;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.AbstractClientPlayerPatch;
 import yesman.epicfight.compat.ICompatModule;
-import yesman.epicfight.compat.fgm.mixin.FemaleLayerAccessor;
 import yesman.epicfight.model.armature.HumanoidArmature;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 public class WildfireFGMCompat implements ICompatModule {
     @Override
-    public void onModEventBus(IEventBus eventBus) {
+	public void onInitialize() {
 
     }
 
     @Override
-    public void onGameEventBus(IEventBus eventBus) {
+	public void onInitializeServer() {
 
     }
 
     @Override
-    public void onModEventBusClient(IEventBus eventBus) {
+	public void onInitializeClient() {
         EpicFightClientEventHooks.Registry.MODIFY_PATCHED_ENTITY.registerEvent(event -> {
             if (event.get(EntityType.PLAYER) instanceof PPlayerRenderer playerrenderer) {
                 playerrenderer.addPatchedLayerAlways(GenderLayer.class, new EpicFightWildfireRenderLayer());
@@ -77,7 +77,7 @@ public class WildfireFGMCompat implements ICompatModule {
     }
 
     @Override
-    public void onGameEventBusClient(IEventBus eventBus) {
+	public void onInitializeClientServer() {
 
     }
 
@@ -94,8 +94,8 @@ public class WildfireFGMCompat implements ICompatModule {
 
         @Override
         protected void renderLayer(AbstractClientPlayerPatch<AbstractClientPlayer> entityPatch, AbstractClientPlayer entity, @Nullable GenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> vanillaLayer, PoseStack poseStack, MultiBufferSource buffer, int packedLight, OpenMatrix4f[] poses, float bob, float yRot, float xRot, float partialTicks) {
-            if (vanillaLayer instanceof FemaleLayerAccessor<?, ?> accessor) {
-                if (!(Boolean) GeneralClientConfig.INSTANCE.disableRendering.get() && !entity.isSpectator()) {
+            if (vanillaLayer instanceof yesman.epicfight.compat.fgm.mixin.FemaleLayerAccessor<?, ?> accessor) {
+                if (!entity.isSpectator()) {
                     try {
                         EntityConfig entityConfig = EntityConfig.getEntity(entity);
                         if (entityConfig == null) {
@@ -110,7 +110,9 @@ public class WildfireFGMCompat implements ICompatModule {
                         }
 
                         RenderType breastRenderType = null;
-                        ResourceLocation entityTexture = accessor.getTexture(entity);
+                        // NeoForge had GenderLayer.getBreastTexture(); Fabric does not.
+                        // Get the player's skin texture directly instead.
+                        ResourceLocation entityTexture = entity.getSkin().texture();
                         if (entityTexture != null) {
                             boolean bodyVisible = !entity.isInvisible();
                             Minecraft minecraft = Minecraft.getInstance();
@@ -172,7 +174,7 @@ public class WildfireFGMCompat implements ICompatModule {
                         float zOff = 0.0625F - bSize * 0.0625F;
                         breastSize = bSize + 0.5F * Math.abs(bSize - 0.7F) * 2.0F;
                         float resistance = entityConfig.getArmorPhysicsOverride() ? 0.0F : Mth.clamp(genderArmor.physicsResistance(), 0.0F, 1.0F);
-                        boolean breathingAnimation = entityConfig.canBreathe() && resistance <= 0.5F && (!entity.isUnderWater() || MobEffectUtil.hasWaterBreathing(entity) || entity.level().getBlockState(BlockPos.containing(entity.getX(), entity.getEyeY(), entity.getZ())).is(Blocks.BUBBLE_COLUMN));
+                        boolean breathingAnimation = true && resistance <= 0.5F && (!entity.isUnderWater() || MobEffectUtil.hasWaterBreathing(entity) || entity.level().getBlockState(BlockPos.containing(entity.getX(), entity.getEyeY(), entity.getZ())).is(Blocks.BUBBLE_COLUMN));
                         boolean bounceEnabled = entityConfig.hasBreastPhysics() && (!isChestplateOccupied || resistance < 1.0F);
                         int overlay = LivingEntityRenderer.getOverlayCoords(entity, 0.0F);
                         HumanoidModel<?> model = vanillaLayer.getParentModel();
@@ -305,7 +307,7 @@ public class WildfireFGMCompat implements ICompatModule {
                     int color = armorStack.is(ItemTags.DYEABLE) ? DyedItemColor.getOrDefault(armorStack, -6265536) : -1;
 
                     for(ArmorMaterial.Layer layer : material.value().layers()) {
-                        ResourceLocation armorTexture = ClientHooks.getArmorTexture(entity.getOriginal(), armorStack, layer, false, EquipmentSlot.CHEST);
+                        ResourceLocation armorTexture = yesman.epicfight.platform.neoforged.client.ClientHooks.getArmorTexture(entity.getOriginal(), armorStack, layer, false, EquipmentSlot.CHEST);
                         RenderType armorType = RenderType.armorCutoutNoCull(armorTexture);
                         VertexConsumer armorVertexConsumer = bufferSource.getBuffer(armorType);
                         renderBox(armorBox, matrixStack, armorVertexConsumer, light, OverlayTexture.NO_OVERLAY, layer.dyeable() ? color : -1);
@@ -333,11 +335,11 @@ public class WildfireFGMCompat implements ICompatModule {
             Matrix3f matrix3f = matrixStack.last().normal();
 
             for(WildfireModelRenderer.TexturedQuad quad : model.quads) {
-                Vector3f vector3f = new Vector3f((float)quad.normal.getX(), (float)quad.normal.getY(), (float)quad.normal.getZ());
+                Vector3f vector3f = new Vector3f((float)quad.normal.x(), (float)quad.normal.y(), (float)quad.normal.z());
                 vector3f.mul(matrix3f);
 
                 for(WildfireModelRenderer.PositionTextureVertex vertex : quad.vertexPositions) {
-                    bufferIn.addVertex(matrix4f, vertex.x() / 16.0F, vertex.y() / 16.0F, vertex.z() / 16.0F).setColor(color).setUv(vertex.texturePositionX(), vertex.texturePositionY()).setOverlay(overlay).setLight(light).setNormal(vector3f.x(), vector3f.y(), vector3f.z());
+                    bufferIn.addVertex(matrix4f, vertex.x() / 16.0F, vertex.y() / 16.0F, vertex.z() / 16.0F).setColor(color).setUv(vertex.u(), vertex.v()).setOverlay(overlay).setLight(light).setNormal(vector3f.x(), vector3f.y(), vector3f.z());
                 }
             }
         }

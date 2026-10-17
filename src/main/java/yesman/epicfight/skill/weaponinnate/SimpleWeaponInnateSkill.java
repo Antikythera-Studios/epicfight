@@ -61,12 +61,20 @@ public class SimpleWeaponInnateSkill extends WeaponInnateSkill {
 	
 	@Override
 	public WeaponInnateSkill registerPropertiesToAnimation() {
+		if (this.attackAnimation == null) {
+			return this;
+		}
+
 		AttackAnimation anim = this.attackAnimation.get();
-		
+
+		if (anim == null) {
+			return this;
+		}
+
 		for (Phase phase : anim.phases) {
 			phase.addProperties(this.properties.get(0).entrySet());
 		}
-		
+
 		return this;
 	}
 }

@@ -1,4 +1,5 @@
 package yesman.epicfight.api.utils;
+import yesman.epicfight.EpicFight;
 
 public class GLConstants {
 	/**
@@ -18,43 +19,43 @@ public class GLConstants {
 	/*
 	public static void checkAllMatches() {
 		if (GL_BYTE != GL11.GL_BYTE) {
-			EpicFightMod.LOGGER.warn("GL_BYTE doesn't match " + GL_BYTE + " " + GL11.GL_BYTE);
+			EpicFight.LOGGER.warn("GL_BYTE doesn't match " + GL_BYTE + " " + GL11.GL_BYTE);
 		}
 		
 		if (GL_SHORT != GL11.GL_SHORT) {
-			EpicFightMod.LOGGER.warn("GL_SHORT doesn't match " + GL_SHORT + " " + GL11.GL_SHORT);
+			EpicFight.LOGGER.warn("GL_SHORT doesn't match " + GL_SHORT + " " + GL11.GL_SHORT);
 		}
 		
 		if (GL_INT != GL11.GL_INT) {
-			EpicFightMod.LOGGER.warn("GL_INT doesn't match " + GL_INT + " " + GL11.GL_INT);
+			EpicFight.LOGGER.warn("GL_INT doesn't match " + GL_INT + " " + GL11.GL_INT);
 		}
 		
 		if (GL_FLOAT != GL11.GL_FLOAT) {
-			EpicFightMod.LOGGER.warn("GL_FLOAT doesn't match " + GL_FLOAT + " " + GL11.GL_FLOAT);
+			EpicFight.LOGGER.warn("GL_FLOAT doesn't match " + GL_FLOAT + " " + GL11.GL_FLOAT);
 		}
 		
 		if (GL_DOUBLE != GL11.GL_DOUBLE) {
-			EpicFightMod.LOGGER.warn("GL_DOUBLE doesn't match " + GL_DOUBLE + " " + GL11.GL_DOUBLE);
+			EpicFight.LOGGER.warn("GL_DOUBLE doesn't match " + GL_DOUBLE + " " + GL11.GL_DOUBLE);
 		}
 		
 		if (GL_ARRAY_BUFFER != GL15.GL_ARRAY_BUFFER) {
-			EpicFightMod.LOGGER.warn("GL_FLOAT doesn't match " + GL_ARRAY_BUFFER + " " + GL15.GL_ARRAY_BUFFER);
+			EpicFight.LOGGER.warn("GL_FLOAT doesn't match " + GL_ARRAY_BUFFER + " " + GL15.GL_ARRAY_BUFFER);
 		}
 		
 		if (GL_ELEMENT_ARRAY_BUFFER != GL15.GL_ELEMENT_ARRAY_BUFFER) {
-			EpicFightMod.LOGGER.warn("GL_ELEMENT_ARRAY_BUFFER doesn't match " + GL_ELEMENT_ARRAY_BUFFER + " " + GL15.GL_ELEMENT_ARRAY_BUFFER);
+			EpicFight.LOGGER.warn("GL_ELEMENT_ARRAY_BUFFER doesn't match " + GL_ELEMENT_ARRAY_BUFFER + " " + GL15.GL_ELEMENT_ARRAY_BUFFER);
 		}
 		
 		if (GL_STATIC_DRAW != GL15.GL_STATIC_DRAW) {
-			EpicFightMod.LOGGER.warn("GL_STATIC_DRAW doesn't match " + GL_STATIC_DRAW + " " + GL15.GL_ARRAY_BUFFER);
+			EpicFight.LOGGER.warn("GL_STATIC_DRAW doesn't match " + GL_STATIC_DRAW + " " + GL15.GL_ARRAY_BUFFER);
 		}
 		
 		if (GL_VERTEX_ARRAY_BINDING != GL30.GL_VERTEX_ARRAY_BINDING) {
-			EpicFightMod.LOGGER.warn("GL_VERTEX_ARRAY_BINDING doesn't match " + GL_VERTEX_ARRAY_BINDING + " " + GL30.GL_VERTEX_ARRAY_BINDING);
+			EpicFight.LOGGER.warn("GL_VERTEX_ARRAY_BINDING doesn't match " + GL_VERTEX_ARRAY_BINDING + " " + GL30.GL_VERTEX_ARRAY_BINDING);
 		}
 		
 		if (GL_VERTEX_ARRAY_BUFFER_BINDING != GL30.GL_VERTEX_ARRAY_BUFFER_BINDING) {
-			EpicFightMod.LOGGER.warn("GL_VERTEX_ARRAY_BINDING doesn't match " + GL_VERTEX_ARRAY_BUFFER_BINDING + " " + GL30.GL_VERTEX_ARRAY_BUFFER_BINDING);
+			EpicFight.LOGGER.warn("GL_VERTEX_ARRAY_BINDING doesn't match " + GL_VERTEX_ARRAY_BUFFER_BINDING + " " + GL30.GL_VERTEX_ARRAY_BUFFER_BINDING);
 		}
 	}
 	*/

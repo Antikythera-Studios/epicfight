@@ -21,11 +21,15 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.gamerule.EpicFightGameRules;
 
+import com.mojang.logging.LogUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class SkillContainer {
+    private static final Logger EFDBG = LogUtils.getLogger();
+
     protected Skill skill;
     protected int prevDuration;
     protected int duration;
@@ -355,6 +359,9 @@ public class SkillContainer {
 
     public boolean canUse(PlayerPatch<?> executor, SkillCastEvent event) {
         if (this.skill == null) {
+            if (this.slot == SkillSlots.WEAPON_INNATE) {
+                EFDBG.debug("[EFDBG] WEAPON_INNATE canUse: skill==null (disabled={})", this.disabled);
+            }
             return false;
         } else {
             if (executor.isHoldingSkill(this.skill) && this.skill instanceof ChargeableSkill chargingSkill) {
@@ -371,8 +378,22 @@ public class SkillContainer {
             EpicFightEventHooks.Player.CAST_SKILL.postWithListener(event, executor.getEventListener());
 
             if (!event.isCanceled() && event.isExecutable()) {
-                return (executor.getOriginal().isCreative() || this.skill.resourcePredicate(executor, event)) || (this.isActivated() && this.skill.activateType == ActivateType.DURATION);
+                boolean creative = executor.getOriginal().isCreative();
+                boolean resOk = creative || this.skill.resourcePredicate(executor, event);
+                boolean result = resOk || (this.isActivated() && this.skill.activateType == ActivateType.DURATION);
+
+                if (this.slot == SkillSlots.WEAPON_INNATE) {
+                    EFDBG.debug("[EFDBG] WEAPON_INNATE canUse: skill={} skillExec={} stateExec={} canceled={} creative={} resOk={} stack={} disabled={} -> {}",
+                            this.skill, event.isSkillExecutable(), event.isStateExecutable(), event.isCanceled(), creative, resOk, this.stack, this.disabled, result);
+                }
+
+                return result;
             } else {
+                if (this.slot == SkillSlots.WEAPON_INNATE) {
+                    EFDBG.debug("[EFDBG] WEAPON_INNATE canUse: skill={} skillExec={} stateExec={} canceled={} -> false",
+                            this.skill, event.isSkillExecutable(), event.isStateExecutable(), event.isCanceled());
+                }
+
                 return false;
             }
         }

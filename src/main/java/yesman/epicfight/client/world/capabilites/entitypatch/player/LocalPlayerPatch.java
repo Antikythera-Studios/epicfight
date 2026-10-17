@@ -18,7 +18,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.Pose;
@@ -91,14 +92,15 @@ public class LocalPlayerPatch extends AbstractClientPlayerPatch<LocalPlayer> {
 	public void postTickClient() {
 		// Handle first person animation
 		final AssetAccessor<? extends StaticAnimation> currentPlaying = this.firstPersonLayer.animationPlayer.getRealAnimation();
-		
+
 		boolean noPovAnimation = this.getClientAnimator().iterVisibleLayersUntilFalse(layer -> {
 			if (layer.isOff()) {
 				return true;
 			}
-			
-			Optional<DirectStaticAnimation> optPovAnimation = layer.animationPlayer.getRealAnimation().get().getProperty(ClientAnimationProperties.POV_ANIMATION);
-			Optional<PovSettings> optPovSettings = layer.animationPlayer.getRealAnimation().get().getProperty(ClientAnimationProperties.POV_SETTINGS);
+
+			StaticAnimation anim = layer.animationPlayer.getRealAnimation().get();
+			Optional<DirectStaticAnimation> optPovAnimation = anim.getProperty(ClientAnimationProperties.POV_ANIMATION);
+			Optional<PovSettings> optPovSettings = anim.getProperty(ClientAnimationProperties.POV_SETTINGS);
 
             if (optPovAnimation.isPresent() && optPovSettings.isPresent()) {
                 DirectStaticAnimation povAnimation = optPovAnimation.get();
@@ -111,13 +113,13 @@ public class LocalPlayerPatch extends AbstractClientPlayerPatch<LocalPlayer> {
 
 			return optPovAnimation.isEmpty();
 		});
-		
+
 		if (noPovAnimation && !currentPlaying.equals(Animations.EMPTY_ANIMATION)) {
 			this.firstPersonLayer.off();
 		}
-		
+
 		this.firstPersonLayer.update(this);
-		
+
 		if (this.firstPersonLayer.animationPlayer.getAnimation().equals(Animations.EMPTY_ANIMATION)) {
 			this.povSettings = null;
 		}
@@ -392,8 +394,14 @@ public class LocalPlayerPatch extends AbstractClientPlayerPatch<LocalPlayer> {
 	
 	@Override
 	public void openSkillBook(ItemStack itemstack, InteractionHand hand) {
-		if (itemstack.has(EpicFightDataComponentTypes.SKILL)) {
-            Holder<Skill> skill = itemstack.get(EpicFightDataComponentTypes.SKILL);
+		if (itemstack.has(EpicFightDataComponentTypes.SKILL.get())) {
+            Holder<Skill> skill = itemstack.get(EpicFightDataComponentTypes.SKILL.get());
+
+            if (skill == null || !skill.isBound()) {
+                EpicFight.LOGGER.warn("Skill book contains an unbound skill holder, not opening screen: {}", skill);
+                return;
+            }
+
 			Minecraft.getInstance().setScreen(new SkillBookScreen(this.original, skill.value(), hand, null));
 		}
 	}
@@ -453,7 +461,7 @@ public class LocalPlayerPatch extends AbstractClientPlayerPatch<LocalPlayer> {
         if (entityHitResult != null) {
             Entity hitEntity = entityHitResult.getEntity();
 
-            if (!(hitEntity instanceof LivingEntity) && !(hitEntity instanceof PartEntity) && !(hitEntity instanceof Interaction)) {
+            if (!(hitEntity instanceof LivingEntity) && !(hitEntity instanceof net.minecraft.world.entity.boss.EnderDragonPart) && !(hitEntity instanceof Interaction)) {
                 return false;
             }
         }
@@ -548,19 +556,4 @@ public class LocalPlayerPatch extends AbstractClientPlayerPatch<LocalPlayer> {
 		}
 	}
 
-    /**
-     * @deprecated Use {@link EpicFightCameraAPI#setLockOn(boolean)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public void setLockOn(boolean targetLockedOn) {
-        EpicFightCameraAPI.getInstance().setLockOn(targetLockedOn);
-    }
-
-    /**
-     * @deprecated Use {@link EpicFightCameraAPI#toggleLockOn()} instead
-     */
-    @Deprecated(forRemoval = true)
-    public void toggleLockOn() {
-        this.setLockOn(!EpicFightCameraAPI.getInstance().isLockingOnTarget());
-    }
 }

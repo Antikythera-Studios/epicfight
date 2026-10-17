@@ -1,0 +1,52 @@
+{
+	"loader": "forge:separate_transforms",
+	"base":
+	{
+		"loader": "forge:obj",
+  		"model": "epicfight:models/item/obj/greatsword.obj",
+  		"flip_v": true,
+		"display":
+  		{
+    		"thirdperson_righthand":
+    		{
+      			"translation": [3.25, -5.0, 5.28],
+      			"rotation": [80, 0, 0],
+      			"scale": [0.5, 0.5, 0.5]
+    		},
+    		"firstperson_righthand":
+    		{
+      			"translation": [0.5, -0.3, 0.1],
+      			"rotation": [90,0,0],
+      			"scale": [0.25, 0.25, 0.25]
+    		}
+  		}
+	},
+	"perspectives":
+	{
+		"ground":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/greatsword"
+			}
+		},
+		"gui":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/greatsword"
+			},
+			"gui_light": "front"
+		},
+		"fixed":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/greatsword"
+			}
+		}
+	}
+}

@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.screen;
+import net.minecraft.client.Minecraft;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,8 +43,8 @@ public class ImportModelScreen extends Screen {
 		super(Component.literal("register_model_screen"));
 		
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
-		this.font = parentScreen.getMinecraft().font;
+		this.minecraft = Minecraft.getInstance();
+		this.font = Minecraft.getInstance().font;
 		
 		Stream<PackEntry<String, AssetAccessor<? extends SkinnedMesh>>> meshesStream = DatapackEditScreen.getCurrentScreen().getUserMeshes().entrySet().stream().map((entry) -> PackEntry.ofValue(entry.getKey().toString(), entry.getValue()));
 		this.userMeshes = new ArrayList<>(meshesStream.toList());
@@ -55,7 +56,7 @@ public class ImportModelScreen extends Screen {
 		ScreenRectangle screenRect = parentScreen.getRectangle();
 		int split = screenRect.width() / 2 - 60;
 		
-		this.meshGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.meshGrid = Grid.builder(this, Minecraft.getInstance())
 								.xy1(8, screenRect.top() + 14)
 								.xy2(split - 10, screenRect.height() - 21)
 								.rowHeight(26)
@@ -73,7 +74,7 @@ public class ImportModelScreen extends Screen {
 								})
 								.build();
 		
-		this.armatureGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.armatureGrid = Grid.builder(this, Minecraft.getInstance())
 								.xy1(8, screenRect.top() + 14)
 								.xy2(split - 10, screenRect.height() - 21)
 								.rowHeight(26)

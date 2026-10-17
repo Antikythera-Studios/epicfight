@@ -3,14 +3,14 @@ package yesman.epicfight.registry.deferred;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.registry.deferred_shim.DeferredRegisterShim;
 import yesman.epicfight.api.ex_cap.data.modifier.WeaponModifier;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.registry.deferred.holders.DeferredModifier;
 
 import java.util.function.Supplier;
 
-public final class ModifierRegister extends DeferredRegister<WeaponModifier.Builder> {
+public final class ModifierRegister extends DeferredRegisterShim<WeaponModifier.Builder> {
     private ModifierRegister(ResourceKey<? extends Registry<WeaponModifier.Builder>> registryKey, String namespace) {
         super(registryKey, namespace);
     }
@@ -29,6 +29,6 @@ public final class ModifierRegister extends DeferredRegister<WeaponModifier.Buil
                 ResourceLocation.fromNamespaceAndPath(this.getNamespace(), name)
         );
 
-        return new DeferredModifier(key);
+        return new DeferredModifier(key, () -> null);
     }
 }

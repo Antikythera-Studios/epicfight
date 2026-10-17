@@ -1,4 +1,5 @@
 package yesman.epicfight.config;
+import yesman.epicfight.EpicFight;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -6,13 +7,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.ModConfigSpec.*;
+import net.fabricmc.api.EnvType;
+
+
+import yesman.epicfight.platform.neoforged.fml.config.ModConfig;
+
+import yesman.epicfight.platform.neoforged.common.ModConfigSpec;
+import yesman.epicfight.platform.neoforged.common.ModConfigSpec.*;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 
 import static yesman.epicfight.generated.LangKeys.*;
 
-@EventBusSubscriber(modid = EpicFightMod.MODID, value = Dist.CLIENT)
+
 public class ClientConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
@@ -96,7 +97,7 @@ public class ClientConfig {
         return false;
     });
 
-    public static final ConfigValue<List<? extends String>> MINING_CATEGORIZED_ITEMS = BUILDER.defineListAllowEmpty("ingame.mining_preferred_items", Lists.newArrayList(), null, (element) -> {
+    public static final ConfigValue<List<? extends String>> MINING_CATEGORIZED_ITEMS = BUILDER.defineList("ingame.mining_preferred_items", Lists.newArrayList(), null, (element) -> {
         if (element instanceof String str) {
             return str.contains(":");
         }
@@ -136,72 +137,72 @@ public class ClientConfig {
     // Config Spec
     public static final ModConfigSpec SPEC = BUILDER.build();
 
-    // Config values
+    // Config values — initialized with defaults so the mod works even without a config file
 
     // Graphic Config values
-    public static boolean bloodEffects;
-    public static boolean activateComputeShader;
-    public static boolean activatePersistentBuffer;
-    public static boolean groundSlams;
+    public static boolean bloodEffects = true;
+    public static boolean activateComputeShader = false;
+    public static boolean activatePersistentBuffer = false;
+    public static boolean groundSlams = true;
 
     // Model Config values
-    public static int maxStuckProjectiles;
-    public static boolean enableAnimatedFirstPersonModel;
-    public static boolean enableOriginalModel;
-    public static boolean enableCosmetics;
+    public static int maxStuckProjectiles = 30;
+    public static boolean enableAnimatedFirstPersonModel = true;
+    public static boolean enableOriginalModel = true;
+    public static boolean enableCosmetics = true;
 
     // Camera Config values
-    public static boolean enableFirstPersonCameraMove;
+    public static boolean enableFirstPersonCameraMove = true;
 
     /** Use {@link #getTpsActivationType()} to handle null */
     @Deprecated @ApiStatus.Internal
-    public static TPSActivationType tpsType;
-    public static int cameraHorizontalLocation;
-    public static int cameraVerticalLocation;
-    public static int cameraZoom;
-    public static int entityFocusingRange;
-    public static boolean lockOnSnapping;
+    public static TPSActivationType tpsType = TPSActivationType.ON_AIMING;
+    public static int cameraHorizontalLocation = -5;
+    public static int cameraVerticalLocation = 0;
+    public static int cameraZoom = 3;
+    public static int entityFocusingRange = 20;
+    public static boolean lockOnSnapping = true;
 
     // Control Config values
-    public static int holdingThreshold;
-    public static boolean autoPerspectiveSwithing;
-    public static CanceledVanillaActions canceledVanillaActions;
-    public static PlayerBehaviorStrategy playerBehaviorStrategy;
-    public static CameraPerspectiveToggleMode cameraPerspectiveToggleMode;
-    public static Set<Item> combatCategorizedItems;
-    public static Set<Item> miningCategorizedItems;
+    public static int holdingThreshold = 2;
+    public static boolean autoPerspectiveSwithing = false;
+    public static CanceledVanillaActions canceledVanillaActions = CanceledVanillaActions.INTERACTION;
+    public static PlayerBehaviorStrategy playerBehaviorStrategy = PlayerBehaviorStrategy.ADAPTIVE;
+    public static CameraPerspectiveToggleMode cameraPerspectiveToggleMode = CameraPerspectiveToggleMode.VANILLA;
+    public static Set<Item> combatCategorizedItems = new java.util.HashSet<>();
+    public static Set<Item> miningCategorizedItems = new java.util.HashSet<>();
 
     // UI Config values
-    public static boolean showTargetIndicator;
-    public static HealthBarVisibility healthBarVisibility;
-    public static boolean showEpicFightAttributesInTooltip;
-    public static double targetOutlineColor;
+    public static boolean showTargetIndicator = true;
+    public static HealthBarVisibility healthBarVisibility = HealthBarVisibility.HURT;
+    public static boolean showEpicFightAttributesInTooltip = true;
+    public static double targetOutlineColor = 0.0;
     public static int packedTargetOutlineColor = 0xFFFFFFFF;
-    public static BlockGuideOptions mineBlockGuideOption;
-    public static boolean enableTargetEntityGuide;
+    public static BlockGuideOptions mineBlockGuideOption = BlockGuideOptions.CROSSHAIR;
+    public static boolean enableTargetEntityGuide = true;
 
     // UI Component position values
-    public static int staminaBarX;
-    public static int staminaBarY;
-    public static HorizontalBasis staminaBarBaseX;
-    public static VerticalBasis staminaBarBaseY;
-    public static int weaponInnateX;
-    public static int weaponInnateY;
-    public static HorizontalBasis weaponInnateBaseX;
-    public static VerticalBasis weaponInnateBaseY;
-    public static int passiveX;
-    public static int passiveY;
-    public static HorizontalBasis passiveBaseX;
-    public static VerticalBasis passiveBaseY;
-    public static AlignDirection passiveAlignDirection;
-    public static int chargingBarX;
-    public static int chargingBarY;
-    public static HorizontalBasis chargingBarBaseX;
-    public static VerticalBasis chargingBarBaseY;
+    public static int staminaBarX = 120;
+    public static int staminaBarY = 10;
+    public static HorizontalBasis staminaBarBaseX = HorizontalBasis.RIGHT;
+    public static VerticalBasis staminaBarBaseY = VerticalBasis.BOTTOM;
+    public static int weaponInnateX = 42;
+    public static int weaponInnateY = 48;
+    public static HorizontalBasis weaponInnateBaseX = HorizontalBasis.RIGHT;
+    public static VerticalBasis weaponInnateBaseY = VerticalBasis.BOTTOM;
+    public static int passiveX = 70;
+    public static int passiveY = 36;
+    public static HorizontalBasis passiveBaseX = HorizontalBasis.RIGHT;
+    public static VerticalBasis passiveBaseY = VerticalBasis.BOTTOM;
+    public static AlignDirection passiveAlignDirection = AlignDirection.HORIZONTAL;
+    public static int chargingBarX = -119;
+    public static int chargingBarY = 60;
+    public static HorizontalBasis chargingBarBaseX = HorizontalBasis.CENTER;
+    public static VerticalBasis chargingBarBaseY = VerticalBasis.CENTER;
 
-    @SubscribeEvent
-    static void epicfight$modConfigLoading(final ModConfigEvent.Loading event) {
-        if (event.getConfig().getType() != ModConfig.Type.CLIENT) {
+    
+    public static void epicfight$modConfigLoading(final ModConfig config) {
+        if (config.getType() != ModConfig.Type.CLIENT) {
             return;
         }
 
@@ -260,8 +261,8 @@ public class ClientConfig {
         chargingBarBaseX = CHARGING_BAR_BASE_X.get();
         chargingBarBaseY = CHARGING_BAR_BASE_Y.get();
 
-        if (EpicFightServerConnectionHelper.init(event.getConfig().getFullPath().getParent().toString())) {
-            EpicFightMod.LOGGER.info("Epic Fight web server connection helper: supported");
+        if (EpicFightServerConnectionHelper.init(config.getFullPath().getParent().toString())) {
+            EpicFight.LOGGER.info("Epic Fight web server connection helper: supported");
 
             try {
                 // Try loading epic skins code dynamically
@@ -270,10 +271,10 @@ public class ClientConfig {
                 authImpl.setAccessible(true);
                 Object o = authImpl.newInstance();
             } catch (Exception e) {
-                EpicFightMod.LOGGER.info("Epic Fight web server status: Failed at initializing Authentication provider: " + e);
+                EpicFight.LOGGER.info("Epic Fight web server status: Failed at initializing Authentication provider: " + e);
             }
         } else {
-            EpicFightMod.LOGGER.info("Epic Fight web server connection helper: unsupported");
+            EpicFight.LOGGER.info("Epic Fight web server connection helper: unsupported");
         }
 
         if (EpicFightServerConnectionHelper.supported() && ClientEngine.getInstance().getAuthHelper().valid()) {
@@ -677,7 +678,7 @@ public class ClientConfig {
         if (tpsType == null) {
             Exception noConfigValueException = new IllegalStateException("TPS Type is null");
 
-            EpicFightMod.LOGGER.warn(
+            EpicFight.LOGGER.warn(
                 "Epic Fight Config error: TPS Type is null",
                 noConfigValueException
             );

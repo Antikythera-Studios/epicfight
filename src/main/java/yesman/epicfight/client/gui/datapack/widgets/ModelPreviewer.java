@@ -436,7 +436,7 @@ public class ModelPreviewer extends AbstractWidget implements ResizableComponent
 					
 					BakedModel model = itemRenderer.getItemModelShaper().getItemModel(this.item);
 					BakedModel overridedModel = model.getOverrides().resolve(model, itemstack, null, null, 0);
-					DynamicTexture light = Minecraft.getInstance().gameRenderer.lightTexture().lightTexture;
+					DynamicTexture light = Minecraft.getInstance().gameRenderer.lightTexture() != null ? ((yesman.epicfight.mixin.client.LightTextureAccessor) Minecraft.getInstance().gameRenderer.lightTexture()).epicfight$getLightTexture() : null;
 					
 					// Update light color
 					light.getPixels().setPixelRGBA(0, 0, 0xFFFFFFFF);

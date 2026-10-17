@@ -1,4 +1,5 @@
 package yesman.epicfight.api.client.model.transformer;
+import yesman.epicfight.EpicFight;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -58,7 +59,7 @@ public class HumanoidModelBaker {
 			out.putNextEntry(zipEntry);
 			out.write(gson.toJson(entry.getValue().toJsonObject()).getBytes());
 			out.closeEntry();
-			EpicFightMod.LOGGER.info("Exported custom armor model : " + entry.getKey());
+			EpicFight.LOGGER.info("Exported custom armor model : " + entry.getKey());
 		}
 		
 		ZipEntry zipEntry = new ZipEntry("pack.mcmeta");
@@ -89,7 +90,7 @@ public class HumanoidModelBaker {
 				try {
 					skinnedArmorModel = modelTransformer.transformArmorModel(humanoidModel, entityLiving, itemstack, slot);
 				} catch (Exception e) {
-					EpicFightMod.LOGGER.warn("Can't transform the model of " + BuiltInRegistries.ITEM.getKey(armorItem) + " because of :");
+					EpicFight.LOGGER.warn("Can't transform the model of " + BuiltInRegistries.ITEM.getKey(armorItem) + " because of :");
 					e.printStackTrace();
 					EXCEPTIONAL_MODELS.add(armorItem);
 				}

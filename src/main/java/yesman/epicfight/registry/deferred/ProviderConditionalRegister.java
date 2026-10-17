@@ -3,14 +3,14 @@ package yesman.epicfight.registry.deferred;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.registry.deferred_shim.DeferredRegisterShim;
 import yesman.epicfight.api.ex_cap.provider.ProviderConditional;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.registry.deferred.holders.DeferredConditional;
 
 import java.util.function.Supplier;
 
-public final class ProviderConditionalRegister extends DeferredRegister<ProviderConditional.Builder> {
+public final class ProviderConditionalRegister extends DeferredRegisterShim<ProviderConditional.Builder> {
     private ProviderConditionalRegister(ResourceKey<? extends Registry<ProviderConditional.Builder>> registryKey, String namespace) {
         super(registryKey, namespace);
     }
@@ -37,6 +37,6 @@ public final class ProviderConditionalRegister extends DeferredRegister<Provider
 
         // 3. Return the specialized holder wrapping the key
         // This allows for type-safe referencing in moveset definitions
-        return new DeferredConditional(key);
+        return new DeferredConditional(key, () -> null);
     }
 }

@@ -46,7 +46,7 @@ import yesman.epicfight.client.renderer.EpicFightRenderTypes;
 import yesman.epicfight.client.renderer.RenderingTool;
 import yesman.epicfight.client.renderer.patched.item.RenderItemBase;
 import yesman.epicfight.gameasset.Animations;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.main.EpicFightSharedConstants;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
@@ -85,7 +85,7 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
     public StaticAnimation() {
         super(0.0F, true);
 
-        this.resourceLocation = EpicFightMod.identifier("emtpy");
+        this.resourceLocation = EpicFight.identifier("emtpy");
         this.armature = null;
         this.filehash = StringUtil.EMPTY_STRING;
     }
@@ -234,6 +234,11 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
     public void begin(LivingEntityPatch<?> entitypatch) {
         // Load if null
         this.getAnimationClip();
+        if (this.accessor != null && entitypatch.isLogicalClient() && EpicFight.LOGGER.isDebugEnabled()) {
+            EpicFight.LOGGER.debug("[EFDBG] anim begin {} id={} obj={} tickEvents={} beginEvents={}", this.getRegistryName(), this.getId(), System.identityHashCode(this),
+                this.getProperty(StaticAnimationProperty.TICK_EVENTS).map(e -> ((java.util.Collection<?>) e).size()).orElse(0),
+                this.getProperty(StaticAnimationProperty.ON_BEGIN_EVENTS).map(e -> ((java.util.Collection<?>) e).size()).orElse(0));
+        }
 
         // Please fix this implementation when minecraft supports any mixinable method that returns noPhysics variable
         this.getProperty(StaticAnimationProperty.NO_PHYSICS).ifPresent(val -> {
@@ -483,6 +488,9 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
 
     @SuppressWarnings("unchecked")
     public <A extends StaticAnimation> A addEvents(AnimationEvent<?, ?>... events) {
+        if (this.accessor != null && EpicFight.LOGGER.isDebugEnabled()) {
+            EpicFight.LOGGER.debug("[EFDBG] addEvents on {} obj={} count={}", this.getRegistryName(), System.identityHashCode(this), events.length);
+        }
         this.properties.computeIfPresent(StaticAnimationProperty.TICK_EVENTS, (k, v) -> {
             return Stream.concat(((Collection<?>)v).stream(), List.of(events).stream()).toList();
         });

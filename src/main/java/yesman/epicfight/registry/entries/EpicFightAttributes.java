@@ -1,4 +1,6 @@
 package yesman.epicfight.registry.entries;
+import yesman.epicfight.platform.fabric.event.EntityAttributeModificationEvent;
+import yesman.epicfight.platform.fabric.event.EntityAttributeCreationEvent;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -10,14 +12,13 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+
+
+
+
+import yesman.epicfight.registry.deferred_shim.DeferredHolderShim;
+import yesman.epicfight.registry.deferred_shim.DeferredRegisterShim;
 import yesman.epicfight.EpicFight;
-import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.world.capabilities.entitypatch.boss.WitherGhostPatch;
 import yesman.epicfight.world.capabilities.entitypatch.boss.WitherPatch;
 import yesman.epicfight.world.capabilities.entitypatch.boss.enderdragon.EnderDragonPatch;
@@ -41,28 +42,28 @@ public final class EpicFightAttributes {
 		Attributes.ATTACK_DAMAGE.value().setSyncable(true);
 	}
 	
-	public static final DeferredRegister<Attribute> REGISTRY = DeferredRegister.create(Registries.ATTRIBUTE, EpicFightMod.MODID);
+	public static final DeferredRegisterShim<Attribute> REGISTRY = new DeferredRegisterShim<>(Registries.ATTRIBUTE, EpicFight.MODID);
 	
-    public static final DeferredHolder<Attribute, Attribute> MAX_STAMINA = REGISTRY.register("stamina", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".stamina", 15.0D, 0.0D, 1024.0D).setSyncable(true));
-    public static final DeferredHolder<Attribute, Attribute> STAMINA_REGEN = REGISTRY.register("stamina_regen", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".stamina_regen", 1.0D, 0.0D, 30.0D).setSyncable(true));
-    public static final DeferredHolder<Attribute, Attribute> STUN_ARMOR = REGISTRY.register("stun_armor", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".stun_armor", 0.0D, 0.0D, 1024.0D).setSyncable(true));
-    public static final DeferredHolder<Attribute, Attribute> WEIGHT = REGISTRY.register("weight", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".weight", 0.0D, 0.0D, 1024.0).setSyncable(true));
-    public static final DeferredHolder<Attribute, Attribute> MAX_STRIKES = REGISTRY.register("max_strikes", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".max_strikes", 1.0D, 1.0D, 1024.0).setSyncable(true));
-	public static final DeferredHolder<Attribute, Attribute> ARMOR_NEGATION = REGISTRY.register("armor_negation", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".armor_negation", 0.0D, 0.0D, 100.0D).setSyncable(true));
-	public static final DeferredHolder<Attribute, Attribute> IMPACT = REGISTRY.register("impact", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".impact", 0.5D, 0.0D, 1024.0).setSyncable(true));
-	public static final DeferredHolder<Attribute, Attribute> ASSASSINATION_RESISTANCE = REGISTRY.register("execution_resistance", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".execution_resistance", 0.0D, 0.0D, 10.0D).setSyncable(true));
+    public static final DeferredHolderShim<Attribute, Attribute> MAX_STAMINA = REGISTRY.register("stamina", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".stamina", 15.0D, 0.0D, 1024.0D).setSyncable(true));
+    public static final DeferredHolderShim<Attribute, Attribute> STAMINA_REGEN = REGISTRY.register("stamina_regen", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".stamina_regen", 1.0D, 0.0D, 30.0D).setSyncable(true));
+    public static final DeferredHolderShim<Attribute, Attribute> STUN_ARMOR = REGISTRY.register("stun_armor", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".stun_armor", 0.0D, 0.0D, 1024.0D).setSyncable(true));
+    public static final DeferredHolderShim<Attribute, Attribute> WEIGHT = REGISTRY.register("weight", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".weight", 0.0D, 0.0D, 1024.0).setSyncable(true));
+    public static final DeferredHolderShim<Attribute, Attribute> MAX_STRIKES = REGISTRY.register("max_strikes", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".max_strikes", 1.0D, 1.0D, 1024.0).setSyncable(true));
+	public static final DeferredHolderShim<Attribute, Attribute> ARMOR_NEGATION = REGISTRY.register("armor_negation", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".armor_negation", 0.0D, 0.0D, 100.0D).setSyncable(true));
+	public static final DeferredHolderShim<Attribute, Attribute> IMPACT = REGISTRY.register("impact", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".impact", 0.5D, 0.0D, 1024.0).setSyncable(true));
+	public static final DeferredHolderShim<Attribute, Attribute> ASSASSINATION_RESISTANCE = REGISTRY.register("execution_resistance", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".execution_resistance", 0.0D, 0.0D, 10.0D).setSyncable(true));
 	
-	public static final DeferredHolder<Attribute, Attribute> OFFHAND_ATTACK_SPEED = REGISTRY.register("offhand_attack_speed", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".offhand_attack_speed", 4.0D, 0.0D, 1024.0D).setSyncable(true));
-	public static final DeferredHolder<Attribute, Attribute> OFFHAND_MAX_STRIKES = REGISTRY.register("offhand_max_strikes", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".offhand_max_strikes", 1.0D, 1.0D, 1024.0).setSyncable(true));
-	public static final DeferredHolder<Attribute, Attribute> OFFHAND_ARMOR_NEGATION = REGISTRY.register("offhand_armor_negation", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".offhand_armor_negation", 0.0D, 0.0D, 100.0D).setSyncable(true));
-	public static final DeferredHolder<Attribute, Attribute> OFFHAND_IMPACT = REGISTRY.register("offhand_impact", () -> new RangedAttribute("attribute.name." + EpicFightMod.MODID + ".offhand_impact", 0.5D, 0.0D, 1024.0).setSyncable(true));
+	public static final DeferredHolderShim<Attribute, Attribute> OFFHAND_ATTACK_SPEED = REGISTRY.register("offhand_attack_speed", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".offhand_attack_speed", 4.0D, 0.0D, 1024.0D).setSyncable(true));
+	public static final DeferredHolderShim<Attribute, Attribute> OFFHAND_MAX_STRIKES = REGISTRY.register("offhand_max_strikes", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".offhand_max_strikes", 1.0D, 1.0D, 1024.0).setSyncable(true));
+	public static final DeferredHolderShim<Attribute, Attribute> OFFHAND_ARMOR_NEGATION = REGISTRY.register("offhand_armor_negation", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".offhand_armor_negation", 0.0D, 0.0D, 100.0D).setSyncable(true));
+	public static final DeferredHolderShim<Attribute, Attribute> OFFHAND_IMPACT = REGISTRY.register("offhand_impact", () -> new RangedAttribute("attribute.name." + EpicFight.MODID + ".offhand_impact", 0.5D, 0.0D, 1024.0).setSyncable(true));
 	
 	// Modifier ids for epicfight attribute
-	public static final ResourceLocation ARMOR_NEGATION_MODIFIER = EpicFightMod.identifier("armor_negation");
+	public static final ResourceLocation ARMOR_NEGATION_MODIFIER = EpicFight.identifier("armor_negation");
 	public static final ResourceLocation MAX_STRIKE_MODIFIER = EpicFight.identifier("max_strikes");
 	public static final ResourceLocation IMPACT_MODIFIER = EpicFight.identifier("impact");
-	public static final ResourceLocation ATTACK_DAMAGE_MODIFIER = EpicFightMod.identifier("attack_damage");
-	public static final ResourceLocation ATTACK_SPEED_MODIFIER = EpicFightMod.identifier("attack_speed");
+	public static final ResourceLocation ATTACK_DAMAGE_MODIFIER = EpicFight.identifier("attack_damage");
+	public static final ResourceLocation ATTACK_SPEED_MODIFIER = EpicFight.identifier("attack_speed");
     
 	public static AttributeModifier getArmorNegationModifier(double value) {
 		return new AttributeModifier(ARMOR_NEGATION_MODIFIER, value, AttributeModifier.Operation.ADD_VALUE);
@@ -84,18 +85,18 @@ public final class EpicFightAttributes {
 		return new AttributeModifier(ATTACK_SPEED_MODIFIER, value, AttributeModifier.Operation.ADD_VALUE);
 	}
 	
-	@EventBusSubscriber(modid = EpicFightMod.MODID)
+	
 	public static final class EventBus {
 		private EventBus() {}
 		
-		@SubscribeEvent
+		
 		public static void entityAttributeCreationEvent(EntityAttributeCreationEvent event) {
 			event.put(EpicFightEntityTypes.WITHER_SKELETON_MINION.get(), AbstractSkeleton.createAttributes().build());
 			event.put(EpicFightEntityTypes.WITHER_GHOST_CLONE.get(), WitherGhostClone.createAttributes().build());
 			event.put(EpicFightEntityTypes.DODGE_LOCATION_INDICATOR.get(), LivingEntity.createLivingAttributes().build());
 		}
 		
-		@SubscribeEvent
+		
 		public static void entityAttributeModificationEvent(EntityAttributeModificationEvent event) {
 			common(EntityType.CAVE_SPIDER, event);
 			common(EntityType.EVOKER, event);

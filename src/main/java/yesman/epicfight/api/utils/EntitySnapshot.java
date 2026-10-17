@@ -1,4 +1,5 @@
 package yesman.epicfight.api.utils;
+import yesman.epicfight.platform.neoforged.client.ClientHooks;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,7 +27,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.ClientHooks;
+
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
 import yesman.epicfight.api.animation.Pose;
@@ -46,6 +47,7 @@ import yesman.epicfight.client.renderer.patched.layer.PatchedCapeLayer;
 import yesman.epicfight.client.renderer.patched.layer.WearableItemLayer;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.AbstractClientPlayerPatch;
 import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.mixin.client.MinecraftAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 import java.util.List;
@@ -110,7 +112,7 @@ public class EntitySnapshot<T extends LivingEntityPatch<?>> {
 				return;
 			}
 			
-			EquipmentSlot armorSlot = itemstack.getEquipmentSlot();
+			EquipmentSlot armorSlot = ((ArmorItem)itemstack.getItem()).getEquipmentSlot();
 			SkinnedMesh armor = WearableItemLayer.getCachedModel(itemstack.getItem());
 			ResourceLocation texture = WearableItemLayer.getArmorResource(entitypatch.getOriginal(), itemstack, armorSlot, null);
 			
@@ -178,10 +180,8 @@ public class EntitySnapshot<T extends LivingEntityPatch<?>> {
 					MathUtils.mulStack(poseStack, RenderEngine.getInstance().getItemRenderer(itemstack).getCorrectionMatrix(this.entitypatch, items.getFirst(), this.poseMatrices));
 					bakedmodel = ClientHooks.handleCameraTransforms(poseStack, bakedmodel, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false);
 					poseStack.translate(-0.5F, -0.5F, -0.5F);
-					
-					for (var model : bakedmodel.getRenderPasses(itemstack, true)) {
-						renderModelLists(model, itemstack, packedLight, OverlayTexture.NO_OVERLAY, alpha, poseStack, buffers.getBuffer(rendertype), drawingFunction);
-					}
+
+					renderModelLists(bakedmodel, itemstack, packedLight, OverlayTexture.NO_OVERLAY, alpha, poseStack, buffers.getBuffer(rendertype), drawingFunction);
 				}
 				poseStack.popPose();
 			}
@@ -232,7 +232,7 @@ public class EntitySnapshot<T extends LivingEntityPatch<?>> {
 			int i = -1;
 			
 			if (flag && bakedquad.isTinted()) {
-				i = Minecraft.getInstance().getItemColors().getColor(pItemStack, bakedquad.getTintIndex());
+				i = ((MinecraftAccessor) Minecraft.getInstance()).epicfight$getItemColors().getColor(pItemStack, bakedquad.getTintIndex());
 			}
 			
 			float f = (float) (i >> 16 & 255) / 255.0F;

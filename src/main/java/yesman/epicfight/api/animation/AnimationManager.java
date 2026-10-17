@@ -15,8 +15,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.neoforged.bus.api.Event;
-import net.neoforged.fml.event.IModBusEvent;
+
+
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.EpicFight;
@@ -64,6 +64,48 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
 	private final Map<ResourceLocation, AnimationAccessor<? extends StaticAnimation>> animationByName = new HashMap<> ();
 	private final Map<AnimationAccessor<? extends StaticAnimation>, StaticAnimation> animations = new HashMap<> ();
 	private final Map<AnimationAccessor<? extends StaticAnimation>, String> resourcepackAnimationCommands = new HashMap<> ();
+
+	/// Mutations applied to an animation object after its construction (EDP config
+	/// files, virtualization protocols) live only on that instance — but {@link #apply}
+	/// clears {@link #animations} on every reload, and the accessor's {@code onLoad}
+	/// only replays construction-time properties. Journaled mutations are replayed
+	/// onto each freshly built instance so config-file events/properties survive
+	/// reloads. Keyed by registry name, not accessor instance, because datapack
+	/// animations get a fresh accessor (with a fresh id) on every reload.
+	private final PostLoadMutationJournal<ResourceLocation, StaticAnimation> postLoadMutations = new PostLoadMutationJournal<> ();
+
+	/// Records a mutation so it is re-applied every time the accessor's animation is
+	/// rebuilt after a reload. Call after mutating a loaded animation. Additive:
+	/// every call appends to the journal, so the consumer replays once per call.
+	public <T extends StaticAnimation> void journalPostLoadMutation(AnimationAccessor<? extends T> accessor, Consumer<T> mutation) {
+		this.postLoadMutations.record(accessor.registryName(), mutation, (Consumer<StaticAnimation>) (Consumer<?>) mutation);
+	}
+
+	/// Applies a post-load mutation to the accessor's current animation and records
+	/// it for replay on rebuilds, unless the exact {@code source} object was already
+	/// recorded under the accessor's registry name, in which case this is a no-op.
+	/// {@code accessor.get()} runs first so journaled mutations replay onto a fresh
+	/// instance before the new one applies. A failed mutation is never recorded.
+	public <T extends StaticAnimation> void applyPostLoadMutation(AnimationAccessor<? extends T> accessor, Object source, Consumer<T> mutation) {
+		this.postLoadMutations.apply(accessor.registryName(), source, accessor.get(), (Consumer<StaticAnimation>) (Consumer<?>) mutation);
+	}
+
+	private void replayPostLoadMutations(ResourceLocation registryName, StaticAnimation animation) {
+		this.postLoadMutations.replay(registryName, animation);
+	}
+
+	/**
+	 * Monotonic id source for animation accessors. Ids must never be reused while
+	 * {@link #animationById} retains entries: {@link #apply} clears {@link #animations}
+	 * on reload but keeps {@code inRegistry} accessors in the id map, so deriving ids
+	 * from {@code animations.size()} would recycle ids already owned by surviving
+	 * accessors and silently re-alias {@link #byId} to an unrelated animation.
+	 */
+	private final java.util.concurrent.atomic.AtomicInteger animationIdSource = new java.util.concurrent.atomic.AtomicInteger(0);
+
+	public static int allocateAnimationId() {
+		return INSTANCE.animationIdSource.incrementAndGet();
+	}
 
 	public static boolean checkNull(AssetAccessor<? extends StaticAnimation> animation) {
 		if (animation == null || animation.isEmpty()) {
@@ -122,11 +164,11 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
 	public static void readAnimationProperties(StaticAnimation animation) {
 		ResourceLocation dataLocation = getSubAnimationFileLocation(animation.getLocation(), AnimationSubFileReader.SUBFILE_CLIENT_PROPERTY);
 		ResourceLocation povLocation = getSubAnimationFileLocation(animation.getLocation(), AnimationSubFileReader.SUBFILE_POV_ANIMATION);
-		
+
 		getAnimationResourceManager().getResource(dataLocation).ifPresent((rs) -> {
 			AnimationSubFileReader.readAndApply(animation, rs, AnimationSubFileReader.SUBFILE_CLIENT_PROPERTY);
 		});
-		
+
 		getAnimationResourceManager().getResource(povLocation).ifPresent((rs) -> {
 			AnimationSubFileReader.readAndApply(animation, rs, AnimationSubFileReader.SUBFILE_POV_ANIMATION);
 		});
@@ -138,7 +180,6 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
 			serverResourceManager = resourceManager;
 		}
 
-		this.animations.clear();
 		this.animationById.entrySet().removeIf(entry -> !entry.getValue().inRegistry());
 		this.animationByName.entrySet().removeIf(entry -> !entry.getValue().inRegistry());
 		this.resourcepackAnimationCommands.clear();
@@ -156,6 +197,10 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
 
 	@Override
 	protected void apply(List<ResourceLocation> objects, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerIn) {
+		if (!objects.isEmpty() || !EpicFightSharedConstants.isPhysicalClient()) {
+			this.animations.clear();
+		}
+
 		Armatures.reload(resourceManager);
 
 		Set<ResourceLocation> registeredAnimation =
@@ -306,12 +351,10 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
 			}
 		}
 		
-		int animationCount = this.animations.size();
-		List<String> registryNames = Lists.newArrayList();
-		
-		for (int i = 0; i < animationCount; i++) {
-			registryNames.add(this.animationById.get(i + 1).registryName().toString());
-		}
+		List<String> registryNames = this.animationById.values().stream()
+			.sorted(Comparator.comparingInt(AnimationAccessor::id))
+			.map(accessor -> accessor.registryName().toString())
+			.collect(Collectors.toList());
 		
 		CPPairingAnimationRegistry registrySyncPacket = new CPPairingAnimationRegistry(registryNames);
 		EpicFightNetworkManager.sendToServer(registrySyncPacket);
@@ -403,13 +446,14 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
 			}
 		}
 		
-		AnimationAccessor<StaticAnimation> accessor = AnimationAccessorImpl.create(rl, this.animations.size() + 1, false, null);
+		AnimationAccessor<StaticAnimation> accessor = AnimationAccessorImpl.create(rl, allocateAnimationId(), false, null);
 		animation.setAccessor(accessor);
 		
 		this.resourcepackAnimationCommands.put(accessor, invocationCommand);
 		this.animationById.put(accessor.id(), accessor);
 		this.animationByName.put(accessor.registryName(), accessor);
 		this.animations.put(accessor, animation);
+		this.replayPostLoadMutations(rl, animation);
 	}
 
 	public interface AnimationAccessor<A extends DynamicAnimation> extends AssetAccessor<A> {
@@ -444,10 +488,22 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
 		
 		@Override
 		public A get() {
-			if (!INSTANCE.animations.containsKey(this)) {
-				INSTANCE.animations.put(this, this.onLoad.apply(this));
+			if (!INSTANCE.animations.containsKey(this) || INSTANCE.animations.get(this) == null) {
+				A loaded = this.onLoad.apply(this);
+				if (EpicFight.LOGGER.isDebugEnabled() && loaded != null && loaded.getLocation() != null && !INSTANCE.animations.containsValue(loaded)) {
+					EpicFight.LOGGER.debug("[EFDBG] anim load: {} id={} loc={} obj={}", this.registryName(), this.id(), loaded.getLocation(), System.identityHashCode(loaded));
+				}
+				INSTANCE.animations.put(this, loaded);
+				if (loaded != null) {
+					try {
+						INSTANCE.replayPostLoadMutations(this.registryName, loaded);
+					} catch (RuntimeException | Error e) {
+						INSTANCE.animations.remove(this, loaded);
+						throw e;
+					}
+				}
 			}
-			
+
 			return (A)INSTANCE.animations.get(this);
 		}
 
@@ -476,7 +532,10 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
 		}
 	}
 	
-	public static class AnimationRegistryEvent extends Event implements IModBusEvent {
+	/// Posted on the shared mod bus once all mod construction is done — lets addon
+	/// mods contribute builders via {@code @SubscribeEvent} handlers (upstream
+	/// semantics), instead of only the hardcoded registrations in EpicFightFabric.
+	public static class AnimationRegistryEvent {
 		private final List<AnimationBuilder> builders = Lists.newArrayList();
 		private final Set<String> namespaces = Sets.newHashSet();
 		
@@ -496,7 +555,7 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
 	
 	public record AnimationBuilder(String namespace, Consumer<AnimationBuilder> task) {
 		public <T extends StaticAnimation> AnimationManager.AnimationAccessor<T> nextAccessor(String id, Function<AnimationManager.AnimationAccessor<T>, T> onLoad) {
-			AnimationAccessor<T> accessor = AnimationAccessorImpl.create(ResourceLocation.fromNamespaceAndPath(this.namespace, id), INSTANCE.animations.size() + 1, true, onLoad);
+			AnimationAccessor<T> accessor = AnimationAccessorImpl.create(ResourceLocation.fromNamespaceAndPath(this.namespace, id), allocateAnimationId(), true, onLoad);
 			
 			INSTANCE.animationById.put(accessor.id(), accessor);
 			INSTANCE.animationByName.put(accessor.registryName(), accessor);

@@ -1,4 +1,5 @@
 package yesman.epicfight.api.client.input;
+import net.minecraft.client.Minecraft;
 
 import net.minecraft.client.player.Input;
 import net.minecraft.world.phys.Vec2;

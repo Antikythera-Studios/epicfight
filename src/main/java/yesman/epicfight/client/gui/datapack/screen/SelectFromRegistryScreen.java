@@ -44,14 +44,14 @@ public class SelectFromRegistryScreen<T> extends Screen {
 		super(Component.translatable("gui.epicfight.select", ParseUtil.snakeToSpacedCamel(registry.key().location().getPath())));
 		
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
-		this.font = parentScreen.getMinecraft().font;
+		this.minecraft = Minecraft.getInstance();
+		this.font = Minecraft.getInstance().font;
 		
 		final Map<ResourceLocation, T> filteredItems = Maps.newHashMap();
 		
 		registry.holders().map(Holder::value).filter(filter).forEach((value) -> filteredItems.put(registry.getKey(value), value));
 		
-		this.registryList = new RegistryList(parentScreen.getMinecraft(), this.width, this.height - 52, 36, 21, filteredItems);
+		this.registryList = new RegistryList(Minecraft.getInstance(), this.width, this.height - 52, 36, 21, filteredItems);
 		this.onPressRow = onPressRow;
 		this.onAccept = onAccept;
 		this.onCancel = onCancel;
@@ -61,7 +61,7 @@ public class SelectFromRegistryScreen<T> extends Screen {
 		super(Component.translatable("gui.epicfight.select", ParseUtil.snakeToSpacedCamel(title)));
 		
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
+		this.minecraft = Minecraft.getInstance();
 		this.font = this.minecraft.font;
 		
 		Map<ResourceLocation, T> filteredItems = entries.stream().filter((entry) -> filter.test(entry.getSecond())).reduce(Maps.newHashMap(), (map, element) -> {
@@ -72,7 +72,7 @@ public class SelectFromRegistryScreen<T> extends Screen {
 			return map1;
 		});
 		
-		this.registryList = new RegistryList(parentScreen.getMinecraft(), this.width, this.height - 68, 36, 21, filteredItems);
+		this.registryList = new RegistryList(Minecraft.getInstance(), this.width, this.height - 68, 36, 21, filteredItems);
 		this.onPressRow = onPressRow;
 		this.onAccept = onAccept;
 		this.onCancel = onCancel;

@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 @Deprecated
 public class ResizableButton extends Button implements ResizableComponent {
 	public ResizableButton(ResizableButton.Builder builder) {
-		super(builder);
+		super(builder.x, builder.y, builder.width, builder.height, builder.message, builder.onPress, Button.DEFAULT_NARRATION);
 		
 		this.x1 = builder.x1;
 		this.x2 = builder.x2;

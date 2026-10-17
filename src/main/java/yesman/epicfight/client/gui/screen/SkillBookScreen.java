@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.screen;
+import yesman.epicfight.platform.neoforged.client.ClientHooks;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -25,7 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.neoforged.neoforge.client.ClientHooks;
+
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
@@ -33,7 +34,7 @@ import yesman.epicfight.api.client.event.types.registry.RegisterAttributeIconEve
 import yesman.epicfight.api.client.event.types.registry.RegisterWeaponCategoryIconEvent;
 import yesman.epicfight.client.gui.datapack.widgets.Static;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.client.CPChangeSkill;
 import yesman.epicfight.registry.entries.EpicFightAttributes;
@@ -54,7 +55,7 @@ import static yesman.epicfight.generated.LangKeys.*;
 public class SkillBookScreen extends Screen {
     private static final Map<WeaponCategory, ItemStack> WEAPON_CATEGORY_ICONS = new HashMap<> ();
     private static final Map<Holder<Attribute>, TextureInfo> ATTRIBUTE_ICONS = new HashMap<> ();
-    private static final ResourceLocation SKILLBOOK_BACKGROUND = EpicFightMod.identifier("textures/gui/screen/skillbook.png");
+    private static final ResourceLocation SKILLBOOK_BACKGROUND = EpicFight.identifier("textures/gui/screen/skillbook.png");
 
     public static final TextureInfo HEALTH_TEXTURE_INFO = new TextureInfo(SKILLBOOK_BACKGROUND, 22, 205, 10, 10);
     public static final TextureInfo STAMINA_TEXTURE_INFO = new TextureInfo(SKILLBOOK_BACKGROUND, 32, 205, 10, 10);
@@ -101,7 +102,10 @@ public class SkillBookScreen extends Screen {
     protected final AttributeIconList consumptionList;
     protected final AttributeIconList providingAttributesList;
     protected final InteractionHand hand;
-    private double customScale;
+    /// -1 = unset. If [init] throws or never runs, render() must not divide by
+    /// a zero scale (that produces an infinite ortho projection → invisible GUI
+    /// with only the background blur visible).
+    private double customScale = -1.0D;
     private Button learnButton;
 
     public Button getLearnButton() {
@@ -183,8 +187,8 @@ public class SkillBookScreen extends Screen {
 
     @Override
     protected void init() {
-        Optional<SkillContainer> skillContainer = this.playerpatch.getSkillContainerFor(this.skill);
-        Optional<SkillContainer> priorSkillContainer = this.playerpatch.getSkillContainerFor(this.skill.getPriorSkill());
+        Optional<SkillContainer> skillContainer = this.playerpatch != null ? this.playerpatch.getSkillContainerFor(this.skill) : Optional.empty();
+        Optional<SkillContainer> priorSkillContainer = this.playerpatch != null ? this.playerpatch.getSkillContainerFor(this.skill.getPriorSkill()) : Optional.empty();
 
         boolean isUsing = skillContainer.isPresent();
         boolean meetsCondition = this.skill.getPriorSkill() == null || priorSkillContainer.isPresent();
@@ -218,7 +222,7 @@ public class SkillBookScreen extends Screen {
             buttonMessage = GUI_WIDGET_SKILL_BOOK_UNUSABLE;
         }
 
-        this.learnButton =
+        Button.Builder buttonBuilder =
             Button.builder(
                 Component.translatable(buttonMessage),
                 button -> {
@@ -232,11 +236,12 @@ public class SkillBookScreen extends Screen {
                     }
                 }
             )
-            .bounds(this.width / 2 + 54, this.height / 2 + 90, 67, 21)
-            .tooltip(Tooltip.create(tooltip, null))
-            .build(LearnButton::new);
+            .bounds(this.width / 2 + 54, this.height / 2 + 90, 67, 21);
 
-        if (isUsing || !meetsCondition) {
+        this.learnButton = new LearnButton(buttonBuilder);
+        this.learnButton.setTooltip(Tooltip.create(tooltip, null));
+
+        if (isUsing || !meetsCondition || this.playerpatch == null) {
             this.learnButton.active = false;
         }
 
@@ -292,28 +297,33 @@ public class SkillBookScreen extends Screen {
         }
     }
 
+    private double mouseScale() {
+        Window window = Minecraft.getInstance().getWindow();
+        return window.getGuiScale() / (this.customScale > 0.0D ? this.customScale : window.getGuiScale());
+    }
+
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        Window window = Minecraft.getInstance().getWindow();
-        return super.mouseClicked((int)(x * window.getGuiScale() / this.customScale), (int)(y * window.getGuiScale() / this.customScale), button);
+        double scale = this.mouseScale();
+        return super.mouseClicked((int)(x * scale), (int)(y * scale), button);
     }
 
     @Override
     public boolean mouseReleased(double x, double y, int button) {
-        Window window = Minecraft.getInstance().getWindow();
-        return super.mouseReleased((int)(x * window.getGuiScale() / this.customScale), (int)(y * window.getGuiScale() / this.customScale), button);
+        double scale = this.mouseScale();
+        return super.mouseReleased((int)(x * scale), (int)(y * scale), button);
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dx, double dy) {
-        Window window = Minecraft.getInstance().getWindow();
-        return super.mouseDragged((int)(mouseX * window.getGuiScale() / this.customScale), (int)(mouseY * window.getGuiScale() / this.customScale), button, dx, dy);
+        double scale = this.mouseScale();
+        return super.mouseDragged((int)(mouseX * scale), (int)(mouseY * scale), button, dx, dy);
     }
 
     @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double xScroll, double yScroll) {
-        Window window = Minecraft.getInstance().getWindow();
-        return super.mouseScrolled((int)(pMouseX * window.getGuiScale() / this.customScale), (int)(pMouseY * window.getGuiScale() / this.customScale), xScroll, yScroll);
+        double scale = this.mouseScale();
+        return super.mouseScrolled((int)(pMouseX * scale), (int)(pMouseY * scale), xScroll, yScroll);
     }
 
     @Override
@@ -326,16 +336,17 @@ public class SkillBookScreen extends Screen {
 
         Window window = Minecraft.getInstance().getWindow();
         double originalScale = window.getGuiScale();
+        double effectiveScale = this.customScale > 0.0D ? this.customScale : originalScale;
 
-        if (originalScale != this.customScale) {
-            window.setGuiScale(this.customScale);
+        if (originalScale != effectiveScale) {
+            window.setGuiScale(effectiveScale);
 
             //Fix: expand extra far plane distance
             Matrix4f matrix4f = (new Matrix4f()).setOrtho(0.0F, (float)((double)window.getWidth() / window.getGuiScale()), (float)((double)window.getHeight() / window.getGuiScale()), 0.0F, 1000.0F, ClientHooks.getGuiFarPlane());
             RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
 
-            mouseX = (int)(mouseX * (originalScale / this.customScale));
-            mouseY = (int)(mouseY * (originalScale / this.customScale));
+            mouseX = (int)(mouseX * (originalScale / effectiveScale));
+            mouseY = (int)(mouseY * (originalScale / effectiveScale));
         }
 
         if (!asBackground) {
@@ -397,7 +408,7 @@ public class SkillBookScreen extends Screen {
         guiGraphics.pose().popPose();
 
         // Recover the original projection matrix
-        if (originalScale != this.customScale) {
+        if (originalScale != effectiveScale) {
             window.setGuiScale(originalScale);
             Matrix4f matrix4f = (new Matrix4f()).setOrtho(0.0F, (float)((double)window.getWidth() / window.getGuiScale()), (float)((double)window.getHeight() / window.getGuiScale()), 0.0F, 1000.0F, ClientHooks.getGuiFarPlane());
             RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
@@ -660,13 +671,13 @@ public class SkillBookScreen extends Screen {
 
     private static class LearnButton extends Button {
         protected static final WidgetSprites SPRITES = new WidgetSprites(
-            EpicFightMod.identifier("widget/skillbook_button"),
-            EpicFightMod.identifier("widget/skillbook_button_disabled"),
-            EpicFightMod.identifier("widget/skillbook_button_highlighted")
+            EpicFight.identifier("widget/skillbook_button"),
+            EpicFight.identifier("widget/skillbook_button_disabled"),
+            EpicFight.identifier("widget/skillbook_button_highlighted")
         );
 
         protected LearnButton(Builder builder) {
-            super(builder);
+            super(builder.x, builder.y, builder.width, builder.height, builder.message, builder.onPress, Button.DEFAULT_NARRATION);
         }
 
         @Override
@@ -681,7 +692,7 @@ public class SkillBookScreen extends Screen {
             guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
             guiGraphics.pose().popPose();
 
-            int i = this.getFGColor();
+            int i = this.active ? 0xFFFFFF : 0xA0A0A0;
             this.renderString(guiGraphics, minecraft.font, i | Mth.ceil(this.alpha * 255.0F) << 24);
         }
     }

@@ -1,4 +1,5 @@
 package yesman.epicfight.api.utils;
+import yesman.epicfight.EpicFight;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -153,7 +154,7 @@ public class InstantiateInvoker {
 			
 			constructor = hint.getConstructor(oArgClss);
 		} catch (NoSuchMethodException e) {
-			//EpicFightMod.LOGGER.debug("Can't find the matching constructor for the hint class " + hint + ". Use the given class " + type);
+			//EpicFight.LOGGER.debug("Can't find the matching constructor for the hint class " + hint + ". Use the given class " + type);
 			constructor = type.getConstructor(oArgClss);
 		}
 		

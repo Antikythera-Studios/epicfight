@@ -329,7 +329,7 @@ public abstract class WeaponInnateSkill extends Skill {
         BufferBuilder bufferbuilder = tessellator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_TEX);
         
         for (int j = 0; j < vertexNum; j++) {
-        	bufferbuilder.addVertex(poseStack.last(), x + iconSize * CLOCK_POS[j].x, y + iconSize * CLOCK_POS[j].y, 0.0F).setUv(CLOCK_POS[j].x, CLOCK_POS[j].y);
+        	bufferbuilder.addVertex(poseStack.last(), (int)(x + iconSize * CLOCK_POS[j].x), (int)(y + iconSize * CLOCK_POS[j].y), 0.0F).setUv(CLOCK_POS[j].x, CLOCK_POS[j].y);
 		}
         
         bufferbuilder.addVertex(poseStack.last(), lastVertexX, lastVertexY, 0.0F).setUv(lastTexX, lastTexY);
@@ -345,11 +345,11 @@ public abstract class WeaponInnateSkill extends Skill {
         bufferbuilder = tessellator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_TEX);
         
         for (int j = 0; j < 2; j++) {
-        	bufferbuilder.addVertex(poseStack.last(), x + iconSize * CLOCK_POS[j].x, y + iconSize * CLOCK_POS[j].y, 0.0F).setUv(CLOCK_POS[j].x, CLOCK_POS[j].y);
+        	bufferbuilder.addVertex(poseStack.last(), (int)(x + iconSize * CLOCK_POS[j].x), (int)(y + iconSize * CLOCK_POS[j].y), 0.0F).setUv(CLOCK_POS[j].x, CLOCK_POS[j].y);
 		}
 		
 		for (int j = CLOCK_POS.length - 1; j >= vertexNum; j--) {
-        	bufferbuilder.addVertex(poseStack.last(), x + iconSize * CLOCK_POS[j].x, y + iconSize * CLOCK_POS[j].y, 0.0F).setUv(CLOCK_POS[j].x, CLOCK_POS[j].y);
+        	bufferbuilder.addVertex(poseStack.last(), (int)(x + iconSize * CLOCK_POS[j].x), (int)(y + iconSize * CLOCK_POS[j].y), 0.0F).setUv(CLOCK_POS[j].x, CLOCK_POS[j].y);
 		}
         
         bufferbuilder.addVertex(poseStack.last(), lastVertexX, lastVertexY, 0.0F).setUv(lastTexX, lastTexY);
@@ -361,17 +361,17 @@ public abstract class WeaponInnateSkill extends Skill {
         if (container.isActivated() && (container.getSkill().getActivateType() == ActivateType.DURATION || container.getSkill().getActivateType() == ActivateType.DURATION_INFINITE)) {
 			String s = String.format("%.0f", container.getRemainDuration() / 20.0F);
 			int stringWidth = (gui.getFont().width(s) - 6) / 3;
-			guiGraphics.drawString(gui.getFont(), s, x + 13 - stringWidth, y + 13, 16777215, true);
+			guiGraphics.drawString(gui.getFont(), s, (int)(x + 13 - stringWidth), (int)(y + 13), 16777215, true);
 		} else if (!fullstack) {
 			String s = String.valueOf((int)(cooldownRatio * 100.0F));
 			int stringWidth = (gui.getFont().width(s) - 6) / 3;
-			guiGraphics.drawString(gui.getFont(), s, x + 13 - stringWidth, y + 13, 16777215, true);
+			guiGraphics.drawString(gui.getFont(), s, (int)(x + 13 - stringWidth), (int)(y + 13), 16777215, true);
 		}
 		
 		if (container.getSkill().getMaxStack() > 1) {
 			String s = String.valueOf(container.getStack());
 			int stringWidth = (gui.getFont().width(s) - 6) / 3;
-			guiGraphics.drawString(gui.getFont(), s, x + 25 - stringWidth, y + 22, 16777215, true);
+			guiGraphics.drawString(gui.getFont(), s, (int)(x + 25 - stringWidth), (int)(y + 22), 16777215, true);
 		}
 		
 		RenderSystem.disableBlend();

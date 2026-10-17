@@ -21,7 +21,7 @@ import net.minecraft.world.level.entity.PersistentEntitySectionManager;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+
 import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -341,7 +341,10 @@ public final class VanillaEntityEventHooks {
                     }
 
                     if (knockBackAmount > 0.0F) {
-                        knockBackAmount *= 40.0F / hitEntityPatchAsHurtable.getWeight();
+                        float weight = hitEntityPatchAsHurtable.getWeight();
+                        if (weight > 0.0F) {
+                            knockBackAmount *= 40.0F / weight;
+                        }
 
                         hitEntityPatchAsHurtable.knockBackEntity(sourcePosition, knockBackAmount);
                     }
@@ -439,8 +442,9 @@ public final class VanillaEntityEventHooks {
                     shouldCancel = true;
                 }
 
-                if (rayResult.getEntity() instanceof PartEntity<?> partEntity) {
-                    Entity parent = partEntity.getParent();
+                // NeoForge uses PartEntity.getParent(); in vanilla, EnderDragonPart exposes the parent via the parentMob field
+                if (rayResult.getEntity() instanceof net.minecraft.world.entity.boss.EnderDragonPart enderDragonPart) {
+                    Entity parent = enderDragonPart.parentMob;
 
                     if (projectile.getOwner().is(parent)) {
                         shouldCancel = true;

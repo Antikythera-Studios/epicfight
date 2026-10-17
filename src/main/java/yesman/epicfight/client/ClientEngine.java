@@ -4,8 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.neoforged.neoforge.client.ClientHooks;
-import net.neoforged.neoforge.common.ModConfigSpec;
+
+import yesman.epicfight.platform.neoforged.common.ModConfigSpec;
 import yesman.epicfight.client.particle.EpicFightParticleRenderTypes;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.main.AuthenticationHelper;
@@ -62,13 +62,6 @@ public class ClientEngine {
 
     public boolean isVanillaModelDebuggingMode() {
         return this.vanillaModelDebuggingMode;
-    }
-
-    /// @Deprecated Use [EpicFightCapabilities#getCachedLocalPlayerPatch()] for better consistency of naming and modularization
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    @Nullable
-    public LocalPlayerPatch getPlayerPatch() {
-        return EpicFightCapabilities.getCachedLocalPlayerPatch();
     }
 
     public void initAuthHelper(AuthenticationHelper authHelper) {

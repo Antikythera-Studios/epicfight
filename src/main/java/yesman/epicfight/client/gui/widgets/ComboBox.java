@@ -51,7 +51,7 @@ public class ComboBox<T> extends AbstractWidget implements AnchoredWidget, DataB
         this.dataProvider = dataProvider;
         this.onWidgetChanged = onWidgetChanged;
 
-        this.comboItemList = new ComboItemList(parent.getMinecraft(), this.maxRows, 15);
+        this.comboItemList = new ComboItemList(Minecraft.getInstance(), this.maxRows, 15);
 
         for (T item : items) {
             this.comboItemList.addEntry(item, displayStringMapper.apply(item));

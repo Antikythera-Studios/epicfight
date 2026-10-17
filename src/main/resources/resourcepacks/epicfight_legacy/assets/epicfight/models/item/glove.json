@@ -1,0 +1,69 @@
+{
+	"loader": "forge:separate_transforms",
+	"base":
+	{
+		"loader": "forge:obj",
+  		"model": "epicfight:models/item/obj/glove.obj",
+  		"flip_v": true,
+  		"textures": { "#grip": "epicfight:item/swords.png" },
+  		"display":
+  		{
+    		"thirdperson_righthand":
+    		{
+      			"translation": [5, -5.75, 4.0],
+      			"rotation": [86, 0, 0],
+      			"scale": [0.6, 0.6, 0.6]
+    		},
+    		"thirdperson_lefthand":
+    		{
+      			"translation": [-5, -5.75, 4.0],
+      			"rotation": [86, 0, 0],
+      			"scale": [0.6, 0.6, 0.6]
+    		}
+  		}
+	},
+	"perspectives":
+	{
+		"ground":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/glove"
+			}
+		},
+		"gui":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/glove"
+			},
+			"gui_light": "front"
+		},
+		"fixed":
+		{
+			"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/glove"
+			}
+		},
+		"first_person_right_hand":
+    	{
+      		"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/glove"
+			}
+    	},
+    	"first_person_left_hand":
+    	{
+      		"parent": "item/generated",
+			"textures":
+			{
+				"layer0": "epicfight:item/glove"
+			}
+    	}
+	}
+}

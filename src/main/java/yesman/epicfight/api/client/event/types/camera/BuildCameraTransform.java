@@ -44,7 +44,7 @@ public abstract class BuildCameraTransform extends CameraAPIEvent {
         }
     }
 
-    /// This replaces [net.neoforged.neoforge.client.event.ViewportEvent.ComputeCameraAngles] event in NeoForge, allowing
+    /// This replaces [yesman.epicfight.platform.neoforged.client.event.Object.ComputeCameraAngles] event in NeoForge, allowing
     /// developers to modify local rotation of the camera
     public static final class Post extends BuildCameraTransform {
         public Post(EpicFightCameraAPI cameraApi, Camera camera, float partialTick) {
