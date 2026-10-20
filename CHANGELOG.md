@@ -27,15 +27,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Baked-light UV offset in patched item rendering
 - `/epicfight skill add` crashing system-chat encoding by passing raw `ResourceLocation` into translatable components
 - Combo arithmetic crash on movesets containing only two entries
-- Skill Book right-click opening a blurred screen without the parchment content; restored the original book layout
+- Skill Book right-click opening a blurred screen without the parchment content; the small-window GUI scaling now rescales the existing projection instead of rebuilding it, preserving vanilla's depth range so the book no longer lands on the far clip edge, and the window scale, projection, and vertex sorting are restored exactly after render
 - Skill Book category colors, symbols, and held/inventory/creative-tab rendering; category models now resolve to quads via the Fabric model-loading path
 - GLFW error from polling unbound keys (`GLFW_KEY_UNKNOWN`) in combat mode input checks
 - Client boot failure caused by stale diagnostic mixins
 - `NoClassDefFoundError: net/neoforged/bus/api/Event` on plain Fabric instances without `neoforge_compat`
+- Specialized deferred registers returning unbound alias holders instead of their registered entries
+- Moveset custom data binding to the weapon-data registry instead of the moveset-data registry
+- Client deferred content initialization when connecting directly to a remote server
+- Resource reload listener failures being swallowed before the preparation barrier
+- Mojang-mapped `InteractionHand` type names failing to resolve from animation JSON in production Fabric
+- Third-party looping player animations overriding Epic Fight battle-mode stances
 
 ### For Devs
 - `AnimationManager.AnimationRegistryEvent` is a plain class on Fabric; when `neoforge_compat` is present it is posted on `NeoForgeCompat.MOD_BUS` via `postAny`, so listeners must match the concrete event type rather than `Event` supertypes
 - Addons that rely on NeoForge-style events must declare `neoforge_compat` themselves — Epic Fight no longer ships or requires it
+- Client deferred registration runs once before initial resource-listener preparation; specialized registration helpers return the same holders that are queued for binding
 
 ### Known Limitations
 - Controlify and KubeJS are not currently supported on Fabric
