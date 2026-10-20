@@ -22,6 +22,13 @@ public class MCreatorPlayerAnimationsCompat implements ICompatModule {
     }
 
     private void renderEvent(ValidatePlayerModelEvent event) {
+        // Same gating as PlayerAnimatorCompat: yield the model to third-party
+        // animation systems only in vanilla mode, so a stale
+        // PlayerCurrentAnimation value can't hide Epic Fight stances.
+        if (event.getPlayerPatch().isEpicFightMode()) {
+            return;
+        }
+
         String animation = ((IPersistentEntityData) event.getPlayerPatch().getOriginal()).epicfight$getPersistentData().getString("PlayerCurrentAnimation");
         if (!animation.isEmpty()) event.setShouldRender(false);
     }

@@ -23,6 +23,14 @@ public class PlayerAnimatorCompat implements ICompatModule {
     }
 
     private void renderEvent(ValidatePlayerModelEvent event) {
+        // In Epic Fight mode the mod owns the player model; only hand the model
+        // over to playerAnimator while the patch is in vanilla mode. Otherwise
+        // looping pose animations (e.g. bettercombat pose_two_handed_katana)
+        // keep AnimationApplier.isActive() true forever and hide every stance.
+        if (event.getPlayerPatch().isEpicFightMode()) {
+            return;
+        }
+
         AnimationApplier playerAnimatorAnimation = ((IAnimatedPlayer) event.getPlayerPatch().getOriginal()).playerAnimator_getAnimation();
 
         if (!event.getPlayerPatch().getClientAnimator().getPlayerFor(null).getAnimation().get().isMainFrameAnimation() && // The case when playing EF animation that controls player location
