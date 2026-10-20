@@ -7,10 +7,15 @@ import yesman.epicfight.EpicFight;
 import yesman.epicfight.registry.deferred_shim.DeferredRegisterShim;
 
 /**
- * Runs the NeoForge-equivalent "all mod constructors done" phase once, at the
- * head of {@link net.minecraft.server.WorldLoader#load} — the first moment every
- * Fabric entrypoint (and therefore every animation/skill provider) is guaranteed
- * to have run.
+ * Runs the NeoForge-equivalent "all mod constructors done" phase once. It is
+ * invoked at the head of {@link net.minecraft.server.WorldLoader#load} (the
+ * integrated/dedicated-server world-load path) and also by
+ * {@code MixinClientResourceReload} at the FIRST client-resource reload -
+ * after {@code ReloadableResourceManager.createReload} has mounted the new
+ * {@code MultiPackResourceManager} but before any parallel listener
+ * preparation - so clients joining a remote server directly still run the
+ * deferred phase without racing the animation manager's first prepare.
+ * The phase is idempotent where reloads can re-trigger it.
  *
  * Order mirrors upstream NeoForge:
  *   1. {@link AnimationManager.AnimationRegistryEvent} — addon builders (EDP,

@@ -32,6 +32,7 @@
         "client.MixinMouseHandler",
         "client.MixinOptions",
         "client.MixinParticleEngine",
+        "client.MixinClientResourceReload",
         "client.MixinThrownTridentRenderer",
         "client.MixinBossHealthOverlay",
         "client.LightTextureAccessor",
