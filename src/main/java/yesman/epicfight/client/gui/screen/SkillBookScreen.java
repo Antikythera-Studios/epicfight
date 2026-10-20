@@ -1,5 +1,4 @@
 package yesman.epicfight.client.gui.screen;
-import yesman.epicfight.platform.neoforged.client.ClientHooks;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -317,7 +316,7 @@ public class SkillBookScreen extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dx, double dy) {
         double scale = this.mouseScale();
-        return super.mouseDragged((int)(mouseX * scale), (int)(mouseY * scale), button, dx, dy);
+        return super.mouseDragged((int)(mouseX * scale), (int)(mouseY * scale), button, dx * scale, dy * scale);
     }
 
     @Override
@@ -332,27 +331,53 @@ public class SkillBookScreen extends Screen {
     }
 
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, boolean asBackground) {
-        guiGraphics.pose().pushPose();
-
         Window window = Minecraft.getInstance().getWindow();
         double originalScale = window.getGuiScale();
         double effectiveScale = this.customScale > 0.0D ? this.customScale : originalScale;
 
-        if (originalScale != effectiveScale) {
-            window.setGuiScale(effectiveScale);
-
-            //Fix: expand extra far plane distance
-            Matrix4f matrix4f = (new Matrix4f()).setOrtho(0.0F, (float)((double)window.getWidth() / window.getGuiScale()), (float)((double)window.getHeight() / window.getGuiScale()), 0.0F, 1000.0F, ClientHooks.getGuiFarPlane());
-            RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
-
-            mouseX = (int)(mouseX * (originalScale / effectiveScale));
-            mouseY = (int)(mouseY * (originalScale / effectiveScale));
-        }
-
+        // The background draws under the screen's original projection so the
+        // blur covers the real window before the book projection takes over.
         if (!asBackground) {
             this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         }
 
+        if (originalScale == effectiveScale) {
+            guiGraphics.pose().pushPose();
+            this.renderBookContents(guiGraphics, mouseX, mouseY, partialTick);
+            guiGraphics.pose().popPose();
+            return;
+        }
+
+        // Flush batches queued under the original projection before swapping it.
+        guiGraphics.flush();
+
+        Matrix4f originalProjection = new Matrix4f(RenderSystem.getProjectionMatrix());
+        VertexSorting originalSorting = RenderSystem.getVertexSorting();
+
+        // Window#getGuiScale feeds widget scissor conversions, so it must mirror
+        // the book scale while the scaled projection is active.
+        window.setGuiScale(effectiveScale);
+        RenderSystem.setProjectionMatrix(SkillBookScreenProjection.forScale(originalProjection, originalScale, effectiveScale), originalSorting);
+
+        int scaledMouseX = (int)(mouseX * (originalScale / effectiveScale));
+        int scaledMouseY = (int)(mouseY * (originalScale / effectiveScale));
+
+        guiGraphics.pose().pushPose();
+        try {
+            this.renderBookContents(guiGraphics, scaledMouseX, scaledMouseY, partialTick);
+        } finally {
+            try {
+                guiGraphics.pose().popPose();
+                // Flush while the book projection is still active.
+                guiGraphics.flush();
+            } finally {
+                window.setGuiScale(originalScale);
+                RenderSystem.setProjectionMatrix(originalProjection, originalSorting);
+            }
+        }
+    }
+
+    private void renderBookContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int posX = (this.width - 284) / 2;
         int posY = (this.height - 165) / 2;
 
@@ -403,15 +428,6 @@ public class SkillBookScreen extends Screen {
 
         for (Renderable renderable : this.renderables) {
             renderable.render(guiGraphics, mouseX, mouseY, partialTick);
-        }
-
-        guiGraphics.pose().popPose();
-
-        // Recover the original projection matrix
-        if (originalScale != effectiveScale) {
-            window.setGuiScale(originalScale);
-            Matrix4f matrix4f = (new Matrix4f()).setOrtho(0.0F, (float)((double)window.getWidth() / window.getGuiScale()), (float)((double)window.getHeight() / window.getGuiScale()), 0.0F, 1000.0F, ClientHooks.getGuiFarPlane());
-            RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
         }
     }
 
