@@ -22,13 +22,13 @@ public final class ModifierRegister extends DeferredRegisterShim<WeaponModifier.
 
     public DeferredModifier registerModifier(String name, Supplier<WeaponModifier.Builder> builder)
     {
-        this.register(name, builder);
-
         ResourceKey<WeaponModifier.Builder> key = ResourceKey.create(
                 this.getRegistryKey(),
                 ResourceLocation.fromNamespaceAndPath(this.getNamespace(), name)
         );
 
-        return new DeferredModifier(key, () -> null);
+        DeferredModifier modifier = new DeferredModifier(key, builder);
+        this.addEntry(modifier);
+        return modifier;
     }
 }

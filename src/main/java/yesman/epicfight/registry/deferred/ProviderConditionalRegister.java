@@ -25,18 +25,12 @@ public final class ProviderConditionalRegister extends DeferredRegisterShim<Prov
      * This handle is used to define logic gates for moveset assignments and style switching.
      */
     public DeferredConditional registerConditional(String name, Supplier<ProviderConditional.Builder> builder) {
-        // 1. Register the builder to the NeoForge system via the internal supplier
-        this.register(name, builder);
-
-        // 2. Create the ResourceKey that matches the registry entry
-        // This uses the registry's namespace (modid) and the path (name)
         ResourceKey<ProviderConditional.Builder> key = ResourceKey.create(
                 this.getRegistryKey(),
                 ResourceLocation.fromNamespaceAndPath(this.getNamespace(), name)
         );
-
-        // 3. Return the specialized holder wrapping the key
-        // This allows for type-safe referencing in moveset definitions
-        return new DeferredConditional(key, () -> null);
+        DeferredConditional conditional = new DeferredConditional(key, builder);
+        this.addEntry(conditional);
+        return conditional;
     }
 }

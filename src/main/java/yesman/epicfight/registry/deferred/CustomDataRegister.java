@@ -28,12 +28,13 @@ public final class CustomDataRegister extends DeferredRegisterShim<CustomData<?>
 
 
     public <T> DeferredCustomData<CustomData<T>> registerCustomData(String name, Supplier<CustomData<T>> data) {
-        this.register(name, data);
         ResourceKey<CustomData<?>> key = ResourceKey.create(
                 this.getRegistryKey(),
                 ResourceLocation.fromNamespaceAndPath(this.getNamespace(), name)
         );
 
-        return new DeferredCustomData<>(key, () -> null);
+        DeferredCustomData<CustomData<T>> customData = new DeferredCustomData<>(key, data);
+        this.addEntry(customData);
+        return customData;
     }
 }

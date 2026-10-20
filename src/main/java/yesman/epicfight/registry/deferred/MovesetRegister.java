@@ -21,11 +21,12 @@ public final class MovesetRegister extends DeferredRegisterShim<Moveset.Builder>
     }
 
     public DeferredMoveset registerMoveset(String name, Supplier<Moveset.Builder> builder) {
-        this.register(name, builder);
         ResourceKey<Moveset.Builder> key = ResourceKey.create(
                 this.getRegistryKey(),
                 ResourceLocation.fromNamespaceAndPath(this.getNamespace(), name)
         );
-        return new DeferredMoveset(key, () -> null);
+        DeferredMoveset moveset = new DeferredMoveset(key, builder);
+        this.addEntry(moveset);
+        return moveset;
     }
 }
