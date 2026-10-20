@@ -126,9 +126,13 @@ public final class EpicFightReloadListeners {
                                                ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler,
                                                Executor backgroundExecutor, Executor gameExecutor) {
             return delegate.reload(stage, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor)
-                    .exceptionally(throwable -> {
-                        EpicFight.LOGGER.warn("Reload listener {} failed: {}", fabricId, throwable.getMessage());
-                        return null;
+                    .whenComplete((result, throwable) -> {
+                        // Log the failure with its stack trace but preserve the
+                        // exceptional outcome - converting it to success before
+                        // the barrier would hang every other reload listener.
+                        if (throwable != null) {
+                            EpicFight.LOGGER.warn("Reload listener {} failed", fabricId, throwable);
+                        }
                     });
         }
     }
