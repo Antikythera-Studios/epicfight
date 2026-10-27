@@ -241,6 +241,8 @@ val apiJarClassifier: String = "api"
 
 val apiJar: TaskProvider<Jar> = tasks.register<Jar>("apiJar") {
     group = "build"
+    archiveClassifier.set(apiJarClassifier)
+
     from(sourceSets.main.get().output) {
         include(apiPackage)
     }
@@ -293,6 +295,8 @@ publishMods {
         accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
         projectId = "405076"
         minecraftVersions.add("1.20.1")
+        clientRequired = true
+        serverRequired = true
         projectSlug = "epic-fight-mod"
     }
     // Modrinth publishing info
