@@ -280,7 +280,7 @@ publishMods {
     modLoaders.add("forge")
 
     // Type of the release: ALPHA, BETA, STABLE
-    type = STABLE
+    type = BETA
 
     // The name of the file appeared in publishing websites
     displayName = getFullModVersion()
