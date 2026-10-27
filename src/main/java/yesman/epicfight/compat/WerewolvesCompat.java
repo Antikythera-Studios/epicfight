@@ -21,7 +21,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import yesman.epicfight.api.client.forgeevent.PatchedRenderersEvent;
 import yesman.epicfight.api.client.forgeevent.RenderEpicFightPlayerEvent;
 import yesman.epicfight.api.client.model.SkinnedMesh;
-import yesman.epicfight.api.client.model.transformer.HumanoidModelBaker;
+import yesman.epicfight.api.client.model.transformer.HumanoidModelTransformer;
+import yesman.epicfight.api.client.model.transformer.VanillaModelTransformer;
 import yesman.epicfight.api.forgeevent.BattleModeSustainableEvent;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.client.renderer.EpicFightRenderTypes;
@@ -31,6 +32,8 @@ import yesman.epicfight.client.world.capabilites.entitypatch.player.AbstractClie
 import yesman.epicfight.mixin.teamlapen.MixinHumanWerewolfLayer;
 
 public class WerewolvesCompat implements ICompatModule {
+	private static final HumanoidModelTransformer VANILLA_TRANSFORMER = new VanillaModelTransformer();
+
 	@Override
 	public void onModEventBus(IEventBus eventBus) {
 		
@@ -107,13 +110,13 @@ public class WerewolvesCompat implements ICompatModule {
 			
 			if ("default".equals(modelType)) {
 				if (this.mesh == null) {
-					this.mesh = HumanoidModelBaker.VANILLA_TRANSFORMER.transformArmorModel(vanillaModel);
+					this.mesh = VANILLA_TRANSFORMER.transformArmorModel(vanillaModel);
 				}
 				
 				mesh = this.mesh;
 			} else {
 				if (this.slimMesh == null) {
-					this.slimMesh = HumanoidModelBaker.VANILLA_TRANSFORMER.transformArmorModel(vanillaModel);
+					this.slimMesh = VANILLA_TRANSFORMER.transformArmorModel(vanillaModel);
 				}
 				
 				mesh = this.slimMesh;

@@ -32,21 +32,35 @@ public class PPlayerRenderer extends PHumanoidRenderer<AbstractClientPlayer, Abs
 	protected void prepareModel(HumanoidMesh mesh, AbstractClientPlayer entity, AbstractClientPlayerPatch<AbstractClientPlayer> entitypatch, PlayerRenderer renderer) {
 		super.prepareModel(mesh, entity, entitypatch, renderer);
 		
-		renderer.setModelProperties(entity);
 		PlayerModel<AbstractClientPlayer> model = renderer.getModel();
 		
-		mesh.head.setHidden(!model.head.visible);
-		mesh.hat.setHidden(!model.hat.visible);
-		mesh.jacket.setHidden(!model.jacket.visible);
-		mesh.torso.setHidden(!model.body.visible);
-		mesh.leftArm.setHidden(!model.leftArm.visible);
-		mesh.leftLeg.setHidden(!model.leftLeg.visible);
-		mesh.leftPants.setHidden(!model.leftPants.visible);
-		mesh.leftSleeve.setHidden(!model.leftSleeve.visible);
-		mesh.rightArm.setHidden(!model.rightArm.visible);
-		mesh.rightLeg.setHidden(!model.rightLeg.visible);
-		mesh.rightPants.setHidden(!model.rightPants.visible);
-		mesh.rightSleeve.setHidden(!model.rightSleeve.visible);
+		boolean head = !model.head.visible;
+		boolean hat = !model.hat.visible;
+		boolean jacket = !model.jacket.visible;
+		boolean torso = !model.body.visible;
+		boolean leftArm = !model.leftArm.visible;
+		boolean leftLeg = !model.leftLeg.visible;
+		boolean leftPants = !model.leftPants.visible;
+		boolean leftSleeve = !model.leftSleeve.visible;
+		boolean rightArm = !model.rightArm.visible;
+		boolean rightLeg = !model.rightLeg.visible;
+		boolean rightPants = !model.rightPants.visible;
+		boolean rightSleeve = !model.rightSleeve.visible;
+		
+		renderer.setModelProperties(entity);
+		
+		mesh.head.setHidden(head || !model.head.visible);
+		mesh.hat.setHidden(hat || !model.hat.visible);
+		mesh.jacket.setHidden(jacket || !model.jacket.visible);
+		mesh.torso.setHidden(torso || !model.body.visible);
+		mesh.leftArm.setHidden(leftArm || !model.leftArm.visible);
+		mesh.leftLeg.setHidden(leftLeg || !model.leftLeg.visible);
+		mesh.leftPants.setHidden(leftPants || !model.leftPants.visible);
+		mesh.leftSleeve.setHidden(leftSleeve || !model.leftSleeve.visible);
+		mesh.rightArm.setHidden(rightArm || !model.rightArm.visible);
+		mesh.rightLeg.setHidden(rightLeg || !model.rightLeg.visible);
+		mesh.rightPants.setHidden(rightPants || !model.rightPants.visible);
+		mesh.rightSleeve.setHidden(rightSleeve || !model.rightSleeve.visible);
 	}
 	
 	@Override

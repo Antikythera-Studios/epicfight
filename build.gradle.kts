@@ -43,6 +43,18 @@ java {
     withSourcesJar()
 }
 
+// Wires Mixin's annotation processor so a refmap is generated and reobfJar can remap it.
+//
+// Without this the mod loads in a development run and crashes in a real one. Dev uses named mappings, so a
+// @Shadow of getCameraEntity resolves against Minecraft directly; production uses SRG member names, and the
+// remapper cannot rename the shadow for us because it is a method declared on the mixin class rather than a
+// reference to Minecraft's. The refmap is what carries that translation, and nothing here was producing one:
+// every shipped jar failed with "No refMap loaded" on the first @Shadow it reached.
+mixin {
+    add(sourceSets.main.get(), "mixins.$mod_id.refmap.json")
+    config(mixinConfigDirectory)
+}
+
 legacyForge {
     version = ("$minecraft_version-$forge_version")
     accessTransformers.from(file("src/main/resources/META-INF/accesstransformer.cfg"))
@@ -138,6 +150,10 @@ repositories {
 }
 
 dependencies {
+    // Mixin's annotation processor. It writes the refmap that translates named members to SRG at runtime;
+    // without it on this configuration the mixin extension has nothing to run and no refmap is produced.
+    annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+
     // JEI (API for code, Runtime for testing)
     modCompileOnly(libs.jei.common.api)
     modCompileOnly(libs.jei.forge.api)

@@ -86,27 +86,42 @@ public final class EpicFightRenderTypes extends RenderType {
 				}
 			}
 			
-			CompositeRenderType triangulatedRenderType = new CompositeRenderType(
-				renderType.name,
-				renderType.format,
-				VertexFormat.Mode.TRIANGLES,
-				renderType.bufferSize(),
-				renderType.affectsCrumbling(),
-				renderType.sortOnUpload,
-				compositeRenderType.state
-			);
-			
-			triangulatedRenderType.outline = triangulatedRenderType.outline.isEmpty() ? triangulatedRenderType.outline : cutoutTexture.map(texLocation -> {
-				return TRIANGULATED_OUTLINE.apply(texLocation, compositeRenderType.state.cullState);
-			});
-			
-			return triangulatedRenderType;
+			return triangulate(compositeRenderType, cutoutTexture);
 		} else {
 			return renderType;
 		}
 	});
 	
+	private static RenderType triangulate(CompositeRenderType compositeRenderType, Optional<ResourceLocation> cutoutTexture) {
+		CompositeRenderType triangulatedRenderType = new CompositeRenderType(
+			compositeRenderType.name,
+			compositeRenderType.format,
+			VertexFormat.Mode.TRIANGLES,
+			compositeRenderType.bufferSize(),
+			compositeRenderType.affectsCrumbling(),
+			compositeRenderType.sortOnUpload,
+			compositeRenderType.state
+		);
+		
+		triangulatedRenderType.outline = triangulatedRenderType.outline.isEmpty() ? triangulatedRenderType.outline : cutoutTexture.map(texLocation -> {
+			return TRIANGULATED_OUTLINE.apply(texLocation, compositeRenderType.state.cullState);
+		});
+		
+		return triangulatedRenderType;
+	}
+	
+	private static boolean carriesFrameState(RenderType renderType) {
+		return renderType instanceof CompositeRenderType compositeRenderType
+			&& compositeRenderType.state.texturingState != DEFAULT_TEXTURING;
+	}
+	
 	public static RenderType getTriangulated(RenderType renderType) {
+		if (renderType.mode() != VertexFormat.Mode.TRIANGLES && carriesFrameState(renderType)) {
+			return triangulate((CompositeRenderType) renderType,
+				((CompositeRenderType) renderType).state.textureState instanceof RenderStateShard.TextureStateShard shard
+					? shard.texture : Optional.empty());
+		}
+		
 		return TRIANGULATED_RENDER_TYPES.apply(renderType);
 	}
 	

@@ -512,11 +512,15 @@ public class RenderEngine {
 	public static class Events {
 		static RenderEngine renderEngine;
 		
-		@SubscribeEvent
+		@SubscribeEvent(priority = net.minecraftforge.eventbus.api.EventPriority.LOWEST)
 		public static void renderLivingEvent(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
 			LivingEntity livingentity = event.getEntity();
 			
 			if (livingentity.level() == null) {
+				return;
+			}
+			
+			if (event.isCanceled()) {
 				return;
 			}
 			
@@ -552,6 +556,7 @@ public class RenderEngine {
 						--renderEngine.modelInitTimer;
 					} else {
 						event.setCanceled(true);
+						postRenderLiving(event);
 					}
 				}
 			}
@@ -569,6 +574,16 @@ public class RenderEngine {
 			}
 		}
 		
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		private static void postRenderLiving(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
+			try {
+				net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post(event.getEntity(), event.getRenderer(),
+					event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
+			} catch (Exception e) {
+				EpicFightMod.LOGGER.debug("[render] A RenderLivingEvent.Post listener threw: {}", e.toString());
+			}
+		}
+
 		@SubscribeEvent
 		public static void itemTooltip(ItemTooltipEvent event) {
 			if (ClientConfig.showEpicFightAttributesInTooltip && event.getEntity() != null && event.getEntity().level().isClientSide) {

@@ -42,11 +42,11 @@ public abstract class ComputeShaderSetup {
     
 	public static final OpenMatrix4f[] TOTAL_POSES = OpenMatrix4f.allocateMatrixArray(EpicFightSharedConstants.MAX_JOINTS);
     public static final OpenMatrix4f[] TOTAL_NORMALS = OpenMatrix4f.allocateMatrixArray(EpicFightSharedConstants.MAX_JOINTS);
-    protected static final IArrayBufferProxy POSE_BO = ComputeShaderProvider.createDynamicBuffer(TOTAL_POSES, 16, OpenMatrix4f::store); // PoseBuffer
+    protected static final IArrayBufferProxy POSE_BO = ComputeShaderProvider.createDynamicBuffer(TOTAL_POSES, 16, OpenMatrix4f::store);
     
-    protected final StaticSSBO<VertexObj> vObjBO; // VertexBuffer
+    protected final StaticSSBO<VertexObj> vObjBO;
     protected final StaticSSBO<WeightInfo> jointBO;
-    protected final StaticSSBO<ElemInfo> elementsBO; // ElementsPool
+    protected final StaticSSBO<ElemInfo> elementsBO;
     protected final OutputSSBO outVertexAttrBO;
     
     protected final IArrayBufferProxy hiddenFlagsBO;
@@ -194,7 +194,14 @@ public abstract class ComputeShaderSetup {
     
     public abstract int vertexCount();
     
+    private boolean destroyed;
+
     public void destroyBuffers() {
+        if (this.destroyed) {
+            return;
+        }
+
+        this.destroyed = true;
         this.vObjBO.close();
         this.jointBO.close();
         this.elementsBO.close();

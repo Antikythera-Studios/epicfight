@@ -74,4 +74,10 @@ public class MixinLevelRenderer {
 		int b = color & 255;
 		if (EpicFightCameraAPI.getInstance().shouldHighlightTarget(local14)) this.renderBuffers.outlineBufferSource().setColor(r, g, b, 255);
 	}
+	@Inject(method = "shouldShowEntityOutlines", at = @At("HEAD"), cancellable = true)
+	private void epicfight$noOutlinesWhileCapturing(org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Boolean> cir) {
+		if (yesman.epicfight.api.client.model.rebake.OffscreenCapture.isActive()) {
+			cir.setReturnValue(false);
+		}
+	}
 }

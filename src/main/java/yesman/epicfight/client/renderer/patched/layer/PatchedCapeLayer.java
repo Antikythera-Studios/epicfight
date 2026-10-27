@@ -40,13 +40,15 @@ public class PatchedCapeLayer extends PatchedLayer<AbstractClientPlayer, Abstrac
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void renderLayer(AbstractClientPlayerPatch<AbstractClientPlayer> entitypatch, AbstractClientPlayer entityliving, CapeLayer vanillaLayer, PoseStack poseStack, MultiBufferSource buffer, int packedLight, OpenMatrix4f[] poses, float bob, float yRot, float xRot, float partialTick) {
+		boolean simulated = false;
+
 		if (ClientConfig.enableCosmetics) {
 			// Prevent simulating cape in inventory screen
 			if (Minecraft.getInstance().screen instanceof EffectRenderingInventoryScreen && entityliving == Minecraft.getInstance().player && partialTick == 1.0F) {
 				return;
 			}
 			
-			entitypatch.getClothSimulator().getRunningObject(ClothSimulator.PLAYER_CLOAK).ifPresent(clothObj -> {
+			simulated = entitypatch.getClothSimulator().getRunningObject(ClothSimulator.PLAYER_CLOAK).map(clothObj -> {
 				ResourceLocation capeTexture = entitypatch.isEpicSkinsLoaded() ? entitypatch.getEpicSkinsInformation().cloakTexture().get() : entityliving.getCloakTextureLocation();
 				
 				if (capeTexture != null) {
@@ -75,10 +77,16 @@ public class PatchedCapeLayer extends PatchedLayer<AbstractClientPlayer, Abstrac
 					} else {
 						renderSimulatingCape(poseStack, buffer, RenderType.entityCutoutNoCull(capeTexture), Mesh.DrawingFunction.NEW_ENTITY, clothObj, entityX, entityY, entityZ, 1.0F, 1.0F, 1.0F, 1.0F, entitypatch, poses, packedLight, renderLocalPose, bodyYRot);
 					}
+					
+					return Boolean.TRUE;
 				}
-			});
-		} else {
-			if (entityliving.isCapeLoaded() && !entityliving.isInvisible() && entityliving.isModelPartShown(PlayerModelPart.CAPE) && entityliving.getCloakTextureLocation() != null) {
+				
+				return Boolean.FALSE;
+			}).orElse(Boolean.FALSE);
+		}
+
+		if (!simulated) {
+			if (!entityliving.isInvisible() && entityliving.isModelPartShown(PlayerModelPart.CAPE) && entityliving.getCloakTextureLocation() != null) {
 				ItemStack itemstack = entityliving.getItemBySlot(EquipmentSlot.CHEST);
 				
 				if (itemstack.getItem() != Items.ELYTRA) {

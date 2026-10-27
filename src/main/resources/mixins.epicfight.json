@@ -24,6 +24,8 @@
 		"client.MixinMinecraft",
 		"client.MixinMouseHandler",
 		"client.MixinParticleEngine",
+		"client.MixinRenderBuffers",
+		"client.MixinRenderLayer",
 		"client.MixinThrownTridentRenderer",
         "client.MixinInventory",
 		"skinlayers.MixinCustomModelPart",

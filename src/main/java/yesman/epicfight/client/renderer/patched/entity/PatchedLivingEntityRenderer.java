@@ -17,11 +17,14 @@ import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.FileToIdConverter;
@@ -35,6 +38,7 @@ import net.minecraftforge.common.MinecraftForge;
 import yesman.epicfight.api.client.forgeevent.PatchedRenderersEvent;
 import yesman.epicfight.api.client.forgeevent.PrepareModelEvent;
 import yesman.epicfight.api.client.model.SkinnedMesh;
+import yesman.epicfight.api.client.model.rebake.VanillaPoseSync;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.MathUtils;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
@@ -43,7 +47,7 @@ import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.renderer.LayerRenderer;
 import yesman.epicfight.client.renderer.patched.layer.LayerUtil;
 import yesman.epicfight.client.renderer.patched.layer.PatchedLayer;
-import yesman.epicfight.client.renderer.patched.layer.RenderOriginalModelLayer;
+import yesman.epicfight.client.renderer.patched.layer.SyncedModelLayer;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.mixin.client.MixinLivingEntityRenderer;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -102,15 +106,62 @@ public abstract class PatchedLivingEntityRenderer<E extends LivingEntity, T exte
 					layerClass = layer.getClass().getSuperclass();
 				}
 				
-				if (this.patchedLayers.containsKey(layerClass)) {
-					continue;
-				}
-				
-				this.addPatchedLayer(layerClass, new RenderOriginalModelLayer<> ("Root", new Vec3f(0.0F, this.getDefaultLayerHeightCorrection(), 0.0F), new Vec3f(0.0F, 0.0F, 0.0F)));
+				this.handlerFor(layerClass);
 			}
 		}
 		
 		return this;
+	}
+	
+	private static final Map<Class<?>, Supplier<PatchedLayer<?, ?, ?, ?>>> CLAIMED = Maps.newHashMap();
+
+	public static void claimLayer(Class<?> layerClass, Supplier<PatchedLayer<?, ?, ?, ?>> handler) {
+		CLAIMED.put(layerClass, handler);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Nullable
+	private PatchedLayer<E, T, M, ? extends RenderLayer<E, M>> claimed(Class<?> layerClass) {
+		Supplier<PatchedLayer<?, ?, ?, ?>> handler = CLAIMED.get(layerClass);
+
+		return handler == null ? null : (PatchedLayer<E, T, M, ? extends RenderLayer<E, M>>) handler.get();
+	}
+
+	protected PatchedLayer<E, T, M, ? extends RenderLayer<E, M>> handlerFor(Class<?> layerClass) {
+		PatchedLayer<E, T, M, ? extends RenderLayer<E, M>> exact = this.patchedLayers.get(layerClass);
+
+		if (exact != null) {
+			return exact;
+		}
+
+		PatchedLayer<E, T, M, ? extends RenderLayer<E, M>> claimed = this.claimed(layerClass);
+
+		if (claimed != null) {
+			this.patchedLayers.put(layerClass, claimed);
+
+			return claimed;
+		}
+
+		for (Class<?> ancestor = layerClass.getSuperclass();
+				ancestor != null && RenderLayer.class.isAssignableFrom(ancestor);
+				ancestor = ancestor.getSuperclass()) {
+			PatchedLayer<E, T, M, ? extends RenderLayer<E, M>> inherited = this.patchedLayers.get(ancestor);
+
+			if (inherited == null) {
+				inherited = this.claimed(ancestor);
+			}
+
+			if (inherited != null) {
+				this.patchedLayers.put(layerClass, inherited);
+
+				return inherited;
+			}
+		}
+
+		PatchedLayer<E, T, M, ? extends RenderLayer<E, M>> fallback = new SyncedModelLayer<> ();
+		this.patchedLayers.put(layerClass, fallback);
+
+		return fallback;
 	}
 	
 	@Override
@@ -129,6 +180,7 @@ public abstract class PatchedLivingEntityRenderer<E extends LivingEntity, T exte
 		this.mulPoseStack(poseStack, armature, entity, entitypatch, partialTicks);
 		this.prepareVanillaModel(entity, renderer.getModel(), renderer, partialTicks);
 		this.setArmaturePose(entitypatch, armature, partialTicks);
+		this.syncVanillaModelPose(renderer.getModel(), armature);
 		
 		if (renderType != null) {
 			AM mesh = this.getMeshProvider(entitypatch).get();
@@ -167,6 +219,15 @@ public abstract class PatchedLivingEntityRenderer<E extends LivingEntity, T exte
 		}
 		
 		poseStack.popPose();
+	}
+	
+	protected void syncVanillaModelPose(M model, Armature armature) {
+		if (model instanceof HumanoidModel<?> humanoidModel) {
+			try {
+				VanillaPoseSync.apply(humanoidModel, armature, armature.getPoseMatrices());
+			} catch (Exception e) {
+			}
+		}
 	}
 	
 	protected void prepareVanillaModel(E entity, M model, LivingEntityRenderer<E, M> renderer, float partialTicks) {
@@ -242,9 +303,7 @@ public abstract class PatchedLivingEntityRenderer<E extends LivingEntity, T exte
 				layerClass = layerClass.getSuperclass();
 			}
 			
-			if (this.patchedLayers.containsKey(layerClass)) {
-				this.patchedLayers.get(layerClass).renderLayer(entity, entitypatch, layer, poseStack, buffer, packedLight, poses, bob, f2, f7, partialTicks);
-			}
+			this.handlerFor(layerClass).renderLayer(entity, entitypatch, layer, poseStack, buffer, packedLight, poses, bob, f2, f7, partialTicks);
 		}
 		
 		for (PatchedLayer<E, T, M, ? extends RenderLayer<E, M>> patchedLayer : this.customLayers) {

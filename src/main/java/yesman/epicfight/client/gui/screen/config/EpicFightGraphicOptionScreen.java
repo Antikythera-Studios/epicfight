@@ -7,7 +7,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import yesman.epicfight.api.client.model.transformer.HumanoidModelBaker;
 import yesman.epicfight.api.utils.ParseUtil;
 import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.client.camera.EpicFightTpsCameraDisableState;
@@ -102,7 +101,7 @@ public class EpicFightGraphicOptionScreen extends EpicFightOptionSubScreen {
 				button -> {
 					File resourcePackDirectory = Minecraft.getInstance().getResourcePackDirectory().toFile();
 					try {
-						HumanoidModelBaker.exportModels(resourcePackDirectory);
+						yesman.epicfight.api.client.model.rebake.ArmorRebaker.exportModels(resourcePackDirectory);
 						Util.getPlatform().openFile(resourcePackDirectory);
 					} catch (IOException e) {
 						EpicFightMod.LOGGER.info("Failed to export custom armor models");

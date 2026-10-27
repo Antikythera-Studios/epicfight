@@ -48,6 +48,8 @@ import yesman.epicfight.client.renderer.entity.DroppedNetherStarRenderer;
 import yesman.epicfight.client.renderer.entity.WitherGhostRenderer;
 import yesman.epicfight.client.renderer.entity.WitherSkeletonMinionRenderer;
 import yesman.epicfight.client.renderer.patched.item.RenderItemBase;
+import yesman.epicfight.api.client.model.rebake.BodyDeformation;
+import yesman.epicfight.api.client.model.rebake.ModelRebaker;
 import yesman.epicfight.client.renderer.patched.layer.WearableItemLayer;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.particle.EpicFightParticles;
@@ -111,6 +113,8 @@ public class ClientModBusEvent {
 	@SubscribeEvent
 	public static void addLayersEvent(EntityRenderersEvent.AddLayers event) {
 		WearableItemLayer.clearModels();
+		ModelRebaker.clear();
+		BodyDeformation.invalidateRest();
 		ClientEngine.getInstance().renderEngine.reloadEntityRenderers(event.getContext());
 		SoftBodyTranslatable.TRACKING_SIMULATION_SUBJECTS.removeIf(ClothSimulatable::invalid);
 		

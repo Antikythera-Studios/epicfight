@@ -389,14 +389,18 @@ public class VanillaModelTransformer extends HumanoidModelTransformer {
 				return new VertexWeight(y, 0.0F, 1.0F);
 			}
 			
-			int index = -1;
-			for (int i = 0; i < WEIGHT_ALONG_Y.length; i++) {
+			for (int i = 0; i < WEIGHT_ALONG_Y.length - 1; i++) {
+				VertexWeight lower = WEIGHT_ALONG_Y[i];
+				VertexWeight upper = WEIGHT_ALONG_Y[i + 1];
 				
-			}
-			
-			if (index > 0) {
-				VertexWeight pair = WEIGHT_ALONG_Y[index];
-				return new VertexWeight(y, pair.chestWeight, pair.torsoWeight);
+				if (y >= lower.yClipCoord && y <= upper.yClipCoord) {
+					float span = upper.yClipCoord - lower.yClipCoord;
+					float t = span > 1.0E-5F ? (y - lower.yClipCoord) / span : 0.0F;
+					
+					return new VertexWeight(y,
+						lower.chestWeight + (upper.chestWeight - lower.chestWeight) * t,
+						lower.torsoWeight + (upper.torsoWeight - lower.torsoWeight) * t);
+				}
 			}
 			
 			return new VertexWeight(y, 1.0F, 0.0F);
@@ -561,9 +565,9 @@ public class VanillaModelTransformer extends HumanoidModelTransformer {
 		double minX = Double.MAX_VALUE;
 		double minY = Double.MAX_VALUE;
 		double minZ = Double.MAX_VALUE;
-		double maxX = Double.MIN_VALUE;
-		double maxY = Double.MIN_VALUE;
-		double maxZ = Double.MIN_VALUE;
+		double maxX = -Double.MAX_VALUE;
+		double maxY = -Double.MAX_VALUE;
+		double maxZ = -Double.MAX_VALUE;
 		
 		Matrix4f matrix = poseStack.last().pose();
 		

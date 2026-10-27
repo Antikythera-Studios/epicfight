@@ -1,7 +1,6 @@
 package yesman.epicfight.client.renderer.patched.layer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -12,6 +11,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -39,37 +39,79 @@ import yesman.epicfight.api.asset.JsonAssetLoader;
 import yesman.epicfight.api.client.forgeevent.AnimatedArmorTextureEvent;
 import yesman.epicfight.api.client.model.Mesh.DrawingFunction;
 import yesman.epicfight.api.client.model.SkinnedMesh;
-import yesman.epicfight.api.client.model.transformer.HumanoidModelBaker;
+import yesman.epicfight.api.client.model.Meshes;
+import yesman.epicfight.api.client.model.rebake.ArmorRebaker;
+import yesman.epicfight.api.client.model.rebake.BodyDeformation;
+import yesman.epicfight.api.client.model.rebake.JointNames;
+import yesman.epicfight.api.client.model.rebake.RebakedMesh;
 import yesman.epicfight.api.exception.AssetLoadingException;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.client.mesh.HumanoidMesh;
 import yesman.epicfight.client.renderer.EpicFightRenderTypes;
+import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 public class WearableItemLayer<E extends LivingEntity, T extends LivingEntityPatch<E>, M extends HumanoidModel<E>, AM extends HumanoidMesh> extends ModelRenderLayer<E, T, M, HumanoidArmorLayer<E, M, M>, AM> {
-	private static final Map<ResourceLocation, SkinnedMesh> ARMOR_MODELS = new HashMap<> ();
+	private record ArmorKey(ResourceLocation item, EquipmentSlot slot, int tint, String layer, int shape,
+			String sheet) {
+	}
+
+	private static String layerNameOf(@Nullable net.minecraft.client.renderer.entity.layers.RenderLayer<?, ?> layer) {
+		return layer == null ? "-" : layer.getClass().getName();
+	}
+	
+	private static final EquipmentSlot[] ARMOR_DRAW_ORDER = {
+		EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.HEAD
+	};
+	
+	private static final Map<ArmorKey, SkinnedMesh> ARMOR_MODELS = new HashMap<> ();
 	private static final Map<String, ResourceLocation> EPICFIGHT_OVERRIDING_TEXTURES = new HashMap<> ();
+
+	private static final Map<ResourceLocation, Boolean> HAND_RIGGED = new HashMap<> ();
 	
 	public static void clearModels() {
-		ARMOR_MODELS.values().forEach(SkinnedMesh::destroy);
-		ARMOR_MODELS.clear();
-		EPICFIGHT_OVERRIDING_TEXTURES.clear();
-	}
-	
-	public static void putModel(ResourceLocation rl, SkinnedMesh skinnedMesh) {
-		ARMOR_MODELS.computeIfPresent(rl, (key, mesh) -> {
-			if (mesh != skinnedMesh) mesh.destroy();
-			return mesh;
+		ARMOR_MODELS.values().forEach(mesh -> {
+			if (mesh != null) {
+				mesh.destroy();
+			}
 		});
 		
-		ARMOR_MODELS.put(rl, skinnedMesh);
+		ARMOR_MODELS.clear();
+		EPICFIGHT_OVERRIDING_TEXTURES.clear();
+		HAND_RIGGED.clear();
+		ArmorRebaker.clear();
 	}
 	
-	public static SkinnedMesh getCachedModel(Item item) {
+	public static void putModel(ResourceLocation rl, EquipmentSlot slot, int tint, SkinnedMesh skinnedMesh) {
+		putModel(rl, slot, tint, "-", 0, "-", skinnedMesh);
+	}
+
+	public static void putModel(ResourceLocation rl, EquipmentSlot slot, int tint, String layer, int shape, String sheet, SkinnedMesh skinnedMesh) {
+		ArmorKey key = new ArmorKey(rl, slot, tint, layer, shape, sheet);
+		SkinnedMesh previous = ARMOR_MODELS.put(key, skinnedMesh);
+		
+		if (previous != null && previous != skinnedMesh) {
+			previous.destroy();
+		}
+	}
+	
+	@Nullable
+	public static SkinnedMesh getCachedModel(Item item, EquipmentSlot slot) {
 		ResourceLocation key = ForgeRegistries.ITEMS.getKey(item);
-		return ARMOR_MODELS.get(key);
+		
+		if (key == null) {
+			return null;
+		}
+
+		for (Map.Entry<ArmorKey, SkinnedMesh> entry : ARMOR_MODELS.entrySet()) {
+			if (entry.getKey().item().equals(key) && entry.getKey().slot() == slot) {
+				return entry.getValue();
+			}
+		}
+
+		return null;
 	}
 	
 	private final boolean firstPersonModel;
@@ -96,22 +138,26 @@ public class WearableItemLayer<E extends LivingEntity, T extends LivingEntityPat
 		model.drawPosed(poseStack, vertexConsumer, DrawingFunction.NEW_ENTITY, packedLight, 1.0F, 1.0F, 1.0F, 1.0F, OverlayTexture.NO_OVERLAY, armature, poses);
 	}
 	
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public void renderLayer(T entitypatch, E entityliving, HumanoidArmorLayer<E, M, M> vanillaLayer, PoseStack poseStack, MultiBufferSource buf, int packedLight, OpenMatrix4f[] poses, float bob, float yRot, float xRot, float partialTicks) {
-		for (EquipmentSlot slot : EquipmentSlot.values()) {
-			if (slot.getType() != EquipmentSlot.Type.ARMOR) {
-				continue;
-			}
+		try {
+			BodyDeformation.prepare(Meshes.BIPED.get());
+			BodyDeformation.beginFrame(entitypatch.getArmature(), poses);
+		} catch (Exception e) {
+			BodyDeformation.endFrame();
+		}
+		
+		for (EquipmentSlot slot : ARMOR_DRAW_ORDER) {
 			
 			boolean firstPersonChest = false;
 			
 			if (entitypatch.isFirstPerson() && this.firstPersonModel) {
 				if (slot != EquipmentSlot.CHEST) {
 					continue;
-				} else {
-					firstPersonChest = true;
 				}
+				
+				firstPersonChest = true;
 			}
 			
 			if (slot == EquipmentSlot.HEAD && this.firstPersonModel) {
@@ -119,201 +165,263 @@ public class WearableItemLayer<E extends LivingEntity, T extends LivingEntityPat
 			}
 			
 			ItemStack itemstack = entityliving.getItemBySlot(slot);
-			Item item = itemstack.getItem();
 			
-			if (item instanceof ArmorItem armorItem) {
-				if (slot != armorItem.getEquipmentSlot()) {
-					return;
-				}
-				
-				poseStack.pushPose();
-				float head = 0.0F;
-				
-				if (slot == EquipmentSlot.HEAD) {
-					poseStack.translate(0.0D, head * 0.055D, 0.0D);
-				}
-				
-				M defaultModel = vanillaLayer.getArmorModel(slot);
-				Model armorModel = ForgeHooksClient.getArmorModel(entityliving, itemstack, slot, defaultModel);
-				SkinnedMesh armorMesh = this.getArmorModel(vanillaLayer, defaultModel, armorModel, entityliving, armorItem, itemstack, slot);
-				
-				if (armorMesh == null) {
-					poseStack.popPose();
-					return;
-				}
-				
-				if (armorModel instanceof HumanoidModel humanoidModel) {
-					boolean shouldSit = entityliving.isPassenger() && (entityliving.getVehicle() != null && entityliving.getVehicle().shouldRiderSit());
-					float f8 = 0.0F;
-					float f5 = 0.0F;
-					
-					if (!shouldSit && entityliving.isAlive()) {
-						f8 = entityliving.walkAnimation.speed(partialTicks);
-						f5 = entityliving.walkAnimation.position(partialTicks);
-						
-						if (entityliving.isBaby()) {
-							f5 *= 3.0F;
-						}
-						
-						if (f8 > 1.0F) {
-							f8 = 1.0F;
-						}
-					}
+			if (!(itemstack.getItem() instanceof ArmorItem armorItem)) {
+				continue;
+			}
+			
+			if (slot != armorItem.getEquipmentSlot()) {
+				continue;
+			}
+			
+			try {
+				this.renderPiece(entitypatch, entityliving, vanillaLayer, poseStack, buf, packedLight, poses, bob, yRot, xRot, partialTicks, slot, itemstack, armorItem, firstPersonChest);
+			} catch (Exception e) {
+				EpicFightMod.LOGGER.debug("{} in {} failed to draw: {}", ForgeRegistries.ITEMS.getKey(armorItem), slot, e.toString());
+			}
+		}
+		
+		BodyDeformation.endFrame();
+	}
+	
+	private void renderPiece(T entitypatch, E entityliving, HumanoidArmorLayer<E, M, M> vanillaLayer, PoseStack poseStack, MultiBufferSource buf, int packedLight,
+			OpenMatrix4f[] poses, float bob, float yRot, float xRot, float partialTicks, EquipmentSlot slot, ItemStack itemstack, ArmorItem armorItem, boolean firstPersonChest) {
+		M defaultModel = vanillaLayer.getArmorModel(slot);
+		Model armorModel = ForgeHooksClient.getArmorModel(entityliving, itemstack, slot, defaultModel);
+		SkinnedMesh armorMesh = this.getArmorModel(vanillaLayer, defaultModel, armorModel, entityliving, armorItem, itemstack, slot);
+		
+		if (armorMesh == null) {
+			return;
+		}
+		
+		yesman.epicfight.api.client.model.rebake.ModelSnapshot snapshot =
+			yesman.epicfight.api.client.model.rebake.ModelSnapshot.of(armorModel);
+		
+		driveSourceAnimation(armorModel, entityliving, vanillaLayer, bob, yRot, xRot, partialTicks);
+		
+		if (armorMesh instanceof RebakedMesh rebaked && armorModel instanceof HumanoidModel<?> animationSource) {
+			rebaked.bindAnimationSource(animationSource);
+		}
+		
+		poseStack.pushPose();
+		
+		try {
+			armorMesh.initialize();
+			
+			if (firstPersonChest) {
+				hideAllButArms(armorMesh);
+			}
+			
+			float r = 1.0F;
+			float g = 1.0F;
+			float b = 1.0F;
+			
+			boolean coloursItself = armorMesh instanceof RebakedMesh watched && watched.coloursObserved();
+			
+			if (armorItem instanceof DyeableLeatherItem dyeableItem && !coloursItself) {
+				int colour = dyeableItem.getColor(itemstack);
+				r = (float) (colour >> 16 & 255) / 255.0F;
+				g = (float) (colour >> 8 & 255) / 255.0F;
+				b = (float) (colour & 255) / 255.0F;
+			}
+
+			ResourceLocation plainSheet = withEpicFightOverride(getArmorResource(entityliving, itemstack, slot, "overlay"));
+			
+			if (armorMesh instanceof RebakedMesh rebaked && rebaked.hasCapturedPasses()) {
+				for (net.minecraft.client.renderer.RenderType pass : rebaked.capturedPasses()) {
+					boolean[] visibility = rebaked.restrictToPass(pass);
+					boolean dyed = takesTheDye(plainSheet, pass);
+					float pr = dyed ? r : 1.0F;
+					float pg = dyed ? g : 1.0F;
+					float pb = dyed ? b : 1.0F;
 					
 					try {
-						// Fix: Crash with better nether by unknown cause
-						humanoidModel.setupAnim(entityliving, f8, f5, bob, yRot, xRot);
-					} catch (ClassCastException e) {
-					}
-					
-					humanoidModel.head.loadPose(humanoidModel.head.getInitialPose());
-					humanoidModel.hat.loadPose(humanoidModel.hat.getInitialPose());
-					humanoidModel.body.loadPose(humanoidModel.body.getInitialPose());
-					humanoidModel.leftArm.loadPose(humanoidModel.leftArm.getInitialPose());
-					humanoidModel.rightArm.loadPose(humanoidModel.rightArm.getInitialPose());
-					humanoidModel.leftLeg.loadPose(humanoidModel.leftLeg.getInitialPose());
-					humanoidModel.rightLeg.loadPose(humanoidModel.rightLeg.getInitialPose());
-				}
-				
-				armorMesh.initialize();
-				
-				if (firstPersonChest) {
-					armorMesh.getAllParts().forEach(part -> part.setHidden(true));
-					
-					if (armorMesh.hasPart("leftArm")) {
-						armorMesh.getPart("leftArm").setHidden(false);
-					}
-					
-					if (armorMesh.hasPart("rightArm")) {
-						armorMesh.getPart("rightArm").setHidden(false);
+						armorMesh.draw(poseStack, buf, pass, packedLight, pr, pg, pb, 1.0F,
+							OverlayTexture.NO_OVERLAY, entitypatch.getArmature(), poses);
+					} finally {
+						rebaked.restoreVisibility(visibility);
 					}
 				}
 				
-				if (armorItem instanceof DyeableLeatherItem dyeableItem) {
-					int i = dyeableItem.getColor(itemstack);
-					float r = (float) (i >> 16 & 255) / 255.0F;
-					float g = (float) (i >> 8 & 255) / 255.0F;
-					float b = (float) (i & 255) / 255.0F;
-					
-					this.renderArmor(poseStack, buf, packedLight, armorMesh, entitypatch.getArmature(), r, g, b, this.getArmorTexture(itemstack, entityliving, armorMesh, slot, null, defaultModel), poses);
+				if (rebaked.hasUnrecordedParts()) {
+					drawUnrecorded(poseStack, buf, packedLight, rebaked, entitypatch.getArmature(), r, g, b, poses,
+						itemstack, entityliving, slot, defaultModel);
+				}
+			} else if (armorMesh instanceof RebakedMesh rebaked && !rebaked.extraPasses().isEmpty()) {
+				drawUnrecorded(poseStack, buf, packedLight, rebaked, entitypatch.getArmature(), r, g, b, poses,
+					itemstack, entityliving, slot, defaultModel);
+			} else {
+				ResourceLocation texture = this.getArmorTexture(itemstack, entityliving, armorMesh, slot, null, defaultModel);
+				
+				this.renderArmor(poseStack, buf, packedLight, armorMesh, entitypatch.getArmature(), r, g, b, texture, poses);
+				
+				if (armorItem instanceof DyeableLeatherItem && !coloursItself) {
 					this.renderArmor(poseStack, buf, packedLight, armorMesh, entitypatch.getArmature(), 1.0F, 1.0F, 1.0F, this.getArmorTexture(itemstack, entityliving, armorMesh, slot, "overlay", defaultModel), poses);
-				} else {
-					this.renderArmor(poseStack, buf, packedLight, armorMesh, entitypatch.getArmature(), 1.0F, 1.0F, 1.0F, this.getArmorTexture(itemstack, entityliving, armorMesh, slot, null, defaultModel), poses);
 				}
-
-				ArmorTrim.getTrim(entityliving.level().registryAccess(), itemstack).ifPresent((armorTrim) -> {
-					this.renderTrim(poseStack, buf, packedLight, armorMesh, entitypatch.getArmature(), armorItem.getMaterial(), armorTrim, slot, poses);
-				});
-				
-				if (itemstack.hasFoil()) {
-					this.renderGlint(poseStack, buf, packedLight, armorMesh, entitypatch.getArmature(), poses);
-				}
-				
-				poseStack.popPose();
+			}
+			
+			ArmorTrim.getTrim(entityliving.level().registryAccess(), itemstack).ifPresent((armorTrim) -> {
+				this.renderTrim(poseStack, buf, packedLight, armorMesh, entitypatch.getArmature(), armorItem.getMaterial(), armorTrim, slot, poses);
+			});
+			
+			if (itemstack.hasFoil()) {
+				this.renderGlint(poseStack, buf, packedLight, armorMesh, entitypatch.getArmature(), poses);
+			}
+		} finally {
+			poseStack.popPose();
+			
+			if (snapshot != null) {
+				snapshot.restore();
 			}
 		}
 	}
 	
-	private SkinnedMesh getArmorModel(HumanoidArmorLayer<E, M, M> originalRenderer, M originalModel, Model forgeHooksArmorModel, E entityliving, ArmorItem armorItem, ItemStack itemstack, EquipmentSlot slot) {
+	private static void driveSourceAnimation(Model armorModel, LivingEntity entityliving,
+			net.minecraft.client.renderer.entity.layers.RenderLayer<?, ?> vanillaLayer,
+			float bob, float yRot, float xRot, float partialTicks) {
+		if (!(armorModel instanceof HumanoidModel<?> humanoidModel)) {
+			return;
+		}
+		
+		HumanoidModel<?> wearer = yesman.epicfight.api.client.model.rebake.ArmorRebaker.parentModelOf(vanillaLayer);
+		
+		if (wearer != null) {
+			try {
+				((HumanoidModel) wearer).copyPropertiesTo((HumanoidModel) humanoidModel);
+			} catch (Exception e) {
+				EpicFightMod.LOGGER.debug("Could not copy the wearer's pose onto the piece: {}", e.toString());
+			}
+		}
+		
+		boolean shouldSit = entityliving.isPassenger() && entityliving.getVehicle() != null && entityliving.getVehicle().shouldRiderSit();
+		float limbSwingAmount = 0.0F;
+		float limbSwing = 0.0F;
+		
+		if (!shouldSit && entityliving.isAlive()) {
+			limbSwingAmount = Math.min(1.0F, entityliving.walkAnimation.speed(partialTicks));
+			limbSwing = entityliving.walkAnimation.position(partialTicks);
+			
+			if (entityliving.isBaby()) {
+				limbSwing *= 3.0F;
+			}
+		}
+		
+		try {
+			setupAnimUnchecked(humanoidModel, entityliving, limbSwing, limbSwingAmount, bob, yRot, xRot);
+		} catch (Exception e) {
+			return;
+		}
+		
+		for (ModelPart part : new ModelPart[] { humanoidModel.head, humanoidModel.hat, humanoidModel.body,
+				humanoidModel.rightArm, humanoidModel.leftArm, humanoidModel.rightLeg, humanoidModel.leftLeg }) {
+			if (part != null) {
+				part.loadPose(part.getInitialPose());
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static void setupAnimUnchecked(HumanoidModel<?> model, LivingEntity entity, float limbSwing, float limbSwingAmount, float bob, float yRot, float xRot) {
+		((HumanoidModel<LivingEntity>) model).setupAnim(entity, limbSwing, limbSwingAmount, bob, yRot, xRot);
+	}
+	
+	private static void hideAllButArms(SkinnedMesh mesh) {
+		if (mesh instanceof RebakedMesh rebaked) {
+			rebaked.showOnlyRegions(JointNames.Region.ARM_LEFT, JointNames.Region.ARM_RIGHT);
+			
+			return;
+		}
+		
+		mesh.getAllParts().forEach(part -> part.setHidden(true));
+		
+		for (String name : new String[] { "leftArm", "rightArm" }) {
+			if (mesh.hasPart(name)) {
+				mesh.getPart(name).setHidden(false);
+			}
+		}
+	}
+	
+	@Nullable
+	private SkinnedMesh getArmorModel(HumanoidArmorLayer<E, M, M> vanillaLayer, M defaultModel, Model armorModel, E entityliving, ArmorItem armorItem, ItemStack itemstack, EquipmentSlot slot) {
 		ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(armorItem);
 		
-		if (ARMOR_MODELS.containsKey(registryName) && !ClientEngine.getInstance().renderEngine.shouldRenderVanillaModel()) {
-			return ARMOR_MODELS.get(registryName);
-		} else {
-			ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-			ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(ForgeRegistries.ITEMS.getKey(armorItem).getNamespace(), "animmodels/armor/" + ForgeRegistries.ITEMS.getKey(armorItem).getPath() + ".json");
-			SkinnedMesh skinnedMesh = null;
-			
-			if (resourceManager.getResource(rl).isPresent()){
-				try {
-					JsonAssetLoader modelLoader = new JsonAssetLoader(resourceManager, rl);
-					skinnedMesh = modelLoader.loadSkinnedMesh(SkinnedMesh::new);
-				} catch (AssetLoadingException e) {
-					e.printStackTrace();
-					skinnedMesh = null;
-				}
-			} else {
-				Iterable<ItemStack> armorItems = entityliving.getArmorSlots();
-				ItemStack head = entityliving.getItemBySlot(EquipmentSlot.HEAD);
-				ItemStack chest = entityliving.getItemBySlot(EquipmentSlot.CHEST);
-				ItemStack legs = entityliving.getItemBySlot(EquipmentSlot.LEGS);
-				ItemStack feet = entityliving.getItemBySlot(EquipmentSlot.FEET);
-				
-				if (armorItems instanceof List) {
-					List<ItemStack> armorItemList = (List<ItemStack>) armorItems;
-					armorItemList.set(0, ItemStack.EMPTY);
-					armorItemList.set(1, ItemStack.EMPTY);
-					armorItemList.set(2, ItemStack.EMPTY);
-					armorItemList.set(3, ItemStack.EMPTY);
-					armorItemList.set(slot.getIndex(), itemstack);
-				}
-
-				PoseStack ps = new PoseStack();
-				ps.translate(0, 0, 10000);
-				
-				if (forgeHooksArmorModel instanceof HumanoidModel<?> humanoidModel) {
-					//Setup default visibility
-					switch (slot) {
-					case FEET -> {
-						humanoidModel.rightLeg.visible = true;
-						humanoidModel.leftLeg.visible = true;
-					}
-					case LEGS -> {
-						humanoidModel.body.visible = true;
-						humanoidModel.rightLeg.visible = true;
-						humanoidModel.leftLeg.visible = true;
-					}
-					case CHEST -> {
-						humanoidModel.body.visible = true;
-						humanoidModel.rightArm.visible = true;
-						humanoidModel.leftArm.visible = true;
-					}
-					case HEAD -> {
-						humanoidModel.head.visible = true;
-						humanoidModel.hat.visible = true;
-					}
-					default -> {}
-					}
-				}
-				
-				//Render armor to get the visibility of each part
-				originalRenderer.render(ps, Minecraft.getInstance().renderBuffers().bufferSource(), 0, entityliving, 0, 0, 0, 0, 0, 0);
-				
-				if (armorItems instanceof List<ItemStack> armorItemList) {
-					armorItemList.set(0, feet);
-					armorItemList.set(1, legs);
-					armorItemList.set(2, chest);
-					armorItemList.set(3, head);
-				}
-				
-				skinnedMesh = HumanoidModelBaker.bakeArmor(entityliving, itemstack, armorItem, slot, originalModel, forgeHooksArmorModel, originalRenderer.getParentModel(), this.mesh.get());
-			}
-			
-			putModel(registryName, skinnedMesh);
-			
-			return skinnedMesh;
+		if (registryName == null) {
+			return null;
 		}
+		
+		ArmorKey key = new ArmorKey(registryName, slot,
+			yesman.epicfight.api.client.model.rebake.ArmorRebaker.tintOf(itemstack), layerNameOf(vanillaLayer),
+			yesman.epicfight.api.client.model.rebake.ArmorRebaker.shapeOf(armorModel),
+			yesman.epicfight.api.client.model.rebake.ArmorRebaker.sheetOf(entityliving, itemstack, slot));
+		
+		if (!ClientEngine.getInstance().renderEngine.shouldRenderVanillaModel()) {
+			SkinnedMesh cached = ARMOR_MODELS.get(key);
+			
+			if (cached != null) {
+				return cached;
+			}
+		}
+		
+		Resolved resolved = this.resolveArmorModel(vanillaLayer, defaultModel, armorModel, entityliving, armorItem, itemstack, slot, registryName);
+		
+		if (resolved == null) {
+			return null;
+		}
+		
+		if (!resolved.provisional()) {
+			putModel(registryName, slot, yesman.epicfight.api.client.model.rebake.ArmorRebaker.tintOf(itemstack),
+				layerNameOf(vanillaLayer), yesman.epicfight.api.client.model.rebake.ArmorRebaker.shapeOf(armorModel),
+				yesman.epicfight.api.client.model.rebake.ArmorRebaker.sheetOf(entityliving, itemstack, slot),
+				resolved.mesh());
+		}
+		
+		return resolved.mesh();
+	}
+	
+	private record Resolved(SkinnedMesh mesh, boolean provisional) {
+	}
+	
+	@Nullable
+	private Resolved resolveArmorModel(HumanoidArmorLayer<E, M, M> vanillaLayer, M defaultModel, Model armorModel, E entityliving, ArmorItem armorItem, ItemStack itemstack, EquipmentSlot slot, ResourceLocation registryName) {
+		ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+		ResourceLocation handRigged = ResourceLocation.fromNamespaceAndPath(registryName.getNamespace(), "animmodels/armor/" + registryName.getPath() + ".json");
+		
+		if (HAND_RIGGED.computeIfAbsent(handRigged, at -> resourceManager.getResource(at).isPresent())) {
+			try {
+				return new Resolved(new JsonAssetLoader(resourceManager, handRigged).loadSkinnedMesh(SkinnedMesh::new), false);
+			} catch (AssetLoadingException e) {
+				EpicFightMod.LOGGER.warn("Could not load {}: {}", handRigged, e.toString());
+			}
+		}
+		
+		RebakedMesh rebaked = ArmorRebaker.bake(entityliving, itemstack, slot, defaultModel, armorModel, vanillaLayer);
+		
+		if (rebaked != null) {
+			return new Resolved(rebaked, false);
+		}
+		
+		if (vanillaLayer.getClass() != HumanoidArmorLayer.class) {
+			return null;
+		}
+
+		AssetAccessor<? extends SkinnedMesh> builtIn = this.mesh.get().getHumanoidArmorModel(slot);
+		
+		if (builtIn == null) {
+			return null;
+		}
+		
+		return new Resolved(builtIn.get(), !ArmorRebaker.hasGivenUp(entityliving, itemstack, slot, vanillaLayer));
 	}
 	
 	private ResourceLocation getArmorTexture(ItemStack itemstack, LivingEntity entity, SkinnedMesh armorMesh, EquipmentSlot slot, String type, M originalModel) {
-		String s1 = getArmorResource(entity, itemstack, slot, type).toString();
+		ResourceLocation base = getArmorResource(entity, itemstack, slot, type);
+		ResourceLocation overridden = withEpicFightOverride(base);
 		
-		int idx2 = s1.lastIndexOf('/');
-		String s2 = String.format("%s/epicfight/%s", s1.substring(0, idx2), s1.substring(idx2 + 1));
-		ResourceLocation resourcelocation2 = EPICFIGHT_OVERRIDING_TEXTURES.get(s2);
-		
-		if (resourcelocation2 != null) {
-			return resourcelocation2;
-		} else if (!EPICFIGHT_OVERRIDING_TEXTURES.containsKey(s2)) {
-			resourcelocation2 = ResourceLocation.parse(s2);
-			ResourceManager rm = Minecraft.getInstance().getResourceManager();
-			if (rm.getResource(resourcelocation2).isPresent()){
-				EPICFIGHT_OVERRIDING_TEXTURES.put(s2, resourcelocation2);
-				return resourcelocation2;
-			} else {
-				EPICFIGHT_OVERRIDING_TEXTURES.put(s2, null);
-			}
+		if (overridden != base) {
+			return overridden;
 		}
+		
+		String s1 = base.toString();
 		
 		AnimatedArmorTextureEvent animatedArmorTextureEvent = new AnimatedArmorTextureEvent(entity, itemstack, slot, originalModel);
 		MinecraftForge.EVENT_BUS.post(animatedArmorTextureEvent);
@@ -338,6 +446,65 @@ public class WearableItemLayer<E extends LivingEntity, T extends LivingEntityPat
 		return resourcelocation;
 	}
 	
+	private static ResourceLocation withEpicFightOverride(ResourceLocation base) {
+		String path = base.toString();
+		int lastSlash = path.lastIndexOf('/');
+		
+		if (lastSlash < 0) {
+			return base;
+		}
+		
+		String candidate = String.format("%s/epicfight/%s", path.substring(0, lastSlash), path.substring(lastSlash + 1));
+		ResourceLocation known = EPICFIGHT_OVERRIDING_TEXTURES.get(candidate);
+		
+		if (known != null) {
+			return known;
+		}
+		
+		if (!EPICFIGHT_OVERRIDING_TEXTURES.containsKey(candidate)) {
+			ResourceLocation resolved = ResourceLocation.parse(candidate);
+			ResourceManager resources = Minecraft.getInstance().getResourceManager();
+			
+			if (resources.getResource(resolved).isPresent()) {
+				EPICFIGHT_OVERRIDING_TEXTURES.put(candidate, resolved);
+				
+				return resolved;
+			}
+			
+			EPICFIGHT_OVERRIDING_TEXTURES.put(candidate, null);
+		}
+		
+		return base;
+	}
+	
+	private void drawUnrecorded(PoseStack poseStack, MultiBufferSource buf, int packedLight, RebakedMesh rebaked,
+			Armature armature, float r, float g, float b, OpenMatrix4f[] poses, ItemStack itemstack,
+			E entityliving, EquipmentSlot slot, M defaultModel) {
+		boolean[] visibility = rebaked.hasUnrecordedParts() ? rebaked.restrictToUnrecorded() : null;
+		
+		ResourceLocation plainSheet = withEpicFightOverride(getArmorResource(entityliving, itemstack, slot, "overlay"));
+		
+		try {
+			if (rebaked.extraPasses().isEmpty()) {
+				this.renderArmor(poseStack, buf, packedLight, rebaked, armature, r, g, b,
+					this.getArmorTexture(itemstack, entityliving, rebaked, slot, null, defaultModel), poses);
+				
+				return;
+			}
+			
+			for (net.minecraft.client.renderer.RenderType pass : rebaked.extraPasses()) {
+				boolean dyed = takesTheDye(plainSheet, pass);
+				
+				rebaked.draw(poseStack, buf, pass, packedLight, dyed ? r : 1.0F, dyed ? g : 1.0F,
+					dyed ? b : 1.0F, 1.0F, OverlayTexture.NO_OVERLAY, armature, poses);
+			}
+		} finally {
+			if (visibility != null) {
+				rebaked.restoreVisibility(visibility);
+			}
+		}
+	}
+	
 	private static boolean innerModel(EquipmentSlot slot) {
 		return slot == EquipmentSlot.LEGS;
 	}
@@ -345,6 +512,14 @@ public class WearableItemLayer<E extends LivingEntity, T extends LivingEntityPat
 	/**
 	 * Code copy from {@link HumanoidArmorLayer#getArmorResource(Entity, ItemStack, EquipmentSlot, String)} since it's not a static
 	 */
+	public static boolean takesTheDye(@Nullable ResourceLocation plainSheet, @Nullable net.minecraft.client.renderer.RenderType pass) {
+		if (plainSheet == null || pass == null) {
+			return true;
+		}
+
+		return !plainSheet.equals(yesman.epicfight.api.client.model.rebake.CapturingVertexConsumer.textureOf(pass));
+	}
+
 	public static ResourceLocation getArmorResource(Entity entity, ItemStack stack, EquipmentSlot slot, @Nullable String type) {
 		ArmorItem item = (ArmorItem) stack.getItem();
 		String texture = item.getMaterial().getName();
@@ -357,10 +532,10 @@ public class WearableItemLayer<E extends LivingEntity, T extends LivingEntityPat
 		}
 		
 		String s1 = String.format(java.util.Locale.ROOT, "%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, (innerModel(slot) ? 2 : 1), type == null ? "" : String.format(java.util.Locale.ROOT, "_%s", type));
-
+		
 		s1 = net.minecraftforge.client.ForgeHooksClient.getArmorTexture(entity, stack, s1, slot, type);
 		ResourceLocation resourcelocation = HumanoidArmorLayer.ARMOR_LOCATION_CACHE.get(s1);
-
+		
 		if (resourcelocation == null) {
 			resourcelocation = ResourceLocation.parse(s1);
 			HumanoidArmorLayer.ARMOR_LOCATION_CACHE.put(s1, resourcelocation);

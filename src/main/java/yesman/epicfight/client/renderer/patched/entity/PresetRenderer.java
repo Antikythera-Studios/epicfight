@@ -202,9 +202,7 @@ public class PresetRenderer extends PatchedEntityRenderer<LivingEntity, LivingEn
 				layerClass = layerClass.getSuperclass();
 			}
 			
-			if (this.patchedLayers.containsKey(layerClass)) {
-				this.patchedLayers.get(layerClass).renderLayer(entity, entitypatch, layer, poseStack, buffer, packedLight, poses, bob, f2, f7, partialTicks);
-			}
+			this.handlerFor(layerClass).renderLayer(entity, entitypatch, layer, poseStack, buffer, packedLight, poses, bob, f2, f7, partialTicks);
 		}
 		
 		for (PatchedLayer<LivingEntity, LivingEntityPatch<LivingEntity>, EntityModel<LivingEntity>, ? extends RenderLayer<LivingEntity, EntityModel<LivingEntity>>> patchedLayer : this.customLayers) {
@@ -214,6 +212,32 @@ public class PresetRenderer extends PatchedEntityRenderer<LivingEntity, LivingEn
 	
 	protected int getOverlayCoord(LivingEntity entity, LivingEntityPatch<LivingEntity> entitypatch, float partialTicks) {
 		return OverlayTexture.pack(0, OverlayTexture.v(entity.hurtTime > 5));
+	}
+	
+	protected PatchedLayer<LivingEntity, LivingEntityPatch<LivingEntity>, EntityModel<LivingEntity>, ? extends RenderLayer<LivingEntity, EntityModel<LivingEntity>>> handlerFor(Class<?> layerClass) {
+		PatchedLayer<LivingEntity, LivingEntityPatch<LivingEntity>, EntityModel<LivingEntity>, ? extends RenderLayer<LivingEntity, EntityModel<LivingEntity>>> exact = this.patchedLayers.get(layerClass);
+
+		if (exact != null) {
+			return exact;
+		}
+
+		for (Class<?> ancestor = layerClass.getSuperclass();
+				ancestor != null && RenderLayer.class.isAssignableFrom(ancestor);
+				ancestor = ancestor.getSuperclass()) {
+			PatchedLayer<LivingEntity, LivingEntityPatch<LivingEntity>, EntityModel<LivingEntity>, ? extends RenderLayer<LivingEntity, EntityModel<LivingEntity>>> inherited = this.patchedLayers.get(ancestor);
+
+			if (inherited != null) {
+				this.patchedLayers.put(layerClass, inherited);
+
+				return inherited;
+			}
+		}
+
+		PatchedLayer<LivingEntity, LivingEntityPatch<LivingEntity>, EntityModel<LivingEntity>, ? extends RenderLayer<LivingEntity, EntityModel<LivingEntity>>> fallback =
+			new yesman.epicfight.client.renderer.patched.layer.SyncedModelLayer<> ();
+		this.patchedLayers.put(layerClass, fallback);
+
+		return fallback;
 	}
 	
 	@Override

@@ -115,7 +115,7 @@ public class EntitySnapshot<T extends LivingEntityPatch<?>> {
 			}
 			
 			EquipmentSlot armorSlot = itemstack.getEquipmentSlot();
-			SkinnedMesh armor = WearableItemLayer.getCachedModel(itemstack.getItem());
+			SkinnedMesh armor = WearableItemLayer.getCachedModel(itemstack.getItem(), armorSlot);
 			ResourceLocation texture = WearableItemLayer.getArmorResource(entitypatch.getOriginal(), itemstack, armorSlot, null);
 			
 			if (armor != null) {
