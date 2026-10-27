@@ -2,16 +2,13 @@ package yesman.epicfight.compat;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
-import yesman.epicfight.api.client.forgeevent.AnimatedArmorTextureEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import software.bernie.geckolib.event.GeoRenderEvent;
+import yesman.epicfight.api.client.model.transformer.GeoModelTransformer;
+import yesman.epicfight.api.client.model.transformer.HumanoidModelBaker;
 import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.client.events.engine.RenderEngine;
 import yesman.epicfight.client.gui.EntityUI;
@@ -24,12 +21,13 @@ public class GeckolibCompat implements ICompatModule {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void onModEventBusClient(IEventBus eventBus) {
+		eventBus.<FMLClientSetupEvent>addListener(event -> event.enqueueWork(() -> HumanoidModelBaker.registerNewTransformer(new GeoModelTransformer())));
 	}
 	
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void onForgeEventBusClient(IEventBus eventBus) {
-		eventBus.addListener(this::getGeoArmorTexturePath);
+		eventBus.addListener(GeoModelTransformer::getGeoArmorTexturePath);
 		eventBus.addListener(this::geoEntityRenderPreEvent);
 		eventBus.addListener(this::geoEntityRenderPostEvent);
 	}
@@ -104,21 +102,6 @@ public class GeckolibCompat implements ICompatModule {
 						entityIndicator.draw(livingentity, entitypatch, ClientEngine.getInstance().getPlayerPatch(), event.getPoseStack(), event.getBufferSource(), event.getPartialTick());
 					}
 				}
-			}
-		}
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	public void getGeoArmorTexturePath(AnimatedArmorTextureEvent event) {
-		IClientItemExtensions customRenderProperties = IClientItemExtensions.of(event.getItemstack());
-
-		if (customRenderProperties != null) {
-			HumanoidModel<?> extensionRenderer = customRenderProperties.getHumanoidArmorModel(event.getLivingEntity(),
-				event.getItemstack(), event.getEquipmentSlot(), event.getOriginalModel());
-
-			if (extensionRenderer instanceof GeoArmorRenderer geoArmorRenderer
-					&& event.getItemstack().getItem() instanceof GeoAnimatable geoAnimatable) {
-				event.setResultLocation(geoArmorRenderer.getTextureLocation(geoAnimatable));
 			}
 		}
 	}
