@@ -2,12 +2,12 @@ package yesman.epicfight.registry.callbacks;
 
 import net.minecraft.core.IdMapper;
 import net.minecraft.core.Registry;
-import net.neoforged.neoforge.registries.callback.BakeCallback;
-import net.neoforged.neoforge.registries.callback.ClearCallback;
+
+
 import yesman.epicfight.api.animation.SynchedAnimationVariableKey;
 import yesman.epicfight.api.utils.datastructure.ClearableIdMapper;
 
-public class SynchedAnimationVariableKeyCallbacks implements BakeCallback<SynchedAnimationVariableKey<?>>, ClearCallback<SynchedAnimationVariableKey<?>> {
+public class SynchedAnimationVariableKeyCallbacks implements RegistryCallback.BakeCallback<SynchedAnimationVariableKey<?>>, RegistryCallback.ClearCallback<SynchedAnimationVariableKey<?>> {
 	private static final SynchedAnimationVariableKeyCallbacks INSTANCE = new SynchedAnimationVariableKeyCallbacks();
 	
 	public static SynchedAnimationVariableKeyCallbacks getRegistryCallback() {

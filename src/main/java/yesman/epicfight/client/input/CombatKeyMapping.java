@@ -3,9 +3,13 @@ package yesman.epicfight.client.input;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.KeyMapping;
-import net.neoforged.neoforge.client.settings.KeyConflictContext;
+
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.client.ClientEngine;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /// A specialized [KeyMapping] used by Epic Fight to represent combat-related key bindings.
 ///
@@ -34,17 +38,24 @@ import yesman.epicfight.client.ClientEngine;
 /// Future maintainers should consider refactoring or removing this class
 /// if it becomes problematic or a maintenance burden.
 public class CombatKeyMapping extends KeyMapping {
+
+    private static final List<CombatKeyMapping> COMBAT_KEY_MAPPINGS = Collections.synchronizedList(new ArrayList<>());
+
+    public static List<CombatKeyMapping> getCombatKeyMappings() {
+        return COMBAT_KEY_MAPPINGS;
+    }
+
     public CombatKeyMapping(String description, int code, String category) {
         this(description, InputConstants.Type.KEYSYM, code, category);
     }
 
     /// This key mapping only applies [KeyConflictContext#IN_GAME] since it represents player moves.
     public CombatKeyMapping(String description, InputConstants.Type type, int code, String category) {
-        super(description, KeyConflictContext.IN_GAME, type, code, category);
+        super(description, type, code, category);
+        COMBAT_KEY_MAPPINGS.add(this);
     }
 
-    @Override
-    public boolean isActiveAndMatches(@NotNull InputConstants.Key keyCode) {
-        return super.isActiveAndMatches(keyCode) && ClientEngine.getInstance().isEpicFightMode();
+        public boolean isActiveAndMatches(@NotNull InputConstants.Key keyCode) {
+        return super.matches(keyCode.getValue(), 0) && ClientEngine.getInstance().isEpicFightMode();
     }
 }

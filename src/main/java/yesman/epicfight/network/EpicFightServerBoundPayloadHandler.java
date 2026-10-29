@@ -4,7 +4,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import yesman.epicfight.network.EpicFightPayloadContext;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.network.client.CPAnimatorControl;
 import yesman.epicfight.network.client.CPChangePlayerMode;
@@ -33,14 +33,14 @@ import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.gamerule.EpicFightGameRules;
 
 public interface EpicFightServerBoundPayloadHandler {
-	static <T> void handleAnimationVariablePacket(final BiDirectionalAnimationVariable data, final IPayloadContext context) {
+	static <T> void handleAnimationVariablePacket(final BiDirectionalAnimationVariable data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), ServerPlayerPatch.class).ifPresent(playerpatch -> {
 			data.commonProcess(playerpatch);
 			EpicFightNetworkManager.sendToAllPlayerTrackingThisEntity(data, playerpatch.getOriginal());
 		});
 	}
 	
-	static void handleAnimatorControl(final CPAnimatorControl data, final IPayloadContext context) {
+	static void handleAnimatorControl(final CPAnimatorControl data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), ServerPlayerPatch.class).ifPresent(playerpatch -> {
 			if (!data.isClientOnly()) {
 				data.animationVariables().forEach(animationVariable -> handleAnimationVariablePacket(animationVariable, context));
@@ -59,14 +59,14 @@ public interface EpicFightServerBoundPayloadHandler {
 		});
 	}
 	
-	static void handleChangePlayerMode(final CPChangePlayerMode data, final IPayloadContext context) {
+	static void handleChangePlayerMode(final CPChangePlayerMode data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), ServerPlayerPatch.class).ifPresent(playerpatch -> {
 			playerpatch.toMode(data.mode(), false);
 			EpicFightNetworkManager.sendToAllPlayerTrackingThisEntity(SPModifyPlayerData.setPlayerMode(playerpatch.getOriginal().getId(), playerpatch.getPlayerMode()), playerpatch.getOriginal());
 		});
 	}
 	
-	static void handleChangeSkill(final CPChangeSkill data, final IPayloadContext context) {
+	static void handleChangeSkill(final CPChangeSkill data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), ServerPlayerPatch.class).ifPresent(playerpatch -> {
 			Skill skill = Skill.skillOrNull(data.skill());
 			SkillContainer skillContainer = playerpatch.getSkill(data.skillSlot());
@@ -90,11 +90,11 @@ public interface EpicFightServerBoundPayloadHandler {
 		});
 	}
 	
-	static void handlePairingAnimationRegistry(final CPPairingAnimationRegistry data, final IPayloadContext context) {
+	static void handlePairingAnimationRegistry(final CPPairingAnimationRegistry data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		AnimationManager.getInstance().validateClientAnimationRegistry(data, ((ServerPlayer)context.player()).connection);
 	}
 	
-	static void handleExecuteSkill(final CPSkillRequest data, final IPayloadContext context) {
+	static void handleExecuteSkill(final CPSkillRequest data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), ServerPlayerPatch.class).ifPresent(playerpatch -> {
 			SkillContainer skillContainer = playerpatch.getSkill(data.skillSlot());
 			
@@ -106,7 +106,7 @@ public interface EpicFightServerBoundPayloadHandler {
 		});
 	}
 	
-	static void handleModifyPlayerModelYRot(final CPModifyEntityModelYRot data, final IPayloadContext context) {
+	static void handleModifyPlayerModelYRot(final CPModifyEntityModelYRot data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), ServerPlayerPatch.class).ifPresent(playerpatch -> {
 			if (data.disable()) {
 				playerpatch.disableModelYRot(false);
@@ -118,7 +118,7 @@ public interface EpicFightServerBoundPayloadHandler {
 		});
 	}
 	
-	static void handleSkillData(final CPHandleSkillData data, final IPayloadContext context) {
+	static void handleSkillData(final CPHandleSkillData data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		Player player = context.player();
 		
 		EpicFightCapabilities.getUnparameterizedEntityPatch(player, PlayerPatch.class).ifPresent(playerpatch -> {
@@ -128,7 +128,7 @@ public interface EpicFightServerBoundPayloadHandler {
 		});
 	}
 	
-	static void handleSetPlayerTarget(final CPSetPlayerTarget data, final IPayloadContext context) {
+	static void handleSetPlayerTarget(final CPSetPlayerTarget data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), ServerPlayerPatch.class).ifPresent(entitypatch -> {
 			Entity entity = entitypatch.getOriginal().level().getEntity(data.targetEntityId());
 			
@@ -140,7 +140,7 @@ public interface EpicFightServerBoundPayloadHandler {
 		});
 	}
 	
-	static void handleSetStamina(final CPSetStamina data, final IPayloadContext context) {
+	static void handleSetStamina(final CPSetStamina data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), ServerPlayerPatch.class).ifPresent(playerpatch -> {
 			playerpatch.setStamina(data.consumption());
 			
@@ -150,7 +150,7 @@ public interface EpicFightServerBoundPayloadHandler {
 		});
 	}
 	
-	static void handleUpdatePlayerInput(final CPUpdatePlayerInput data, final IPayloadContext context) {
+	static void handleUpdatePlayerInput(final CPUpdatePlayerInput data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), ServerPlayerPatch.class).ifPresent(playerpatch -> {
 			playerpatch.dx = data.strafe();
 			playerpatch.dz = data.forward();
@@ -158,7 +158,7 @@ public interface EpicFightServerBoundPayloadHandler {
 		});
 	}
 	
-	static void handleSyncAnimationPosition(final BiDirectionalSyncAnimationPositionPacket data, final IPayloadContext context) {
+	static void handleSyncAnimationPosition(final BiDirectionalSyncAnimationPositionPacket data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		Entity entity = context.player().level().getEntity(data.entityId());
 		
 		if (entity instanceof Player player) {
@@ -166,8 +166,8 @@ public interface EpicFightServerBoundPayloadHandler {
 		}
 	}
 
-    static void handleSyncEmoteSlot(final BiDirectionalSyncEmoteSlots data, final IPayloadContext context) {
-        EpicFightCapabilities.getLocalPlayerPatchAsOptional(context.player().level().getEntity(data.playerId())).ifPresent(playerpatch -> {
+    static void handleSyncEmoteSlot(final BiDirectionalSyncEmoteSlots data, final yesman.epicfight.network.EpicFightPayloadContext context) {
+        EpicFightCapabilities.getPlayerPatchAsOptional(context.player().level().getEntity(data.playerId())).ifPresent(playerpatch -> {
             playerpatch.getEmoteSlots().deserialize(data.compoundTag(), playerpatch.getOriginal().registryAccess());
         });
     }

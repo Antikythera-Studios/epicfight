@@ -5,7 +5,7 @@ import yesman.epicfight.api.event.EntityEventListener;
 import yesman.epicfight.api.event.EpicFightEventHooks;
 import yesman.epicfight.api.event.IdentifierProvider;
 import yesman.epicfight.api.utils.side.ClientOnly;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.network.EntityPairingPacketTypes;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPEntityPairingPacket;
@@ -16,7 +16,7 @@ import yesman.epicfight.skill.SkillContainer;
 import java.util.List;
 
 public class StaminaPillagerSkill extends PassiveSkill {
-    public static final IdentifierProvider ASHEN_DECORATIONS = IdentifierProvider.constant(EpicFightMod.identifier("stamina_pillager_ashen"));
+    public static final IdentifierProvider ASHEN_DECORATIONS = IdentifierProvider.constant(EpicFight.identifier("stamina_pillager_ashen"));
 
     protected float regenRate;
 

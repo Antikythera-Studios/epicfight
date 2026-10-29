@@ -61,6 +61,11 @@ public class ClientAnimator extends Animator {
 	/** Play an animation by animation instance **/
 	@Override
 	public void playAnimation(AssetAccessor<? extends StaticAnimation> nextAnimation, float transitionTimeModifier) {
+		if (AnimationManager.checkNull(nextAnimation)) {
+			EpicFight.LOGGER.warn("Skipping playback of an empty animation ({})", nextAnimation == null ? "null" : nextAnimation.registryName());
+			return;
+		}
+		
 		Layer layer = nextAnimation.get().getLayerType() == Layer.LayerType.BASE_LAYER ? this.baseLayer : this.baseLayer.compositeLayers.get(nextAnimation.get().getPriority());
 		layer.paused = false;
 		layer.playAnimation(nextAnimation, this.entitypatch, transitionTimeModifier);
@@ -76,6 +81,11 @@ public class ClientAnimator extends Animator {
 	
 	@Override
 	public void playAnimationInstantly(AssetAccessor<? extends StaticAnimation> nextAnimation) {
+		if (AnimationManager.checkNull(nextAnimation)) {
+			EpicFight.LOGGER.warn("Skipping instant playback of an empty animation ({})", nextAnimation == null ? "null" : nextAnimation.registryName());
+			return;
+		}
+		
 		Layer layer = nextAnimation.get().getLayerType() == Layer.LayerType.BASE_LAYER ? this.baseLayer : this.baseLayer.compositeLayers.get(nextAnimation.get().getPriority());
 		layer.paused  = false;
 		layer.playAnimationInstantly(nextAnimation, this.entitypatch);
@@ -83,6 +93,11 @@ public class ClientAnimator extends Animator {
 	
 	@Override
 	public void reserveAnimation(AssetAccessor<? extends StaticAnimation> nextAnimation) {
+		if (AnimationManager.checkNull(nextAnimation)) {
+			EpicFight.LOGGER.warn("Skipping reservation of an empty animation ({})", nextAnimation == null ? "null" : nextAnimation.registryName());
+			return;
+		}
+		
 		Layer layer = nextAnimation.get().getLayerType() == Layer.LayerType.BASE_LAYER ? this.baseLayer : this.baseLayer.compositeLayers.get(nextAnimation.get().getPriority());
 		
 		if (nextAnimation.get().getPriority().isHigherThan(layer.animationPlayer.getRealAnimation().get().getPriority())) {
@@ -99,6 +114,10 @@ public class ClientAnimator extends Animator {
 	
 	@Override
 	public boolean stopPlaying(AssetAccessor<? extends StaticAnimation> targetAnimation) {
+		if (AnimationManager.checkNull(targetAnimation)) {
+			return false;
+		}
+		
 		Layer layer = targetAnimation.get().getLayerType() == Layer.LayerType.BASE_LAYER ? this.baseLayer : this.baseLayer.compositeLayers.get(targetAnimation.get().getPriority());
 		
 		if (layer.animationPlayer.getRealAnimation() == targetAnimation) {
@@ -122,7 +141,7 @@ public class ClientAnimator extends Animator {
 	@Override
 	public void addLivingAnimation(LivingMotion livingMotion, AssetAccessor<? extends StaticAnimation> animation) {
 		if (AnimationManager.checkNull(animation)) {
-			EpicFight.LOGGER.warn("Unable to put an empty animation for {}", livingMotion);
+			EpicFight.LOGGER.warn("Unable to put an empty animation for {}: {}", livingMotion, animation == null ? "null" : animation.registryName());
 			return;
 		}
 		
@@ -171,7 +190,13 @@ public class ClientAnimator extends Animator {
 	}
 
 	public AssetAccessor<? extends StaticAnimation> getLivingMotion(LivingMotion motion) {
-		return this.livingAnimations.getOrDefault(motion, this.livingAnimations.get(LivingMotions.IDLE));
+		// SPChangeLivingMotion replaces the whole map with the item capability's modifier
+		// set. When that set is empty or lacks both the queried motion and IDLE, every
+		// animation lookup in tick() used to NPE and freeze the animator (stuck walk
+		// animation). Fall back to biped idle instead of returning null.
+		AssetAccessor<? extends StaticAnimation> animation =
+			this.livingAnimations.getOrDefault(motion, this.livingAnimations.get(LivingMotions.IDLE));
+		return animation != null ? animation : Animations.BIPED_IDLE;
 	}
 	
 	public AssetAccessor<? extends StaticAnimation> getCompositeLivingMotion(LivingMotion motion) {
@@ -592,22 +617,22 @@ public class ClientAnimator extends Animator {
 	@Override
 	public EntityState getEntityState() {
 		ParameterizedHashMap<StateFactor<?>> stateMap = new ParameterizedHashMap<> ();
-		
+
 		for (Layer layer : this.baseLayer.compositeLayers.values()) {
 			if (this.baseLayer.baseLayerPriority.isHigherThan(layer.priority)) {
 				continue;
 			}
-			
+
 			if (!layer.isOff()) {
 				stateMap.putAll(layer.animationPlayer.getAnimation().get().getStatesMap(this.entitypatch, layer.animationPlayer.getElapsedTime()));
 			}
-			
+
 			// put base layer states
 			if (layer.priority == this.baseLayer.baseLayerPriority) {
 				stateMap.putAll(this.baseLayer.animationPlayer.getAnimation().get().getStatesMap(this.entitypatch, this.baseLayer.animationPlayer.getElapsedTime()));
 			}
 		}
-		
+
 		return new EntityState(stateMap);
 	}
 }

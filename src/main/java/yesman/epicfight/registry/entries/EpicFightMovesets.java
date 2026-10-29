@@ -1,4 +1,5 @@
 package yesman.epicfight.registry.entries;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ProjectileWeaponItem;
@@ -258,11 +259,11 @@ public class EpicFightMovesets
                     .addLivingMotionModifier(LivingMotions.AIM, Animations.BIPED_JAVELIN_AIM)
                     .addLivingMotionModifier(LivingMotions.SHOT, Animations.BIPED_JAVELIN_THROW)
                     .addInnateSkill((itemStack, playerPatch) -> {
-                        if (itemStack.getEnchantmentLevel(playerPatch.getLevel().holderOrThrow(Enchantments.RIPTIDE)) > 0) {
+                        if (EnchantmentHelper.getItemEnchantmentLevel(playerPatch.getLevel().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getHolder(Enchantments.RIPTIDE).orElseThrow(), itemStack) > 0) {
                             return EpicFightSkills.TSUNAMI.get();
-                        } else if (itemStack.getEnchantmentLevel(playerPatch.getLevel().holderOrThrow(Enchantments.CHANNELING)) > 0) {
+                        } else if (EnchantmentHelper.getItemEnchantmentLevel(playerPatch.getLevel().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getHolder(Enchantments.CHANNELING).orElseThrow(), itemStack) > 0) {
                             return EpicFightSkills.WRATHFUL_LIGHTING.get();
-                        } else if (itemStack.getEnchantmentLevel(playerPatch.getLevel().holderOrThrow(Enchantments.LOYALTY)) > 0) {
+                        } else if (EnchantmentHelper.getItemEnchantmentLevel(playerPatch.getLevel().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getHolder(Enchantments.LOYALTY).orElseThrow(), itemStack) > 0) {
                             return EpicFightSkills.EVERLASTING_ALLEGIANCE.get();
                         } else {
                             return EpicFightSkills.GRASPING_SPIRE.get();

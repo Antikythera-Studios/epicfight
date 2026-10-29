@@ -18,12 +18,12 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import yesman.epicfight.api.client.animation.property.JointMask.BindModifier;
 import yesman.epicfight.api.client.animation.property.JointMask.JointMaskSet;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 
 public class JointMaskReloadListener extends SimpleJsonResourceReloadListener {
 	private static final BiMap<ResourceLocation, JointMaskSet> JOINT_MASKS = HashBiMap.create();
 	private static final Map<String, JointMask.BindModifier> BIND_MODIFIERS = Maps.newHashMap();
-    private static final ResourceLocation NONE_MASK = EpicFightMod.identifier("none");
+    private static final ResourceLocation NONE_MASK = EpicFight.identifier("none");
 	
 	static {
 		BIND_MODIFIERS.put("keep_child_locrot", JointMask.KEEP_CHILD_LOCROT);

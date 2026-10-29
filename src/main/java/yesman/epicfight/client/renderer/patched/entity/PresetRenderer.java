@@ -1,4 +1,5 @@
 package yesman.epicfight.client.renderer.patched.entity;
+import yesman.epicfight.EpicFight;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
 import yesman.epicfight.api.client.event.types.render.PrepareModelEvent;
+import yesman.epicfight.api.extension.EntityExtension;
 import yesman.epicfight.api.client.model.SkinnedMesh;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.MathUtils;
@@ -67,7 +69,7 @@ public class PresetRenderer extends PatchedEntityRenderer<LivingEntity, LivingEn
 				JsonElement jsonelement = GsonHelper.fromJson(new GsonBuilder().create(), reader, JsonElement.class);
 				layers.add(Pair.of(entry.getKey(), jsonelement));
 			} catch (IllegalArgumentException | IOException | JsonParseException jsonparseexception) {
-				EpicFightMod.LOGGER.error("Failed to parse layer file {} for {}", entry.getKey(), type);
+				EpicFight.LOGGER.error("Failed to parse layer file {} for {}", entry.getKey(), type);
 				jsonparseexception.printStackTrace();
 			} finally {
 				try {
@@ -128,7 +130,7 @@ public class PresetRenderer extends PatchedEntityRenderer<LivingEntity, LivingEn
 	}
 	
 	protected void prepareVanillaModel(LivingEntity entityIn, EntityModel<LivingEntity> model, LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> renderer, float partialTicks) {
-		boolean shouldSit = entityIn.isPassenger() && (entityIn.getVehicle() != null && entityIn.getVehicle().shouldRiderSit());
+		boolean shouldSit = entityIn.isPassenger() && entityIn.getVehicle() != null && EntityExtension.of(entityIn.getVehicle()).epicfight$shouldRiderSit();
 		model.riding = shouldSit;
 		model.young = entityIn.isBaby();
 		float f = Mth.rotLerp(partialTicks, entityIn.yBodyRotO, entityIn.yBodyRot);

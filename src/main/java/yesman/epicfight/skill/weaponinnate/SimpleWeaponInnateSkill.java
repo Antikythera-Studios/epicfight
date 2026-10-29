@@ -6,6 +6,8 @@ import java.util.function.Function;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import yesman.epicfight.EpicFight;
+import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
@@ -46,7 +48,11 @@ public class SimpleWeaponInnateSkill extends WeaponInnateSkill {
 	
 	@Override
 	public void executeOnServer(SkillContainer container, CompoundTag arguments) {
-		container.getExecutor().playAnimationSynchronized(this.attackAnimation, 0);
+		if (AnimationManager.checkNull(this.attackAnimation)) {
+			EpicFight.LOGGER.warn("Weapon innate skill {} has no attack animation; executing without animation playback", this.getRegistryName());
+		} else {
+			container.getExecutor().playAnimationSynchronized(this.attackAnimation, 0);
+		}
 		
 		super.executeOnServer(container, arguments);
 	}
@@ -61,12 +67,20 @@ public class SimpleWeaponInnateSkill extends WeaponInnateSkill {
 	
 	@Override
 	public WeaponInnateSkill registerPropertiesToAnimation() {
+		if (this.attackAnimation == null) {
+			return this;
+		}
+
 		AttackAnimation anim = this.attackAnimation.get();
-		
+
+		if (anim == null) {
+			return this;
+		}
+
 		for (Phase phase : anim.phases) {
 			phase.addProperties(this.properties.get(0).entrySet());
 		}
-		
+
 		return this;
 	}
 }

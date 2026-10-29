@@ -103,7 +103,7 @@ public class HyperVitalitySkill extends PassiveSkill {
 
         if (!this.isActivated(container)) {
             String remainTime = String.format("%.0f", container.getMaxResource() - container.getResource());
-            guiGraphics.drawString(gui.getFont(), remainTime, (x + 12 - 4 * (remainTime.length())), y + 6, 16777215, true);
+            guiGraphics.drawString(gui.getFont(), remainTime, (int)(x + 12 - 4 * (remainTime.length())), (int)(y + 6), 16777215, true);
         }
     }
 

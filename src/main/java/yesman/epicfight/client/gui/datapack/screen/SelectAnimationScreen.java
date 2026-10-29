@@ -34,15 +34,15 @@ public class SelectAnimationScreen extends Screen {
 		super(Component.translatable("gui.epicfight.select.animations"));
 		
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
-		this.font = parentScreen.getMinecraft().font;
+		this.minecraft = Minecraft.getInstance();
+		this.font = Minecraft.getInstance().font;
 		
 		this.modelPreviewer = new ModelPreviewer(10, 20, 36, 60, null, null, armature, mesh);
-		this.animationList = new AnimationList(parentScreen.getMinecraft(), this.width, this.height - 52, 36, 21);
+		this.animationList = new AnimationList(Minecraft.getInstance(), this.width, this.height - 52, 36, 21);
 		this.selectCallback = selectCallback;
 		this.cancelCallback = cancelCallback;
 		this.filter = filter;
-		this.searchBox = new EditBox(parentScreen.getMinecraft().font, this.width / 2, 12, this.width / 2 - 12, 16, Component.literal("datapack_edit.keyword"));
+		this.searchBox = new EditBox(Minecraft.getInstance().font, this.width / 2, 12, this.width / 2 - 12, 16, Component.literal("datapack_edit.keyword"));
 		this.searchBox.setResponder(this.animationList::refreshAniamtionList);
 		
 		this.animationList.refreshAniamtionList(null);

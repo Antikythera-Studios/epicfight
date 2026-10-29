@@ -1,4 +1,5 @@
 package yesman.epicfight.world.capabilities.entitypatch;
+import yesman.epicfight.platform.neoforged.event.EventHooks;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.RenderType;
@@ -17,11 +18,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.EventHooks;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
@@ -35,6 +37,7 @@ import yesman.epicfight.api.event.EntityEventListener;
 import yesman.epicfight.api.event.EpicFightEventHooks;
 import yesman.epicfight.api.event.IdentifierProvider;
 import yesman.epicfight.api.event.types.entity.*;
+import yesman.epicfight.api.extension.EntityExtension;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.AttackResult;
 import yesman.epicfight.api.utils.AttackResult.ResultType;
@@ -44,7 +47,7 @@ import yesman.epicfight.api.utils.side.ClientOnly;
 import yesman.epicfight.client.renderer.EpicFightRenderTypes;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.Armatures;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.main.EpicFightSharedConstants;
 import yesman.epicfight.mixin.common.MixinMob;
 import yesman.epicfight.mixin.common.MixinPlayer;
@@ -116,7 +119,22 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
 
     @Override
     public void onConstructed(T original) {
-        this.armature = Armatures.getArmatureFor(this);
+        // Client PlayerPatch construction happens before the Player's inventory is
+        // assigned; skip animator/armature work then — onJoinWorld retries once the
+        // subclass object is fully constructed. Server entities and fakes keep the
+        // normal path.
+        if (original instanceof net.minecraft.world.entity.player.Player player
+            && this.isLogicalClient() && !this.isFakeEntity() && player.getInventory() == null) {
+            return;
+        }
+
+        // Armature loading requires assets/ resources which are only available on the client.
+        // On the dedicated server, this will fail — wrap in try-catch so the animator can still be created.
+        try {
+            this.armature = Armatures.getArmatureFor(this);
+        } catch (Throwable e) {
+            yesman.epicfight.EpicFight.LOGGER.warn("[EpicFight] Failed to load armature for {}: {}", original.getType(), e.getMessage());
+        }
 
         Animator animator = EpicFightSharedConstants.getAnimator(this);
         this.animator = animator;
@@ -145,6 +163,13 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
 
     @Override
     public void onJoinWorld(T entity, Level level, boolean worldgenSpawn) {
+        // Constructor-deferred client players: finish animator/armature init now
+        // that the inventory exists.
+        if (this.animator == null && entity instanceof net.minecraft.world.entity.player.Player
+            && this.isLogicalClient() && !this.isFakeEntity()) {
+            this.onConstructed(entity);
+        }
+
         super.onJoinWorld(entity, level, worldgenSpawn);
 
         if (entity.getAttributeBaseValue(EpicFightAttributes.WEIGHT) == 0.0D) {
@@ -213,7 +238,7 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
             switch (packet.pairingPacketType().toEnum(EntityPairingPacketTypes.class)) {
             case BONEBREAKER_BEGIN -> {
                 this.entityDecorations.addDecorationOverlay(BonebreakerSkill.CRACKINESS, new DecorationOverlay() {
-                    static final ResourceLocation TEXTURE = EpicFightMod.identifier("textures/entity/overlay/crack_level1.png");
+                    static final ResourceLocation TEXTURE = EpicFight.identifier("textures/entity/overlay/crack_level1.png");
 
                     @Override
                     public RenderType getRenderType() {
@@ -225,7 +250,7 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
                 getLevel().playLocalSound(getOriginal(), EpicFightSounds.OLD_FALL.get(), SoundSource.MASTER, 50.0F, 1.0F);
 
                 this.entityDecorations.addDecorationOverlay(BonebreakerSkill.CRACKINESS, new DecorationOverlay() {
-                    static final ResourceLocation TEXTURE = EpicFightMod.identifier("textures/entity/overlay/crack_level2.png");
+                    static final ResourceLocation TEXTURE = EpicFight.identifier("textures/entity/overlay/crack_level2.png");
 
                     @Override
                     public RenderType getRenderType() {
@@ -628,6 +653,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
      * Play an animation without convert time
      */
     public void playAnimationInstantly(AssetAccessor<? extends StaticAnimation> animation) {
+        if (AnimationManager.checkNull(animation)) {
+            EpicFight.LOGGER.warn("Skipping playAnimationInstantly with an empty animation for {}", this.original);
+            return;
+        }
+
         this.animator.playAnimationInstantly(animation);
 
         if (!this.isLogicalClient()) {
@@ -639,6 +669,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
      * Reserve an animation to be played after the current animation
      */
     public void reserveAnimation(AssetAccessor<? extends StaticAnimation> animation) {
+        if (AnimationManager.checkNull(animation)) {
+            EpicFight.LOGGER.warn("Skipping reserveAnimation with an empty animation for {}", this.original);
+            return;
+        }
+
         this.animator.reserveAnimation(animation);
 
         if (!this.isLogicalClient()) {
@@ -650,6 +685,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
      * Stop playing an animation
      */
     public void stopPlaying(AssetAccessor<? extends StaticAnimation> animation) {
+        if (AnimationManager.checkNull(animation)) {
+            EpicFight.LOGGER.warn("Skipping stopPlaying with an empty animation for {}", this.original);
+            return;
+        }
+
         this.animator.stopPlaying(animation);
 
         if (!this.isLogicalClient()) {
@@ -663,6 +703,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
      * Do not call this in client side for non-player entities.
      */
     public void playAnimationSynchronized(AssetAccessor<? extends StaticAnimation> animation, float transitionTimeModifier) {
+        if (AnimationManager.checkNull(animation)) {
+            EpicFight.LOGGER.warn("Skipping playAnimationSynchronized with an empty animation for {}", this.original);
+            return;
+        }
+
         this.animator.playAnimation(animation, transitionTimeModifier);
 
         if (!this.isLogicalClient()) {
@@ -674,6 +719,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
      * Play an animation only in client side, including all clients tracking this entity
      */
     public void playAnimationInClientSide(AssetAccessor<? extends StaticAnimation> animation, float transitionTimeModifier) {
+        if (AnimationManager.checkNull(animation)) {
+            EpicFight.LOGGER.warn("Skipping playAnimationInClientSide with an empty animation for {}", this.original);
+            return;
+        }
+
         if (this.isLogicalClient()) {
             this.animator.playAnimation(animation, transitionTimeModifier);
         } else {
@@ -913,11 +963,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
 
         if (hand == InteractionHand.MAIN_HAND) {
             impact = (float)this.original.getAttributeValue(EpicFightAttributes.IMPACT);
-            i = this.getOriginal().getMainHandItem().getEnchantmentLevel(this.getLevel().registryAccess().holderOrThrow(Enchantments.KNOCKBACK));
+            i = EnchantmentHelper.getItemEnchantmentLevel(this.getLevel().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.KNOCKBACK), this.getOriginal().getMainHandItem());
         } else {
             if (this.isOffhandItemValid()) {
                 impact = (float)this.original.getAttributeValue(EpicFightAttributes.OFFHAND_IMPACT);
-                i = this.getOriginal().getOffhandItem().getEnchantmentLevel(this.getLevel().registryAccess().holderOrThrow(Enchantments.KNOCKBACK));
+                i = EnchantmentHelper.getItemEnchantmentLevel(this.getLevel().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.KNOCKBACK), this.getOriginal().getOffhandItem());
             } else {
                 impact = (float)this.original.getAttribute(EpicFightAttributes.IMPACT).getBaseValue();
             }
@@ -1076,7 +1126,7 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
             return true;
         }
 
-        if (this.original.getRootVehicle() == target.getRootVehicle() && !target.canRiderInteract()) {
+        if (this.original.getRootVehicle() == target.getRootVehicle() && !EntityExtension.of(target).epicfight$canRiderInteract()) {
             return true;
         }
 

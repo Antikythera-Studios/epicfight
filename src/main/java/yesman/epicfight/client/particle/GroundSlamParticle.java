@@ -72,7 +72,7 @@ public class GroundSlamParticle extends NoRenderParticle {
     public static class BlockParticleProvider implements ParticleProvider<BlockParticleOption> {
         @Override
         public @Nullable Particle createParticle(BlockParticleOption particleOption, ClientLevel clientLevel, double x, double y, double z, double dx, double dy, double dz) {
-            TerrainParticle blockParticle = new TerrainParticle(clientLevel, x, y, z, dx, dy, dz, particleOption.getState(), particleOption.getPos());
+            TerrainParticle blockParticle = new TerrainParticle(clientLevel, x, y, z, dx, dy, dz, particleOption.getState(), new net.minecraft.core.BlockPos((int)x, (int)y, (int)z));
             blockParticle.setParticleSpeed((Math.random() - 0.5D) * 0.3D, Math.random() * 0.5D, (Math.random() - 0.5D) * 0.3D);
             blockParticle.setLifetime(10 + new Random().nextInt(60));
 

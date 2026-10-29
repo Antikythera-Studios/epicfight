@@ -182,22 +182,25 @@ classified into three types:
 
 ## 🔧 **Compatibility**
 
-### **✅ Fully Supported and Compatible Mods**
+### ✅ **Fully Supported and Compatible Mods**
 
 <details><summary>Tap to show/hide</summary>
 
-- [Epic Fight: Skill Tree](https://modrinth.com/mod/epic-fight-skill-tree)
 - [Controlify](https://modrinth.com/mod/controlify)
-- [ParCool](https://modrinth.com/mod/parcool)
 - [Sodium](https://modrinth.com/mod/sodium)
 - [Iris Shaders](https://modrinth.com/mod/iris)
 - [3D Skin Layers](https://modrinth.com/mod/3dskinlayers)
-- [Shoulder Surfing Reloaded](https://modrinth.com/mod/shoulder-surfing-reloaded)
 - [playerAnimator](https://modrinth.com/mod/playeranimator)
 - [Geckolib](https://modrinth.com/mod/geckolib)
 - [AzureLib](https://modrinth.com/mod/azurelib)
+- [Trinkets](https://modrinth.com/mod/trinkets)
+- [Simply Tooltips](https://modrinth.com/mod/simply-tooltips)
+- [PlayerRevive ReFabric](https://www.curseforge.com/minecraft/mc-mods/playerrevive-refabric)
+- [Female Gender](https://modrinth.com/mod/female-gender)
+- [Better Third Person](https://modrinth.com/mod/better-third-person)
+- [Shoulder Surfing Reloaded](https://modrinth.com/mod/shoulder-surfing-reloaded)
 - [First-person Model](https://modrinth.com/mod/first-person-model)
-- [KubeJS](https://modrinth.com/mod/kubejs)
+- [JEI](https://modrinth.com/mod/jei)
 
 </details>
 
@@ -207,7 +210,7 @@ classified into three types:
 
 - **Optifine** (closed-source mod)
 - [Controllable](https://www.curseforge.com/minecraft/mc-mods/controllable)
-- 
+- [Controlify](https://modrinth.com/mod/controlify)
 
 </details>
 

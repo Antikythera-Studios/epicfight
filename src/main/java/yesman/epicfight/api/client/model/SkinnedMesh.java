@@ -1,4 +1,5 @@
 package yesman.epicfight.api.client.model;
+import yesman.epicfight.EpicFight;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
@@ -125,7 +126,7 @@ public class SkinnedMesh extends StaticMesh<SkinnedMeshPart> {
 	protected SkinnedMeshPart getOrLogException(Map<String, SkinnedMeshPart> parts, String name) {
 		if (!parts.containsKey(name)) {
 			if (EpicFightSharedConstants.IS_DEV_ENV) {
-				EpicFightMod.LOGGER.debug("Cannot find the mesh part named " + name + " in " + this.getClass().getCanonicalName());
+				EpicFight.LOGGER.debug("Cannot find the mesh part named " + name + " in " + this.getClass().getCanonicalName());
 			}
 			return null;
 		}

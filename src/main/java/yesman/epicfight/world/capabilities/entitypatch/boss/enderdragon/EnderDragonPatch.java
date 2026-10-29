@@ -1,4 +1,5 @@
 package yesman.epicfight.world.capabilities.entitypatch.boss.enderdragon;
+import yesman.epicfight.platform.fabric.event.EntityAttributeModificationEvent;
 
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -31,7 +32,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
+
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.*;
@@ -233,7 +234,7 @@ public class EnderDragonPatch extends MobPatch<EnderDragon> implements InverseKi
 		this.ikSimulator.tick(null);
 		this.setIKHeightAndRootRotation();
 		
-		Entity bodyPart = this.original.getParts()[2];
+		Entity bodyPart = ((net.minecraft.world.entity.boss.enderdragon.EnderDragon) this.original).getSubEntities()[2];
 		AABB bodyBoundingBox = bodyPart.getBoundingBox();
 		List<Entity> list = this.original.level().getEntities(this.original, bodyBoundingBox, EntitySelector.pushableBy(this.original));
 		
@@ -494,6 +495,6 @@ public class EnderDragonPatch extends MobPatch<EnderDragon> implements InverseKi
             }
 		}
 		
-		return this.original.getDragonFight() == null ? null : this.original.getDragonFight().dragonEvent;
+		return this.original.getDragonFight() == null ? null : ((yesman.epicfight.mixin.common.EndDragonFightAccessor) this.original.getDragonFight()).epicfight$getDragonEvent();
 	}
 }

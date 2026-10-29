@@ -32,7 +32,7 @@ public final class VanillaGeneralClientEventHooks {
             return false;
         }
 
-        LocalPlayerPatch playerpatch = EpicFightCapabilities.getLocalPlayerPatch((LocalPlayer)player);
+        LocalPlayerPatch playerpatch = EpicFightCapabilities.ClientModule.getLocalPlayerPatch((LocalPlayer)player);
 
         if (playerpatch != null) {
             if (!playerpatch.getEntityState().canUseItem()) {

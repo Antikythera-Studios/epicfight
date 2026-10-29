@@ -1,4 +1,5 @@
 package yesman.epicfight.world.capabilities.item;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import com.google.common.collect.*;
 import net.minecraft.ChatFormatting;
@@ -17,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.neoforged.fml.ModList;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.EpicFight;
@@ -80,7 +81,7 @@ public class CapabilityItem {
 	public static List<AttributeModifier> getAttributeModifiersAsWeapon(Holder<Attribute> attribute, EquipmentSlot slot, ItemStack itemstack, @Nullable LivingEntityPatch<?> entitypatch) {
 		List<AttributeModifier> attributeModifiers = Lists.newArrayList();
 		
-		itemstack.getAttributeModifiers().forEach(slot, (attribute$1, modifier) -> {
+		itemstack.getOrDefault(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS, net.minecraft.world.item.component.ItemAttributeModifiers.EMPTY).forEach(slot, (attribute$1, modifier) -> {
 			if (attribute$1 == attribute) {
 				attributeModifiers.add(modifier);
 			}
@@ -166,7 +167,7 @@ public class CapabilityItem {
 				double value = attribute.get(impact).amount() + entitypatch.getOriginal().getAttribute(impact).getBaseValue();
 
 				if (value > 0.0D) {
-					int i = itemStack.getEnchantmentLevel(entitypatch.getOriginal().level().holderOrThrow(Enchantments.KNOCKBACK));
+					int i = EnchantmentHelper.getItemEnchantmentLevel(entitypatch.getOriginal().level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getHolder(Enchantments.KNOCKBACK).orElseThrow(), itemStack);
 					value *= (1.0F + i * 0.12F);
 					itemTooltip.add(index++, Component.literal(" ").append(Component.translatable(impact.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(value))));
 				}
@@ -230,7 +231,7 @@ public class CapabilityItem {
 				double value = attribute.get(impact).amount() + entitypatch.getOriginal().getAttribute(impact).getBaseValue();
 
 				if (value > 0.0D) {
-					int i = itemstack.getEnchantmentLevel(entitypatch.getOriginal().level().holderOrThrow(Enchantments.KNOCKBACK));
+					int i = EnchantmentHelper.getItemEnchantmentLevel(entitypatch.getOriginal().level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getHolder(Enchantments.KNOCKBACK).orElseThrow(), itemstack);
 					value *= (1.0F + i * 0.12F);
 					itemTooltip.add(index++, Component.literal(" ").append(Component.translatable(impact.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(value))));
 				}
@@ -348,10 +349,10 @@ public class CapabilityItem {
 	
 	public void changeWeaponInnateSkill(ServerPlayerPatch playerpatch, ItemStack itemstack) {
 		Skill weaponInnateSkill = this.getInnateSkill(playerpatch, itemstack);
+		EpicFight.LOGGER.debug("[EFDBG] changeWeaponInnateSkill: item={} -> innate={}", itemstack.getItem(), weaponInnateSkill);
 		SkillContainer weaponInnateSkillContainer = playerpatch.getSkill(SkillSlots.WEAPON_INNATE);
 		PayloadBundleBuilder toLocal = PayloadBundleBuilder.create();
 		PayloadBundleBuilder toRemote = PayloadBundleBuilder.create();
-		EpicFight.LOGGER.debug("Capability Item Preset: {}", id);
 		if (weaponInnateSkill != null) {
 			if (weaponInnateSkillContainer.getSkill() != weaponInnateSkill) {
 				weaponInnateSkillContainer.setSkill(weaponInnateSkill);
@@ -542,7 +543,8 @@ public class CapabilityItem {
         LONGSWORD(WEAPON_CATEGORY_LONGSWORD, SWORD),
         DAGGER(WEAPON_CATEGORY_DAGGER),
         SHIELD(WEAPON_CATEGORY_SHIELD),
-		RANGED(WEAPON_CATEGORY_RANGED);
+		RANGED(WEAPON_CATEGORY_RANGED),
+		BOW(WEAPON_CATEGORY_BOW, RANGED);
 
         final Component translationKey;
 		final List<WeaponCategory> parent;
@@ -734,7 +736,7 @@ public class CapabilityItem {
 
 		public <R> T setCustomData(DeferredCustomData<? extends CustomData<R>> customData, R data) {
 			String modId = customData.getId().getNamespace();
-			if (!ModList.get().isLoaded(modId)) return (T) this;
+			if (!FabricLoader.getInstance().isModLoaded(modId)) return (T) this;
             this.setCustomDataInternal(customData, data);
 			return (T)this;
 		}

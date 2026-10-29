@@ -1,10 +1,11 @@
 package yesman.epicfight.compat.shouldersurfing;
 
-import com.github.exopandora.shouldersurfing.api.callback.ICameraCouplingCallback;
 import com.github.exopandora.shouldersurfing.api.client.IShoulderSurfing;
 import com.github.exopandora.shouldersurfing.api.client.ShoulderSurfing;
+import com.github.exopandora.shouldersurfing.api.client.event.handler.ComputePlayerAttackStateEventHandler;
+import com.github.exopandora.shouldersurfing.api.client.event.handler.ComputeTemporaryFirstPersonStateEventHandler;
+import com.github.exopandora.shouldersurfing.api.event.IEventBus;
 import com.github.exopandora.shouldersurfing.api.plugin.IShoulderSurfingPlugin;
-import com.github.exopandora.shouldersurfing.api.plugin.IShoulderSurfingRegistrar;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -51,45 +52,32 @@ import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 @SuppressWarnings("unused") // Referenced in src/main/resources/shouldersurfing_plugin.json
 public class ShoulderSurfingCompat implements IShoulderSurfingPlugin {
     @Override
-    public void register(IShoulderSurfingRegistrar registrar) {
+    public void register(IEventBus eventBus) {
         disableEpicFightCamera();
-        registerShoulderSurfingEvents(registrar);
         registerEpicFightEvents();
+        registerShoulderSurfingEvents(eventBus);
     }
 
     private void disableEpicFightCamera() {
         EpicFightTpsCameraDisableState.disable(EpicFightTpsCameraDisabledReason.ShoulderSurfing);
     }
 
-    private void registerShoulderSurfingEvents(IShoulderSurfingRegistrar registrar) {
-        registrar.registerCameraCouplingCallback(new CameraCouplingOnAttack());
-        registrar.registerCameraCouplingCallback(new CameraCouplingOnChargingSkill());
+    private void registerShoulderSurfingEvents(IEventBus eventBus) {
+        // Cast lambdas to specific handler types to resolve overload ambiguity in v5 API
+        eventBus.register((ComputePlayerAttackStateEventHandler) event -> {
+            event.setResult(InputManager.isActionActive(EpicFightInputAction.ATTACK) || InputManager.isActionActive(MinecraftInputAction.ATTACK_DESTROY));
+        });
+        eventBus.register((ComputeTemporaryFirstPersonStateEventHandler) event -> {
+            final LocalPlayerPatch localPlayerPatch = EpicFightCapabilities.ClientModule.getCachedLocalPlayerPatch();
+            if (localPlayerPatch != null) {
+                event.setResult(localPlayerPatch.isHoldingAny());
+            }
+        });
     }
 
     private void registerEpicFightEvents() {
         EpicFightClientEventHooks.Camera.BUILD_TRANSFORM_PRE.registerEvent(ShoulderSurfingCompat::buildCameraTransform);
         EpicFightClientEventHooks.Camera.LOCK_ON_TICK.registerEvent(ShoulderSurfingCompat::lockOnTick);
-    }
-
-    private static class CameraCouplingOnAttack implements ICameraCouplingCallback {
-        @Override
-        public boolean isForcingCameraCoupling(Minecraft minecraft) {
-            return InputManager.isActionActive(EpicFightInputAction.ATTACK) || InputManager.isActionActive(MinecraftInputAction.ATTACK_DESTROY);
-        }
-    }
-
-    private static class CameraCouplingOnChargingSkill implements ICameraCouplingCallback {
-        @Override
-        public boolean isForcingCameraCoupling(Minecraft minecraft) {
-            final LocalPlayerPatch localPlayerPatch = EpicFightCapabilities.getCachedLocalPlayerPatch();
-            if (localPlayerPatch == null) {
-                return false;
-            }
-
-            // Forces camera coupling when the player is holding any holdable skill,
-            // including Demolition Leap, without directly referencing specific skills.
-            return localPlayerPatch.isHoldingAny();
-        }
     }
 
     private static void buildCameraTransform(BuildCameraTransform.Pre event) {

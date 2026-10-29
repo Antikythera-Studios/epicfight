@@ -243,7 +243,7 @@ public class Grid extends ObjectSelectionList<Grid.Row> implements DataBindingCo
 				this.editingWidget =
 					this.editingColumn.createEditWidget(
 						  this.owner
-						, this.owner.getMinecraft().font
+						, Minecraft.getInstance().font
 						, this.getX() + startX + 2
 						, this.getRowTop(rowposition) + 2
 						, this.itemHeight - 3
@@ -734,7 +734,7 @@ public class Grid extends ObjectSelectionList<Grid.Row> implements DataBindingCo
 		private RowEditButton rowEditButtons = RowEditButton.NONE;
 		
 		private GridBuilder(Screen owner) {
-			this(owner, owner.getMinecraft());
+			this(owner, Minecraft.getInstance());
 		}
 		
 		private GridBuilder(Screen owner, Minecraft minecraft) {

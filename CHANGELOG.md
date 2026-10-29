@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- Fabric 1.21.1 support (Fabric Loader 0.19.3, Fabric API)
+- Native Fabric registration, networking, lifecycle, reload listener, config, and capability wiring
+- Trinkets integration as the Fabric equivalent of Curios
+- Compatibility modules for AzureLib, Female Gender, GeckoLib, JEI, and playerAnimator on Fabric
+
+### Changed
+- Replaced NeoForge side-marker stubs (Dist, OnlyIn, FMLEnvironment) with native Fabric environment APIs
+- Replaced NeoForge config stubs with NightConfig-backed config implementation
+- Moved internal NeoForge-shaped compatibility types into Epic Fight's own namespace to avoid classpath collisions
+- Required initialization now fails fast instead of silently catching errors
+- `neoforge_compat` is now a fully optional integration: dropped from `depends`, removed from the build classpath, and all event bridging goes through `NeoForgeCompatBridge` via reflection when the mod is present
+
+### Fixed
+- Config class collision with ForgeConfigAPIPort causing `NoSuchMethodError` on startup
+- Mouse binding and block breaking not working in Epic Fight combat mode
+- Inverted block outline cancellation logic
+- Held-item flat shading caused by misread baked lightmap normals
+- Baked-light UV offset in patched item rendering
+- `/epicfight skill add` crashing system-chat encoding by passing raw `ResourceLocation` into translatable components
+- Combo arithmetic crash on movesets containing only two entries
+- Skill Book right-click opening a blurred screen without the parchment content; the small-window GUI scaling now rescales the existing projection instead of rebuilding it, preserving vanilla's depth range so the book no longer lands on the far clip edge, and the window scale, projection, and vertex sorting are restored exactly after render
+- Skill Book category colors, symbols, and held/inventory/creative-tab rendering; category models now resolve to quads via the Fabric model-loading path
+- GLFW error from polling unbound keys (`GLFW_KEY_UNKNOWN`) in combat mode input checks
+- Client boot failure caused by stale diagnostic mixins
+- `NoClassDefFoundError: net/neoforged/bus/api/Event` on plain Fabric instances without `neoforge_compat`
+- Specialized deferred registers returning unbound alias holders instead of their registered entries
+- Moveset custom data binding to the weapon-data registry instead of the moveset-data registry
+- Client deferred content initialization when connecting directly to a remote server
+- Resource reload listener failures being swallowed before the preparation barrier
+- Mojang-mapped `InteractionHand` type names failing to resolve from animation JSON in production Fabric
+- Third-party looping player animations overriding Epic Fight battle-mode stances
+
+### For Devs
+- `AnimationManager.AnimationRegistryEvent` is a plain class on Fabric; when `neoforge_compat` is present it is posted on `NeoForgeCompat.MOD_BUS` via `postAny`, so listeners must match the concrete event type rather than `Event` supertypes
+- Addons that rely on NeoForge-style events must declare `neoforge_compat` themselves — Epic Fight no longer ships or requires it
+- Client deferred registration runs once before initial resource-listener preparation; specialized registration helpers return the same holders that are queued for binding
+
+### Known Limitations
+- Controlify and KubeJS are not currently supported on Fabric
+- Epic Fight: Skill Tree and ParCool have no Fabric versions
+- Several mod integrations (Iris, Sodium, 3D Skin Layers, etc.) have code present but are pending dedicated verification
+
 ## [21.17.3] - 2026-5-14
 ### Additions
 - Added Item Specific Overrides to Builder to allow any explicit tier configurations.

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,7 @@ import yesman.epicfight.api.client.input.controller.ControllerBinding;
 import yesman.epicfight.api.client.input.controller.EpicFightControllerModProvider;
 import yesman.epicfight.api.client.input.controller.IEpicFightControllerMod;
 import yesman.epicfight.client.input.DiscreteInputActionTrigger;
+import yesman.epicfight.client.input.InputUtils;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -156,7 +158,7 @@ public final class InputManager {
 
         final KeyMapping keyMapping1 = action.keyMapping();
         final KeyMapping keyMapping2 = action2.keyMapping();
-        return keyMapping1.getKey() == keyMapping2.getKey();
+        return InputUtils.getKey(keyMapping1) == InputUtils.getKey(keyMapping2);
     }
 
     /// Retrieves the current input state for the current player (client-side).
@@ -214,7 +216,7 @@ public final class InputManager {
     /// The exact behavior varied from one Minecraft version to another.
     private static boolean isKeyDown(@NotNull KeyMapping keyMapping) {
         final boolean isDown = keyMapping.isDown();
-        if (!isDown && keyMapping.getKey().getType() == InputConstants.Type.MOUSE) {
+        if (!isDown && InputUtils.getKey(keyMapping).getType() == InputConstants.Type.MOUSE) {
             // TODO: (WORKAROUND) Remove this entire "if" statement when
             //  porting to Minecraft 1.21.10 or a newer version.
             //  This exists only due to inconsistent behavior in older Minecraft versions,
@@ -263,12 +265,16 @@ public final class InputManager {
     /// See [issue #2170](https://github.com/Epic-Fight/epicfight/issues/2170) for details.
     @ApiStatus.Internal
     private static boolean isPhysicalKeyDown(@NotNull KeyMapping keyMapping) {
-        final InputConstants.Key key = keyMapping.getKey();
+        if (!RenderSystem.isOnRenderThread()) {
+            return keyMapping.isDown();
+        }
+
+        final InputConstants.Key key = InputUtils.getKey(keyMapping);
         final int keyValue = key.getValue();
         final long windowPointer = Minecraft.getInstance().getWindow().getWindow();
 
         if (key.getType() == InputConstants.Type.KEYSYM) {
-            return GLFW.glfwGetKey(windowPointer, keyValue) > 0;
+            return keyValue != GLFW.GLFW_KEY_UNKNOWN && GLFW.glfwGetKey(windowPointer, keyValue) > 0;
         } else if (key.getType() == InputConstants.Type.MOUSE) {
             return GLFW.glfwGetMouseButton(windowPointer, keyValue) > 0;
         }

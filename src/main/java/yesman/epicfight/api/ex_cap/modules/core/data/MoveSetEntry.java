@@ -1,7 +1,7 @@
 package yesman.epicfight.api.ex_cap.modules.core.data;
 
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.registry.deferred_shim.DeferredRegisterShim;
 import yesman.epicfight.api.ex_cap.data.Moveset;
 import yesman.epicfight.registry.deferred.MovesetRegister;
 import yesman.epicfight.registry.deferred.holders.DeferredMoveset;

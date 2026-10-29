@@ -82,7 +82,7 @@ public class MoveCoordFunctions {
 		BlockState blockState = livingentity.level().getBlockState(blockpos);
 		AttributeInstance movementSpeed = livingentity.getAttribute(Attributes.MOVEMENT_SPEED);
 		
-		boolean soulboost = blockState.is(BlockTags.SOUL_SPEED_BLOCKS) && EnchantmentHelper.getEnchantmentLevel(livingentity.level().holderOrThrow(Enchantments.SOUL_SPEED), livingentity) > 0;
+		boolean soulboost = blockState.is(BlockTags.SOUL_SPEED_BLOCKS) && EnchantmentHelper.getEnchantmentLevel(livingentity.level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getHolder(Enchantments.SOUL_SPEED).orElseThrow(), livingentity) > 0;
 		float speedFactor = (float)(soulboost ? 1.0D : livingentity.level().getBlockState(blockpos).getBlock().getSpeedFactor());
 		float moveMultiplier = (float)(animation.getProperty(ActionAnimationProperty.AFFECT_SPEED).orElse(false) ? (movementSpeed.getValue() / movementSpeed.getBaseValue()) : 1.0F);
 		

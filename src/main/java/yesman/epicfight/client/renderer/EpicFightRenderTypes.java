@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.InventoryMenu;
 import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 
 public final class EpicFightRenderTypes extends RenderType {
 	public static RenderType makeTriangulated(RenderType renderType) {
@@ -393,7 +394,7 @@ public final class EpicFightRenderTypes extends RenderType {
 			true,
 			RenderType.CompositeState.builder()
 				.setShaderState(PARTICLE_SHADER)
-				.setTextureState(new RenderStateShard.TextureStateShard(EpicFightMod.identifier("textures/common/white.png"), false, false))
+				.setTextureState(new RenderStateShard.TextureStateShard(EpicFight.identifier("textures/common/white.png"), false, false))
 				.setCullState(NO_CULL)
 				.setWriteMaskState(COLOR_WRITE)
 				.setDepthTestState(EQUAL_DEPTH_TEST)
@@ -412,7 +413,7 @@ public final class EpicFightRenderTypes extends RenderType {
 			true,
 			RenderType.CompositeState.builder()
 				.setShaderState(PARTICLE_SHADER)
-				.setTextureState(new RenderStateShard.TextureStateShard(EpicFightMod.identifier("textures/common/white.png"), false, false))
+				.setTextureState(new RenderStateShard.TextureStateShard(EpicFight.identifier("textures/common/white.png"), false, false))
 				.setCullState(NO_CULL)
 				.setWriteMaskState(COLOR_WRITE)
 				.setDepthTestState(EQUAL_DEPTH_TEST)
@@ -500,7 +501,7 @@ public final class EpicFightRenderTypes extends RenderType {
 			false,
 			true,
 			RenderType.CompositeState.builder()
-				.setTextureState(new RenderStateShard.TextureStateShard(EpicFightMod.identifier("textures/common/white.png"), false, false))
+				.setTextureState(new RenderStateShard.TextureStateShard(EpicFight.identifier("textures/common/white.png"), false, false))
 				.setLightmapState(LIGHTMAP)
 				.setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
@@ -629,7 +630,7 @@ public final class EpicFightRenderTypes extends RenderType {
 				false,
 				EpicFightRenderTypes.MutableCompositeState.mutableStateBuilder()
 					.setShaderState(RENDERTYPE_ARMOR_ENTITY_GLINT_SHADER)
-					.setTextureState(new RenderStateShard.TextureStateShard(EpicFightMod.identifier("textures/entity/overlay/glint_white.png"), true, false))
+					.setTextureState(new RenderStateShard.TextureStateShard(EpicFight.identifier("textures/entity/overlay/glint_white.png"), true, false))
 					.setWriteMaskState(COLOR_WRITE)
 					.setCullState(NO_CULL)
 					.setDepthTestState(EQUAL_DEPTH_TEST)

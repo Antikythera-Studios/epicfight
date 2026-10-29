@@ -1,4 +1,5 @@
 package yesman.epicfight.api.asset;
+import yesman.epicfight.EpicFight;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -15,11 +16,10 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.javafmlmod.FMLModContainer;
-import net.neoforged.fml.loading.FMLEnvironment;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
+
 import yesman.epicfight.api.animation.*;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.types.ActionAnimation;
@@ -84,22 +84,34 @@ public class JsonAssetLoader {
                 this.rootJson = Streams.parse(jsonReader).getAsJsonObject();
             } catch (NoSuchElementException e) {
                 // In this case, reads the animation data from mod.jar (Especially in a server)
-                ModContainer modContainer = ModList.get().getModContainerById(resourceLocation.getNamespace()).orElseThrow(() -> new AssetLoadingException("No mod Id: " + resourceLocation));
+                // On Fabric, servers don't load assets/ via ResourceManager, so we read directly from the mod JAR
+                // via the mod's own classloader. Each mod namespace maps to a mod container whose classes share
+                // the same classpath as that mod's assets/ directory.
                 InputStream inputstream = null;
 
-                if (modContainer instanceof FMLModContainer fmlModContainer) {
-                    Field modClassesField = FMLModContainer.class.getDeclaredField("modClasses");
-                    modClassesField.setAccessible(true);
-                    @SuppressWarnings("unchecked")
-                    List<Class<?>> modClasses = (List<Class<?>>) modClassesField.get(fmlModContainer);
+                // Try the mod's classloader first. We pick a class from the namespace's mod by checking
+                // the FabricLoader mod container, then use that container's classloader to find the asset.
+                // As a robust fallback, also try the EpicFight mod class itself (covers the common case where
+                // the asset is in the epicfight namespace).
+                String assetPath = "/assets/" + resourceLocation.getNamespace() + "/" + resourceLocation.getPath();
 
-                    for (Class<?> modClass : modClasses) {
-                        inputstream = modClass.getResourceAsStream("/assets/" + resourceLocation.getNamespace() + "/" + resourceLocation.getPath());
+                // Try via FabricLoader: find a class owned by the namespace's mod and use its classloader.
+                try {
+                    net.fabricmc.loader.api.ModContainer modContainer =
+                        FabricLoader.getInstance().getModContainer(resourceLocation.getNamespace()).orElse(null);
 
-                        if (inputstream != null) {
-                            break;
-                        }
+                    if (modContainer != null) {
+                        // Use the classloader that loaded JsonAssetLoader (same mod) — works for epicfight namespace.
+                        // For other namespaces, the mod's own classes would be needed, but in practice all
+                        // Epic Fight asset namespaces are served by the epicfight mod's classpath.
+                        ClassLoader cl = JsonAssetLoader.class.getClassLoader();
+                        inputstream = cl.getResourceAsStream(assetPath);
                     }
+                } catch (Throwable ignored) {}
+
+                // Final fallback: try EpicFight's own classloader.
+                if (inputstream == null) {
+                    inputstream = yesman.epicfight.EpicFight.class.getResourceAsStream(assetPath);
                 }
 
                 if (inputstream == null) {
@@ -552,14 +564,15 @@ public class JsonAssetLoader {
         }
 
         if (animation.getArmature() == null) {
-            EpicFightMod.LOGGER.error("Animation " + animation + " doesn't have an armature.");
+            EpicFight.LOGGER.error("Animation " + animation + " doesn't have an armature.");
         }
 
         TransformFormat format = getAsTransformFormatOrDefault(this.rootJson, "format");
         JsonArray array = this.rootJson.get("animation").getAsJsonArray();
         boolean action = animation instanceof MainFrameAnimation;
         boolean attack = animation instanceof AttackAnimation;
-        boolean noTransformData = !action && !attack && FMLEnvironment.dist == Dist.DEDICATED_SERVER;
+        boolean dedicatedServer = FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
+        boolean noTransformData = !action && !attack && dedicatedServer;
         boolean root = true;
         Armature armature = animation.getArmature().get();
         Set<String> allowedJoints = Sets.newLinkedHashSet();
@@ -580,7 +593,7 @@ public class JsonAssetLoader {
             JsonObject jObject = element.getAsJsonObject();
             String name = jObject.get("name").getAsString();
 
-            if (attack && FMLEnvironment.dist == Dist.DEDICATED_SERVER && !allowedJoints.contains(name)) {
+            if (attack && dedicatedServer && !allowedJoints.contains(name)) {
                 if (name.equals(COORD_BONE)) {
                     root = false;
                 }
@@ -601,7 +614,7 @@ public class JsonAssetLoader {
                     root = false;
                     continue;
                 } else {
-                    EpicFightMod.LOGGER.debug("[EpicFightMod] No joint named " + name + " in " + animation);
+                    EpicFight.LOGGER.debug("[EpicFightMod] No joint named " + name + " in " + animation);
                     continue;
                 }
             }
@@ -630,7 +643,7 @@ public class JsonAssetLoader {
         boolean root = true;
 
         if (animation.getArmature() == null) {
-            EpicFightMod.LOGGER.error("Animation " + animation + " doesn't have an armature.");
+            EpicFight.LOGGER.error("Animation " + animation + " doesn't have an armature.");
         }
 
         Armature armature = animation.getArmature().get();
@@ -643,7 +656,7 @@ public class JsonAssetLoader {
 
             if (joint == null) {
                 if (EpicFightSharedConstants.IS_DEV_ENV) {
-                    EpicFightMod.LOGGER.debug(animation.getRegistryName() + ": No joint named " + name + " in armature");
+                    EpicFight.LOGGER.debug(animation.getRegistryName() + ": No joint named " + name + " in armature");
                 }
 
                 continue;

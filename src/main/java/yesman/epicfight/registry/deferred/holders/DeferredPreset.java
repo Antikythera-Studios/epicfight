@@ -1,16 +1,17 @@
 package yesman.epicfight.registry.deferred.holders;
 
 import net.minecraft.resources.ResourceKey;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import yesman.epicfight.registry.deferred_shim.DeferredHolderShim;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.registry.deferred.ItemPresetRegister;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
+import yesman.epicfight.registry.EpicFightRegistries;
 
 /**
  * A type-safe, registry-backed proxy for {@link CapabilityItem.Builder} instances.
  * <p>
- * {@code DeferredPreset} extends NeoForge's {@link DeferredHolder} to provide a
+ * {@code DeferredPreset} extends {@link DeferredHolderShim} to provide a
  * combat-specific handle that remains synchronized with the global registry
  * throughout the mod-loading lifecycle. It is designed to handle the "lazy"
  * nature of modern registries, ensuring that weapon data is only accessible
@@ -24,16 +25,16 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem;
  * <li><b>Type Specialization:</b> Utilizes generics to provide a concrete
  * {@code Builder} type at the call site, eliminating the need for
  * unsafe casting when retrieving specialized capability data.</li>
- * <li><b>Single Source of Truth:</b> Directly references the NeoForge internal
+ * <li><b>Single Source of Truth:</b> Directly references the shared registry
  * storage, making it compatible with registry remapping and data-driven
  * overrides.</li>
  * </ul>
  * @param <T> The specific subtype of {@link CapabilityItem.Builder} being held,
  * allowing for specialized capability access (e.g., {@code WeaponCapability.Builder}).
- * @see DeferredHolder
+ * @see DeferredHolderShim
  * @see CapabilityItem.Builder
  */
-public class DeferredPreset<T extends CapabilityItem.Builder<?>> extends DeferredHolder<CapabilityItem.Builder<?>, T> {
+public class DeferredPreset<T extends CapabilityItem.Builder<?>> extends DeferredHolderShim<CapabilityItem.Builder<?>, T> {
 
     /**
      * Internal constructor used by {@link ItemPresetRegister}.
@@ -41,8 +42,8 @@ public class DeferredPreset<T extends CapabilityItem.Builder<?>> extends Deferre
      * global capability registry.
      */
     @ApiStatus.Internal
-    public DeferredPreset(ResourceKey<CapabilityItem.Builder<?>> key) {
-        super(key);
+    public DeferredPreset(ResourceKey<CapabilityItem.Builder<?>> key, java.util.function.Supplier<T> supplier) {
+        super(EpicFightRegistries.Keys.BUILDERS, key.location(), supplier);
     }
 
     /**
@@ -56,7 +57,8 @@ public class DeferredPreset<T extends CapabilityItem.Builder<?>> extends Deferre
      * * @return The registered {@link T} template instance.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public @NotNull T value() {
-        return super.value();
+        return (T) super.value();
     }
 }

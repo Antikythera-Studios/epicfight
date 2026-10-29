@@ -1,4 +1,5 @@
 package yesman.epicfight.api.utils;
+import yesman.epicfight.EpicFight;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -72,6 +73,20 @@ public class InstantiateInvoker {
 		STRING_TO_OBJECT_PARSER.put(clz, decoder);
 	}
 	
+	static Class<?> resolveType(String name, ClassLoader loader) throws ClassNotFoundException {
+		// Animation JSON stores canonical Mojang-mapped names; production
+		// runtime uses intermediary names, so literals are remapped but
+		// strings are not. Alias the one name callers actually reference.
+		if ("net.minecraft.world.InteractionHand".equals(name)) {
+			return InteractionHand.class;
+		}
+		return Class.forName(name, true, loader);
+	}
+
+	static Class<?> resolveType(String name) throws ClassNotFoundException {
+		return resolveType(name, InstantiateInvoker.class.getClassLoader());
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <T> Result<T> invoke(String invocationCommand, @Nullable Class<T> hint) throws Exception {
 		if (invocationCommand.matches("\\(.+\\)") || invocationCommand.matches("\\(.+\\)\\#.+")) { // invoke instance
@@ -92,7 +107,7 @@ public class InstantiateInvoker {
 				return Result.of(type, (T)STRING_TO_OBJECT_PARSER.get(type).apply(sValue));
 			}
 			
-			Class<T> type = (Class<T>)Class.forName(sType);
+			Class<T> type = (Class<T>)resolveType(sType);
 			
 			if (STRING_TO_OBJECT_PARSER.containsKey(type)) {
 				if (RETURN_TYPE_MAPPER.containsKey(type)) {
@@ -122,7 +137,7 @@ public class InstantiateInvoker {
             param$type[1] = "yesman.epicfight.api.animation.types.ComboAttackAnimation"; // Class name changed: BasicAttackAnimation(1.20.1) -> "ComboAttackAnimation"
         }
 
-		Class<?> type = param$type.length > 1 ? Class.forName(param$type[1]) : hint;
+		Class<?> type = param$type.length > 1 ? resolveType(param$type[1]) : hint;
 		
 		if (type == null) {
 			throw new AnimationInvokeException("Can't find the type in command " + invocationCommand);
@@ -153,7 +168,7 @@ public class InstantiateInvoker {
 			
 			constructor = hint.getConstructor(oArgClss);
 		} catch (NoSuchMethodException e) {
-			//EpicFightMod.LOGGER.debug("Can't find the matching constructor for the hint class " + hint + ". Use the given class " + type);
+			//EpicFight.LOGGER.debug("Can't find the matching constructor for the hint class " + hint + ". Use the given class " + type);
 			constructor = type.getConstructor(oArgClss);
 		}
 		
@@ -171,7 +186,7 @@ public class InstantiateInvoker {
 		
 		String[] param$type = splitExceptWrapper(invocationCommand, '#', true);
 		String sParams = param$type[0];
-		Class<?> type = param$type.length > 1 ? Class.forName(param$type[1]) : hint;
+		Class<?> type = param$type.length > 1 ? resolveType(param$type[1]) : hint;
 		
 		if (type == null) {
 			throw new AnimationInvokeException("Can't find the type in command " + invocationCommand);

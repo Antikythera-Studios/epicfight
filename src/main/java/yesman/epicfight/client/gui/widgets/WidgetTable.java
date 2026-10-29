@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.widgets;
+import net.minecraft.client.Minecraft;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -24,7 +25,7 @@ public class WidgetTable extends ContainerObjectSelectionList<WidgetTable.Widget
     private WidgetTable.WidgetEntry lastEntry;
 
     public WidgetTable(Screen parentScreen, int x1, int x2, int y1, int y2, AnchoredWidget.HorizontalAnchorType horizontalAnchor, VerticalAnchorType verticalAnchor, int itemHeight) {
-        super(parentScreen.getMinecraft(), 0, 0, 0, itemHeight);
+        super(Minecraft.getInstance(), 0, 0, 0, itemHeight);
 
         this.x1 = x1;
         this.x2 = x2;
@@ -265,7 +266,7 @@ public class WidgetTable extends ContainerObjectSelectionList<WidgetTable.Widget
                 if (listener != null) listener.setFocused(true);
             }
 
-            this.focused = listener;
+            ((yesman.epicfight.mixin.client.ContainerObjectSelectionListEntryAccessor) this).epicfight$setFocused(listener);
         }
 
         @Override

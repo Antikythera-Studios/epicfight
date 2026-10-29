@@ -1,10 +1,9 @@
 package yesman.epicfight.world.capabilities;
 
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.capabilities.BaseCapability;
 
-public class GlobalCapability<T> extends BaseCapability<T, Void> {
+/// Stub — NeoForge's BaseCapability is removed. This class is kept for API compatibility.
+public class GlobalCapability<T> {
 	public GlobalCapability(ResourceLocation name, Class<T> type) {
-		super(name, type, void.class);
 	}
 }

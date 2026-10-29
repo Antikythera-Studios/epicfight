@@ -1,4 +1,5 @@
 package yesman.epicfight.skill;
+import yesman.epicfight.EpicFight;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -6,10 +7,9 @@ import yesman.epicfight.api.utils.ExtensibleEnum;
 import yesman.epicfight.api.utils.ExtensibleEnumManager;
 import yesman.epicfight.api.utils.ParseUtil;
 import yesman.epicfight.client.gui.screen.SkillEditScreen;
-import yesman.epicfight.main.EpicFightMod;
 
 public interface SkillCategory extends ExtensibleEnum {
-    ResourceLocation DEFAULT_BOOK_ICON = EpicFightMod.identifier("skillbook");
+    ResourceLocation DEFAULT_BOOK_ICON = EpicFight.identifier("skillbook");
 	
 	ExtensibleEnumManager<SkillCategory> ENUM_MANAGER = new ExtensibleEnumManager<> ("skill_category");
 	
@@ -25,7 +25,7 @@ public interface SkillCategory extends ExtensibleEnum {
     /// Returns a translation key
     /// For backward compatibility, this method is implemented as default
     default Component getTranslationKey() {
-        return Component.translatable(String.format("skill.%s.category.%s", EpicFightMod.MODID, ParseUtil.toLowerCase(this.toString())));
+        return Component.translatable(String.format("skill.%s.category.%s", EpicFight.MODID, ParseUtil.toLowerCase(this.toString())));
     }
 
 	/// Texture location of the Skill book icon in inventory UI

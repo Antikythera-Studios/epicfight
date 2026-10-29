@@ -20,7 +20,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.IQuadTransformer;
+
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
@@ -181,7 +181,10 @@ public interface Mesh {
 		static int applyBakedLighting(int packedLight, ByteBuffer data) {
 	        int bl = packedLight & 0xFFFF;
 	        int sl = (packedLight >> 16) & 0xFFFF;
-	        int offset = IQuadTransformer.UV2 * 4; // int offset for vertex 0 * 4 bytes per int
+	        // DefaultVertexFormat.BLOCK is Position, Color, UV0, UV2, Normal, so the lightmap (UV2)
+		// starts at int 6 (byte 24) - this is NeoForge's IQuadTransformer.UV2, which has no
+		// Fabric equivalent. Reading int 4 here would decode the UV0 texture floats as light.
+		int offset = 6 * 4;
 	        int blBaked = Short.toUnsignedInt(data.getShort(offset));
 	        int slBaked = Short.toUnsignedInt(data.getShort(offset + 2));
 	        bl = Math.max(bl, blBaked);

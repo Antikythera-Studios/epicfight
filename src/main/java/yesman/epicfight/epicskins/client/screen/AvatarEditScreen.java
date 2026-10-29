@@ -39,7 +39,7 @@ import yesman.epicfight.epicskins.user.AuthenticationHelperImpl.CapeProperties;
 import yesman.epicfight.epicskins.user.Cosmetic;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.main.AuthenticationHelper;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 
 import java.util.Arrays;
 import java.util.List;
@@ -75,7 +75,7 @@ public class AvatarEditScreen extends Screen {
 		super(Component.translatable("gui.epicskins.skin_config"));
 		
 		this.parentScreen = screen;
-		this.minecraft = screen == null ? Minecraft.getInstance() : screen.getMinecraft();
+		this.minecraft = screen == null ? Minecraft.getInstance() : Minecraft.getInstance();
 		this.font = this.minecraft.font;
 
 		this.saveButton = Button.builder(Component.translatable("gui.epicskins.button.save"), (button) -> {
@@ -758,7 +758,7 @@ public class AvatarEditScreen extends Screen {
 		}
 
 		public class CapeBlock extends CosmeticBlock {
-            private static final ResourceLocation LOCK_ICON = EpicFightMod.identifier("textures/gui/lock.png");
+            private static final ResourceLocation LOCK_ICON = EpicFight.identifier("textures/gui/lock.png");
 			private final ModelPreviewer modelPreviewer;
 			private Cosmetic cosmetic;
 

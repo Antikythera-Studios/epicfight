@@ -152,7 +152,7 @@ public class EpicFightTooltipProvider implements TooltipProvider
         }
         if (itemStack.is(EpicFightItems.SKILLBOOK))
         {
-            var skill = itemStack.get(EpicFightDataComponentTypes.SKILL);
+            var skill = itemStack.get(EpicFightDataComponentTypes.SKILL.get());
             if (skill != null)
             {
                 badges.add(skill.value().getDisplayName().getString().toUpperCase(Locale.ROOT));

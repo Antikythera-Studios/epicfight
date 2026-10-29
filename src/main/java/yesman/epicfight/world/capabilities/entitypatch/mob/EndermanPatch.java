@@ -1,4 +1,5 @@
 package yesman.epicfight.world.capabilities.entitypatch.mob;
+import yesman.epicfight.platform.fabric.event.EntityAttributeModificationEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,7 +17,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
+
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.JointTransform;
@@ -34,7 +35,7 @@ import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.api.utils.side.ClientOnly;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.MobCombatBehaviors;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.network.EntityPairingPacketTypes;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPChangeLivingMotion;
@@ -53,7 +54,7 @@ import yesman.epicfight.world.entity.ai.goal.TargetChasingGoal;
 import java.util.EnumSet;
 
 public class EndermanPatch extends MobPatch<EnderMan> {
-    private static final AttributeModifier SPEED_MODIFIER_ON_RAGE = new AttributeModifier(EpicFightMod.identifier("rage_speed_bonus"), 0.1D, AttributeModifier.Operation.ADD_VALUE);
+    private static final AttributeModifier SPEED_MODIFIER_ON_RAGE = new AttributeModifier(EpicFight.identifier("rage_speed_bonus"), 0.1D, AttributeModifier.Operation.ADD_VALUE);
 
     private boolean onRage;
     private Goal normalAttacks;

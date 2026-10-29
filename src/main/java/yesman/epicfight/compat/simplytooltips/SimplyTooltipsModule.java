@@ -1,26 +1,27 @@
 package yesman.epicfight.compat.simplytooltips;
 
-import net.neoforged.bus.api.IEventBus;
+
+import net.sweenus.simplytooltips.api.TooltipProviderRegistry;
 import yesman.epicfight.compat.ICompatModule;
 
 public class SimplyTooltipsModule implements ICompatModule {
     @Override
-    public void onModEventBus(IEventBus eventBus) {
+	public void onInitialize() {
 
     }
 
     @Override
-    public void onGameEventBus(IEventBus eventBus) {
+	public void onInitializeServer() {
 
     }
 
     @Override
-    public void onModEventBusClient(IEventBus eventBus) {
-
+	public void onInitializeClient() {
+		TooltipProviderRegistry.register(new EpicFightTooltipProvider(), 2);
     }
 
     @Override
-    public void onGameEventBusClient(IEventBus eventBus) {
+	public void onInitializeClientServer() {
 
     }
 }

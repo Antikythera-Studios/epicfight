@@ -3,14 +3,14 @@ package yesman.epicfight.registry.deferred;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.registry.deferred_shim.DeferredRegisterShim;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.registry.deferred.holders.DeferredCustomData;
 import yesman.epicfight.world.capabilities.item.custom.CustomData;
 
 import java.util.function.Supplier;
 
-public final class CustomDataRegister extends DeferredRegister<CustomData<?>> {
+public final class CustomDataRegister extends DeferredRegisterShim<CustomData<?>> {
 
     private CustomDataRegister(ResourceKey<? extends Registry<CustomData<?>>> registryKey, String namespace) {
         super(registryKey, namespace);
@@ -28,12 +28,13 @@ public final class CustomDataRegister extends DeferredRegister<CustomData<?>> {
 
 
     public <T> DeferredCustomData<CustomData<T>> registerCustomData(String name, Supplier<CustomData<T>> data) {
-        this.register(name, data);
         ResourceKey<CustomData<?>> key = ResourceKey.create(
                 this.getRegistryKey(),
                 ResourceLocation.fromNamespaceAndPath(this.getNamespace(), name)
         );
 
-        return new DeferredCustomData<>(key);
+        DeferredCustomData<CustomData<T>> customData = new DeferredCustomData<>(key, data);
+        this.addEntry(customData);
+        return customData;
     }
 }

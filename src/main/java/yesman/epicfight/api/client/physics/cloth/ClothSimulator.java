@@ -48,7 +48,7 @@ import yesman.epicfight.api.physics.SimulationObject;
 import yesman.epicfight.api.utils.math.MathUtils;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.main.EpicFightSharedConstants;
 
 /**
@@ -59,8 +59,8 @@ import yesman.epicfight.main.EpicFightSharedConstants;
  * https://www.youtube.com/@TenMinutePhysics
  **/
 public class ClothSimulator extends AbstractSimulator<ResourceLocation, ClothObjectBuilder, SoftBodyTranslatable, ClothSimulatable, ClothSimulator.ClothObject> {
-    public static final ResourceLocation PLAYER_CLOAK = EpicFightMod.identifier("ingame_cloak");
-    public static final ResourceLocation MODELPREVIEWER_CLOAK = EpicFightMod.identifier("previewer_cloak");
+    public static final ResourceLocation PLAYER_CLOAK = EpicFight.identifier("ingame_cloak");
+    public static final ResourceLocation MODELPREVIEWER_CLOAK = EpicFight.identifier("previewer_cloak");
 	private static final float SPATIAL_HASH_SPACING = 0.05F;
 	
 	public static class ClothObjectBuilder extends SimulationObject.SimulationObjectBuilder {
