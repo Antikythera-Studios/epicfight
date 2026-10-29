@@ -653,6 +653,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
      * Play an animation without convert time
      */
     public void playAnimationInstantly(AssetAccessor<? extends StaticAnimation> animation) {
+        if (AnimationManager.checkNull(animation)) {
+            EpicFight.LOGGER.warn("Skipping playAnimationInstantly with an empty animation for {}", this.original);
+            return;
+        }
+
         this.animator.playAnimationInstantly(animation);
 
         if (!this.isLogicalClient()) {
@@ -664,6 +669,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
      * Reserve an animation to be played after the current animation
      */
     public void reserveAnimation(AssetAccessor<? extends StaticAnimation> animation) {
+        if (AnimationManager.checkNull(animation)) {
+            EpicFight.LOGGER.warn("Skipping reserveAnimation with an empty animation for {}", this.original);
+            return;
+        }
+
         this.animator.reserveAnimation(animation);
 
         if (!this.isLogicalClient()) {
@@ -675,6 +685,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
      * Stop playing an animation
      */
     public void stopPlaying(AssetAccessor<? extends StaticAnimation> animation) {
+        if (AnimationManager.checkNull(animation)) {
+            EpicFight.LOGGER.warn("Skipping stopPlaying with an empty animation for {}", this.original);
+            return;
+        }
+
         this.animator.stopPlaying(animation);
 
         if (!this.isLogicalClient()) {
@@ -688,6 +703,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
      * Do not call this in client side for non-player entities.
      */
     public void playAnimationSynchronized(AssetAccessor<? extends StaticAnimation> animation, float transitionTimeModifier) {
+        if (AnimationManager.checkNull(animation)) {
+            EpicFight.LOGGER.warn("Skipping playAnimationSynchronized with an empty animation for {}", this.original);
+            return;
+        }
+
         this.animator.playAnimation(animation, transitionTimeModifier);
 
         if (!this.isLogicalClient()) {
@@ -699,6 +719,11 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
      * Play an animation only in client side, including all clients tracking this entity
      */
     public void playAnimationInClientSide(AssetAccessor<? extends StaticAnimation> animation, float transitionTimeModifier) {
+        if (AnimationManager.checkNull(animation)) {
+            EpicFight.LOGGER.warn("Skipping playAnimationInClientSide with an empty animation for {}", this.original);
+            return;
+        }
+
         if (this.isLogicalClient()) {
             this.animator.playAnimation(animation, transitionTimeModifier);
         } else {

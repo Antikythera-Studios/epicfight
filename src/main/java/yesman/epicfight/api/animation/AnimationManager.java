@@ -467,12 +467,14 @@ public class AnimationManager extends SimplePreparableReloadListener<List<Resour
     public record TransientAnimationAccessor<A extends StaticAnimation> (ResourceLocation registryName) implements AnimationAccessor<A> {
         @Override
         public A get() {
-            return (A)INSTANCE.animationByName.get(registryName).get();
+            AnimationAccessor<? extends StaticAnimation> accessor = INSTANCE.animationByName.get(registryName);
+            return accessor == null ? null : (A)accessor.get();
         }
 
         @Override
         public int id() {
-            return INSTANCE.animationByName.get(registryName).id();
+            AnimationAccessor<? extends StaticAnimation> accessor = INSTANCE.animationByName.get(registryName);
+            return accessor == null ? -1 : accessor.id();
         }
 
         @Override
