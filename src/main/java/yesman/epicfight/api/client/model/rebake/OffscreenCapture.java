@@ -6,8 +6,12 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
+import yesman.epicfight.mixin.client.AccessorRenderBuffersHolder;
 
 public final class OffscreenCapture {
 	private OffscreenCapture() {
@@ -25,11 +29,34 @@ public final class OffscreenCapture {
 		return active;
 	}
 
+	@Nullable
+	private static RenderBuffers captureBuffers;
+
 	public static Scope begin(MultiBufferSource buffers) {
 		Redirect previous = active;
 		active = new Redirect(buffers);
 
-		return () -> active = previous;
+		Minecraft minecraft = Minecraft.getInstance();
+		LevelRenderer levelRenderer = minecraft.levelRenderer;
+
+		if (captureBuffers == null) {
+			captureBuffers = new RenderBuffers();
+		}
+
+		AccessorRenderBuffersHolder.OfMinecraft client = (AccessorRenderBuffersHolder.OfMinecraft) minecraft;
+		AccessorRenderBuffersHolder.OfLevelRenderer level =
+			(AccessorRenderBuffersHolder.OfLevelRenderer) levelRenderer;
+		RenderBuffers savedClient = client.epicfight$getRenderBuffers();
+		RenderBuffers savedLevel = level.epicfight$getRenderBuffers();
+
+		client.epicfight$setRenderBuffers(captureBuffers);
+		level.epicfight$setRenderBuffers(captureBuffers);
+
+		return () -> {
+			client.epicfight$setRenderBuffers(savedClient);
+			level.epicfight$setRenderBuffers(savedLevel);
+			active = previous;
+		};
 	}
 
 	public interface Scope extends AutoCloseable {

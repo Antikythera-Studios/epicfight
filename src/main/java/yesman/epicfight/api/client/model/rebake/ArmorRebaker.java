@@ -93,6 +93,10 @@ public final class ArmorRebaker {
 	}
 	
 	private static final Map<CacheKey, RebakedMesh> CACHE = Maps.newHashMap();
+
+	private static final int SETTLED_EMPTY = 4;
+
+	private static final Map<CacheKey, Integer> EMPTY_CAPTURES = Maps.newHashMap();
 	
 	private static final Map<CacheKey, Attempt> FAILURES = Maps.newHashMap();
 
@@ -147,6 +151,7 @@ public final class ArmorRebaker {
 	}
 
 	public static void clear() {
+		EMPTY_CAPTURES.clear();
 		CACHE.values().forEach(SkinnedMesh::destroy);
 		CACHE.clear();
 		NOT_DRAWN.clear();
@@ -209,6 +214,7 @@ public final class ArmorRebaker {
 			if (baked != null) {
 				CACHE.put(key, baked);
 				FAILURES.remove(key);
+				EMPTY_CAPTURES.remove(key);
 			} else {
 				noteFailure(key, id, slot, "produced no geometry");
 			}
@@ -270,7 +276,11 @@ public final class ArmorRebaker {
 				return null;
 			}
 
-			if (partTree == null) {
+			if (partTree == null || armorModel == null || armorModel.getClass() != HumanoidModel.class) {
+				if (EMPTY_CAPTURES.merge(key, 1, Integer::sum) >= SETTLED_EMPTY) {
+					NOT_DRAWN.add(key);
+				}
+
 				return null;
 			}
 
@@ -361,7 +371,6 @@ public final class ArmorRebaker {
 					built.setExtraPasses(passesOf(drawn));
 					built.addLiveSources(liveSources);
 					bindToBody(built, substituted.mesh());
-					PartSubstitution.logSubstitution(key.item() + " (" + key.slot() + ")", substituted);
 
 					return built;
 				}
@@ -374,7 +383,7 @@ public final class ArmorRebaker {
 						holdSmallPiecesRigid(solved.mesh(), solved.weights(), jointCount, moving);
 						RawMesh combined = RawMesh.concat(substituted.mesh(), solved.mesh());
 						SkinWeights weights = concat(substituted.weights(), solved.weights(), jointCount);
-						RebakedMesh built = MeshAssembler.assemble(combined, weights, "part tree + body", null);
+						RebakedMesh built = MeshAssembler.assemble(combined, weights, provenance + " + body", null);
 						built.setColoursObserved(watchedItDraw);
 						built.setExtraPasses(passesOf(drawn));
 						built.addLiveSources(liveSources);
@@ -653,8 +662,8 @@ public final class ArmorRebaker {
 	}
 
 	static void holdSmallPiecesRigid(RawMesh mesh, SkinWeights weights, int jointCount, java.util.Set<String> moving) {
-		Map<JointNames.Region, Fold> creases = Maps.newHashMap();
-		Map<JointNames.Region, java.util.List<Fold>> folds = Maps.newHashMap();
+		Map<JointNames.Region, Fold> creases = new java.util.EnumMap<> (JointNames.Region.class);
+		Map<JointNames.Region, java.util.List<Fold>> folds = new java.util.EnumMap<> (JointNames.Region.class);
 
 		for (RawMesh.Group group : mesh.groups()) {
 			if (group.isEmpty() || animates(group.name, moving)) {

@@ -458,7 +458,7 @@ public final class WornRebaker {
 		}
 
 		Map<JointNames.Region, java.util.List<Integer>> byLimb = Maps.newLinkedHashMap();
-		Map<JointNames.Region, Integer> paintPerLimb = Maps.newHashMap();
+		Map<JointNames.Region, Integer> paintPerLimb = new java.util.EnumMap<> (JointNames.Region.class);
 		int paintTotal = 0;
 
 		for (Map.Entry<Integer, Boolean> entry : byPiece.entrySet()) {
@@ -700,7 +700,7 @@ public final class WornRebaker {
 			}
 		}
 
-		Map<JointNames.Region, Integer> perLimb = Maps.newHashMap();
+		Map<JointNames.Region, Integer> perLimb = new java.util.EnumMap<> (JointNames.Region.class);
 
 		for (int joint : joints) {
 			for (JointNames.Region region : JointNames.Region.values()) {
@@ -747,7 +747,7 @@ public final class WornRebaker {
 
 	@Nullable
 	private static JointNames.Region probedLimbOf(RawMesh mesh, int[] piece, int id, JointNames.Region[] probed) {
-		Map<JointNames.Region, Integer> tally = Maps.newHashMap();
+		Map<JointNames.Region, Integer> tally = new java.util.EnumMap<> (JointNames.Region.class);
 
 		for (int t = 0; t < mesh.triangleCount(); t++) {
 			if (piece[t] != id) {

@@ -859,6 +859,4 @@ public final class PartSubstitution {
 		return best;
 	}
 
-	public static void logSubstitution(String provenance, Result result) {
-	}
 }

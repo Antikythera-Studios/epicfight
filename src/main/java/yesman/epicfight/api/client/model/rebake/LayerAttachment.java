@@ -18,7 +18,6 @@ import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.client.model.rebake.JointNames.Region;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
-import yesman.epicfight.main.EpicFightMod;
 
 public final class LayerAttachment {
 	public static final int[] NONE = { -1, -1 };
@@ -254,7 +253,7 @@ public final class LayerAttachment {
 				return Region.UNKNOWN;
 			}
 
-			Map<Region, Integer> byRegion = new java.util.HashMap<> ();
+			Map<Region, Integer> byRegion = new java.util.EnumMap<> (Region.class);
 
 			for (Map.Entry<Integer, Integer> entry : this.byJoint.entrySet()) {
 				byRegion.merge(regionOf(entry.getKey()), entry.getValue(), Integer::sum);
@@ -278,7 +277,7 @@ public final class LayerAttachment {
 				return NONE;
 			}
 
-			Map<Region, Integer> byRegion = new java.util.HashMap<> ();
+			Map<Region, Integer> byRegion = new java.util.EnumMap<> (Region.class);
 
 			for (Map.Entry<Integer, Integer> entry : this.byJoint.entrySet()) {
 				byRegion.merge(regionOf(entry.getKey()), entry.getValue(), Integer::sum);

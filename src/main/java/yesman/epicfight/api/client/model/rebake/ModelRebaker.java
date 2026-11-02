@@ -79,7 +79,6 @@ public final class ModelRebaker {
 		if (substituted != null) {
 			RebakedMesh built = MeshAssembler.assemble(substituted.mesh(), substituted.weights(), "body", null);
 			built.addLiveSources(liveSources);
-			PartSubstitution.logSubstitution("part tree", substituted);
 
 			return built;
 		}

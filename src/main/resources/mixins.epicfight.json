@@ -25,6 +25,8 @@
 		"client.MixinMouseHandler",
 		"client.MixinParticleEngine",
 		"client.MixinRenderBuffers",
+		"client.AccessorRenderBuffersHolder$OfLevelRenderer",
+		"client.AccessorRenderBuffersHolder$OfMinecraft",
 		"client.MixinRenderLayer",
 		"client.MixinThrownTridentRenderer",
         "client.MixinInventory",
