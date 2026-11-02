@@ -316,7 +316,7 @@ publishMods {
         style {
             look = "MODERN"
             link = "EMBED"
-            thumbnailUrl = "https://i.imgur.com/nI8xOCy.png"
+            thumbnailUrl = "https://raw.githubusercontent.com/Antikythera-Studios/epicfight/1.20.1/icon.png"
         }
     }
 }
