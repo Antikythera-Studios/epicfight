@@ -1,0 +1,35 @@
+{
+  "parent": "akythera:widget_ctor",
+  "event_graph": {
+    "nodes": [
+      {
+        "id": 0,
+        "x": 60,
+        "y": 60,
+        "method": "construct",
+        "kind": "method_entry"
+      },
+      {
+        "id": 1,
+        "x": 60,
+        "y": 190,
+        "method": "mouseMoved",
+        "kind": "method_entry"
+      },
+      {
+        "id": 2,
+        "x": 60,
+        "y": 320,
+        "method": "onResized",
+        "kind": "method_entry"
+      },
+      {
+        "id": 3,
+        "x": 60,
+        "y": 450,
+        "method": "tick",
+        "kind": "method_entry"
+      }
+    ]
+  }
+}

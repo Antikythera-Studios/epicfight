@@ -11,4 +11,5 @@ neoForge {
 
 dependencies {
     api("io.github.yesssssman.akythera:common")
+    compileOnly("io.github.yesssssman.akytheralabs:common")
 }

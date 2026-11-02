@@ -1,0 +1,66 @@
+{
+  "mesh": "akythera:empty",
+  "transform": {
+    "location": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "sca": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "armature": "akythera:empty",
+  "animator_script": {
+    "animator_type": "akythera:empty",
+    "type": "datapack"
+  },
+  "armature_transform": {
+    "location": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "sca": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "bb_width": 2.1946354,
+  "bb_height": 0.4186721,
+  "lifetime": 4,
+  "brightness": 1.0,
+  "color": [
+    188,
+    0,
+    16,
+    255
+  ],
+  "size": 1.0,
+  "roll": 180.0,
+  "sprites": [
+    "minecraft:sweep_0",
+    "minecraft:sweep_1",
+    "minecraft:sweep_2",
+    "minecraft:sweep_3",
+    "minecraft:sweep_4",
+    "minecraft:sweep_5",
+    "minecraft:sweep_6",
+    "minecraft:sweep_7"
+  ]
+}

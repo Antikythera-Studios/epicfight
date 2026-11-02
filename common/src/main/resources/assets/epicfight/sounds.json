@@ -466,5 +466,14 @@
         "stream": false
       }
     ]
+  },
+  "whoosh": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "epicfight:whoosh",
+        "stream": false
+      }
+    ]
   }
 }

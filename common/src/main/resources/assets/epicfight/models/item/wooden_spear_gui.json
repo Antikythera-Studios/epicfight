@@ -1,0 +1,14 @@
+{
+	"parent": "epicfight:item/spear",
+	"gui_light": "front",
+	"textures": {
+		"layer0": "epicfight:item/wooden_spear_gui"
+	},
+	"display": {
+		"gui": {
+			"rotation": [0, 0, 0],
+			"translation": [0, 0, 0],
+			"scale": [1.0, 1.0, 1.0]
+		}
+	}
+}

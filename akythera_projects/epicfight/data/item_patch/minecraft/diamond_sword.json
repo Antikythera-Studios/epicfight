@@ -1,0 +1,148 @@
+{
+  "parent": "minecraft:sword",
+  "components": {
+    "mainhand_adapter": {
+      "stance": "epicfight:mainhand",
+      "condition": {
+        "nodes": [
+          {
+            "id": 0,
+            "x": -180,
+            "y": 0,
+            "out_labels": [
+              "equipper",
+              "slot"
+            ],
+            "kind": "entry"
+          },
+          {
+            "id": 1,
+            "x": 75,
+            "y": 45,
+            "kind": "transition_result"
+          },
+          {
+            "id": 2,
+            "x": -50,
+            "y": 45,
+            "op": "EQUAL",
+            "kind": "comparator"
+          },
+          {
+            "id": 3,
+            "x": -180,
+            "y": 65,
+            "literal_type": "minecraft:equipment_slot",
+            "literal_value": "MAINHAND",
+            "kind": "literal"
+          }
+        ],
+        "wires": [
+          {
+            "from": 0,
+            "from_pin": 1,
+            "to": 2,
+            "to_pin": 0
+          },
+          {
+            "from": 3,
+            "from_pin": 0,
+            "to": 2,
+            "to_pin": 1
+          },
+          {
+            "from": 2,
+            "from_pin": 0,
+            "to": 1,
+            "to_pin": 0
+          }
+        ]
+      },
+      "components": {
+        "replace_animations": {
+          "animations_to_replace": [
+            {
+              "anim_interface": "epicfight:idle",
+              "animation": {
+                "sequence": "epicfight:humanoid/locomotion/onehanded/idle",
+                "type": "sequence"
+              }
+            },
+            {
+              "anim_interface": "epicfight:move",
+              "animation": {
+                "blend_space_2d": "epicfight:humanoid/locomotion/onehanded/walk_run",
+                "type": "blend_space_2d"
+              }
+            }
+          ],
+          "reset_animations": true,
+          "type": "akythera:replace_animations"
+        },
+        "attribute_modifiers": {
+          "modifiers": [
+            {
+              "attribute": "minecraft:movement_speed",
+              "id": "patch_attribute",
+              "amount": 5.0,
+              "operation": "add_value"
+            }
+          ],
+          "type": "akythera:attribute_modifiers"
+        }
+      },
+      "type": "akythera:weapon_stance_variation_adapter"
+    },
+    "offhand_adapter": {
+      "stance": "epicfight:offhand",
+      "condition": {
+        "nodes": [
+          {
+            "id": 0,
+            "x": -180,
+            "y": 0,
+            "out_labels": [
+              "equipper",
+              "slot"
+            ],
+            "kind": "entry"
+          },
+          {
+            "id": 1,
+            "x": 120,
+            "y": 0,
+            "kind": "transition_result"
+          }
+        ]
+      },
+      "components": {
+        "attribute_modifiers": {
+          "modifiers": [
+            {
+              "attribute": "minecraft:movement_speed",
+              "id": "patch_attribute",
+              "amount": 10.0,
+              "operation": "add_value"
+            }
+          ],
+          "type": "akythera:attribute_modifiers"
+        }
+      },
+      "type": "akythera:weapon_stance_variation_adapter"
+    },
+    "attribute_modifiers": {
+      "modifiers": [
+        {
+          "attribute": "minecraft:jump_strength",
+          "id": "patch_attribute",
+          "amount": 2.0,
+          "operation": "add_value"
+        }
+      ],
+      "type": "akythera:attribute_modifiers"
+    },
+    "properties": {
+      "type": "epicfight:weapon_properties"
+    }
+  }
+}

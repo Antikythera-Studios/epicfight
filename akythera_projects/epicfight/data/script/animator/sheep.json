@@ -1,0 +1,2859 @@
+{
+  "event_graph": {
+    "nodes": [
+      {
+        "id": 0,
+        "x": 45,
+        "y": 195,
+        "method": "update",
+        "kind": "method_entry"
+      },
+      {
+        "id": 1,
+        "x": 50,
+        "y": 40,
+        "method": "construct",
+        "kind": "method_entry"
+      },
+      {
+        "id": 2,
+        "x": 300,
+        "y": 647,
+        "function": "akythera:animator_get_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 3,
+        "x": 300,
+        "y": 586,
+        "function": "minecraft:entity_patch_get_delta_movement",
+        "kind": "pure_function"
+      },
+      {
+        "id": 4,
+        "x": 300,
+        "y": 790,
+        "function": "akythera:vector_utils_vec3",
+        "pin_literals": [
+          {
+            "pin": 0,
+            "type": "minecraft:double",
+            "value": 0.0
+          },
+          {
+            "pin": 1,
+            "type": "minecraft:double",
+            "value": 1.0
+          },
+          {
+            "pin": 2,
+            "type": "minecraft:double",
+            "value": 0.0
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 5,
+        "x": 300,
+        "y": 708,
+        "function": "akythera:vector_utils_project_vector",
+        "kind": "pure_function"
+      },
+      {
+        "id": 6,
+        "x": 300,
+        "y": 504,
+        "function": "minecraft:vec3_subtract",
+        "kind": "pure_function"
+      },
+      {
+        "id": 7,
+        "x": 300,
+        "y": 443,
+        "function": "minecraft:vec3_length",
+        "kind": "pure_function"
+      },
+      {
+        "id": 8,
+        "x": 300,
+        "y": 893,
+        "literal_type": "minecraft:double",
+        "literal_value": "36.6",
+        "kind": "literal"
+      },
+      {
+        "id": 9,
+        "x": 300,
+        "y": 361,
+        "op": "MULTIPLY",
+        "kind": "operator"
+      },
+      {
+        "id": 10,
+        "x": 300,
+        "y": 300,
+        "variable_type": "minecraft:double",
+        "literal_type": "minecraft:float",
+        "kind": "type_convert"
+      },
+      {
+        "id": 11,
+        "x": 300,
+        "y": 195,
+        "variable": "syncedSpeed",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 12,
+        "x": 500,
+        "y": 607,
+        "function": "akythera:animator_get_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 13,
+        "x": 500,
+        "y": 546,
+        "function": "minecraft:entity_patch_get_horizontal_speed",
+        "kind": "pure_function"
+      },
+      {
+        "id": 14,
+        "x": 500,
+        "y": 485,
+        "variable": "syncedSpeed",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 15,
+        "x": 500,
+        "y": 403,
+        "op": "GREATER",
+        "kind": "comparator"
+      },
+      {
+        "id": 16,
+        "x": 500,
+        "y": 668,
+        "variable": "syncedSpeed",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 17,
+        "x": 500,
+        "y": 300,
+        "function": "akythera:select",
+        "kind": "pure_function"
+      },
+      {
+        "id": 18,
+        "x": 500,
+        "y": 195,
+        "variable": "speed",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 19,
+        "x": 700,
+        "y": 525,
+        "function": "akythera:animator_get_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 20,
+        "x": 700,
+        "y": 443,
+        "function": "minecraft:entity_patch_get_animation_speed",
+        "kind": "pure_function"
+      },
+      {
+        "id": 21,
+        "x": 700,
+        "y": 586,
+        "literal_type": "minecraft:double",
+        "literal_value": "5.0",
+        "kind": "literal"
+      },
+      {
+        "id": 22,
+        "x": 700,
+        "y": 361,
+        "op": "MULTIPLY",
+        "kind": "operator"
+      },
+      {
+        "id": 23,
+        "x": 700,
+        "y": 300,
+        "variable_type": "minecraft:double",
+        "literal_type": "minecraft:float",
+        "kind": "type_convert"
+      },
+      {
+        "id": 24,
+        "x": 700,
+        "y": 195,
+        "variable": "limbSpeed",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 25,
+        "x": 900,
+        "y": 382,
+        "variable": "speed",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 26,
+        "x": 900,
+        "y": 443,
+        "literal_type": "minecraft:float",
+        "literal_value": "0.4",
+        "kind": "literal"
+      },
+      {
+        "id": 27,
+        "x": 900,
+        "y": 300,
+        "op": "GREATER",
+        "kind": "comparator"
+      },
+      {
+        "id": 28,
+        "x": 900,
+        "y": 195,
+        "variable": "isMoving",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 29,
+        "x": 1100,
+        "y": 670,
+        "variable": "speed",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 30,
+        "x": 1100,
+        "y": 731,
+        "literal_type": "minecraft:float",
+        "literal_value": "0.2",
+        "kind": "literal"
+      },
+      {
+        "id": 31,
+        "x": 1100,
+        "y": 588,
+        "op": "SUBTRACT",
+        "kind": "operator"
+      },
+      {
+        "id": 32,
+        "x": 1100,
+        "y": 792,
+        "literal_type": "minecraft:float",
+        "literal_value": "1.25",
+        "kind": "literal"
+      },
+      {
+        "id": 33,
+        "x": 1100,
+        "y": 506,
+        "op": "MULTIPLY",
+        "kind": "operator"
+      },
+      {
+        "id": 34,
+        "x": 1100,
+        "y": 403,
+        "function": "minecraft:clampf",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "minecraft:float",
+            "value": 0.0
+          },
+          {
+            "pin": 2,
+            "type": "minecraft:float",
+            "value": 1.0
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 35,
+        "x": 1100,
+        "y": 1078,
+        "literal_type": "minecraft:float",
+        "literal_value": "6.0",
+        "kind": "literal"
+      },
+      {
+        "id": 36,
+        "x": 1100,
+        "y": 996,
+        "op": "MULTIPLY",
+        "kind": "operator"
+      },
+      {
+        "id": 37,
+        "x": 1100,
+        "y": 935,
+        "variable": "moveAlpha",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 38,
+        "x": 1100,
+        "y": 853,
+        "op": "SUBTRACT",
+        "kind": "operator"
+      },
+      {
+        "id": 39,
+        "x": 1100,
+        "y": 1139,
+        "op": "ADD",
+        "kind": "operator"
+      },
+      {
+        "id": 40,
+        "x": 1100,
+        "y": 300,
+        "function": "minecraft:clampf",
+        "kind": "pure_function"
+      },
+      {
+        "id": 41,
+        "x": 1100,
+        "y": 195,
+        "variable": "moveAlpha",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 42,
+        "x": 1300,
+        "y": 464,
+        "variable": "moveAlpha",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 43,
+        "x": 1300,
+        "y": 382,
+        "op": "MULTIPLY",
+        "kind": "operator"
+      },
+      {
+        "id": 44,
+        "x": 1300,
+        "y": 607,
+        "literal_type": "minecraft:float",
+        "literal_value": "3.0",
+        "kind": "literal"
+      },
+      {
+        "id": 45,
+        "x": 1300,
+        "y": 750,
+        "literal_type": "minecraft:float",
+        "literal_value": "2.0",
+        "kind": "literal"
+      },
+      {
+        "id": 46,
+        "x": 1300,
+        "y": 668,
+        "op": "MULTIPLY",
+        "kind": "operator"
+      },
+      {
+        "id": 47,
+        "x": 1300,
+        "y": 525,
+        "op": "SUBTRACT",
+        "kind": "operator"
+      },
+      {
+        "id": 48,
+        "x": 1300,
+        "y": 300,
+        "op": "MULTIPLY",
+        "kind": "operator"
+      },
+      {
+        "id": 49,
+        "x": 1300,
+        "y": 195,
+        "variable": "walkWeight",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 50,
+        "x": 1500,
+        "y": 464,
+        "function": "akythera:animator_get_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 51,
+        "x": 1500,
+        "y": 382,
+        "function": "minecraft:sheep_head_eat_position_scale",
+        "kind": "pure_function"
+      },
+      {
+        "id": 52,
+        "x": 1500,
+        "y": 525,
+        "literal_type": "minecraft:float",
+        "literal_value": "0.0",
+        "kind": "literal"
+      },
+      {
+        "id": 53,
+        "x": 1500,
+        "y": 300,
+        "op": "GREATER",
+        "kind": "comparator"
+      },
+      {
+        "id": 54,
+        "x": 1500,
+        "y": 195,
+        "variable": "isEating",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 55,
+        "x": 1700,
+        "y": 546,
+        "variable": "eatTime",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 56,
+        "x": 1700,
+        "y": 464,
+        "op": "ADD",
+        "kind": "operator"
+      },
+      {
+        "id": 57,
+        "x": 1700,
+        "y": 403,
+        "variable": "isEating",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 58,
+        "x": 1700,
+        "y": 300,
+        "function": "akythera:select",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "minecraft:float",
+            "value": 0.0
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 59,
+        "x": 1700,
+        "y": 195,
+        "variable": "eatTime",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 60,
+        "x": 1900,
+        "y": 525,
+        "kind": "not"
+      },
+      {
+        "id": 61,
+        "x": 1900,
+        "y": 586,
+        "variable": "isMoving",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 62,
+        "x": 1900,
+        "y": 729,
+        "variable": "eatTime",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 63,
+        "x": 1900,
+        "y": 790,
+        "literal_type": "minecraft:float",
+        "literal_value": "0.5",
+        "kind": "literal"
+      },
+      {
+        "id": 64,
+        "x": 1900,
+        "y": 647,
+        "op": "LESS",
+        "kind": "comparator"
+      },
+      {
+        "id": 65,
+        "x": 1900,
+        "y": 464,
+        "variable": "isEating",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 66,
+        "x": 1900,
+        "y": 382,
+        "op": "AND",
+        "kind": "logical_operation"
+      },
+      {
+        "id": 67,
+        "x": 1900,
+        "y": 300,
+        "op": "AND",
+        "kind": "logical_operation"
+      },
+      {
+        "id": 68,
+        "x": 1900,
+        "y": 195,
+        "variable": "startEating",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 69,
+        "x": 2100,
+        "y": 443,
+        "function": "akythera:animator_get_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 70,
+        "x": 2100,
+        "y": 382,
+        "function": "minecraft:living_entity_patch_get_hurt_time",
+        "kind": "pure_function"
+      },
+      {
+        "id": 71,
+        "x": 2100,
+        "y": 504,
+        "literal_type": "minecraft:integer",
+        "literal_value": "8",
+        "kind": "literal"
+      },
+      {
+        "id": 72,
+        "x": 2100,
+        "y": 300,
+        "op": "GREATER",
+        "kind": "comparator"
+      },
+      {
+        "id": 73,
+        "x": 2100,
+        "y": 195,
+        "variable": "isHurt",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 74,
+        "x": 2300,
+        "y": 361,
+        "function": "akythera:animator_get_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 75,
+        "x": 2300,
+        "y": 300,
+        "function": "minecraft:living_entity_patch_is_dead_or_dying",
+        "kind": "pure_function"
+      },
+      {
+        "id": 76,
+        "x": 2300,
+        "y": 195,
+        "variable": "isDead",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 77,
+        "x": 2500,
+        "y": 649,
+        "variable": "panicTime",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 78,
+        "x": 2500,
+        "y": 567,
+        "op": "SUBTRACT",
+        "kind": "operator"
+      },
+      {
+        "id": 79,
+        "x": 2500,
+        "y": 464,
+        "function": "minecraft:clampf",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "minecraft:float",
+            "value": 0.0
+          },
+          {
+            "pin": 2,
+            "type": "minecraft:float",
+            "value": 5.0
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 80,
+        "x": 2500,
+        "y": 403,
+        "variable": "isHurt",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 81,
+        "x": 2500,
+        "y": 300,
+        "function": "akythera:select",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "minecraft:float",
+            "value": 5.0
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 82,
+        "x": 2500,
+        "y": 195,
+        "variable": "panicTime",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 83,
+        "x": 2700,
+        "y": 464,
+        "variable": "panicTime",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 84,
+        "x": 2700,
+        "y": 525,
+        "literal_type": "minecraft:float",
+        "literal_value": "0.0",
+        "kind": "literal"
+      },
+      {
+        "id": 85,
+        "x": 2700,
+        "y": 382,
+        "op": "GREATER",
+        "kind": "comparator"
+      },
+      {
+        "id": 86,
+        "x": 2700,
+        "y": 750,
+        "variable": "moveAlpha",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 87,
+        "x": 2700,
+        "y": 811,
+        "literal_type": "minecraft:float",
+        "literal_value": "0.5",
+        "kind": "literal"
+      },
+      {
+        "id": 88,
+        "x": 2700,
+        "y": 668,
+        "op": "GREATER",
+        "kind": "comparator"
+      },
+      {
+        "id": 89,
+        "x": 2700,
+        "y": 1097,
+        "variable": "moveAlpha",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 90,
+        "x": 2700,
+        "y": 1158,
+        "literal_type": "minecraft:float",
+        "literal_value": "0.1",
+        "kind": "literal"
+      },
+      {
+        "id": 91,
+        "x": 2700,
+        "y": 1015,
+        "op": "GREATER",
+        "kind": "comparator"
+      },
+      {
+        "id": 92,
+        "x": 2700,
+        "y": 954,
+        "variable": "isRunning",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 93,
+        "x": 2700,
+        "y": 872,
+        "op": "AND",
+        "kind": "logical_operation"
+      },
+      {
+        "id": 94,
+        "x": 2700,
+        "y": 586,
+        "op": "OR",
+        "kind": "logical_operation"
+      },
+      {
+        "id": 95,
+        "x": 2700,
+        "y": 300,
+        "op": "AND",
+        "kind": "logical_operation"
+      },
+      {
+        "id": 96,
+        "x": 2700,
+        "y": 195,
+        "variable": "isRunning",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 97,
+        "x": 2900,
+        "y": 424,
+        "variable": "limbSpeed",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 98,
+        "x": 2900,
+        "y": 300,
+        "function": "akythera:math_utils_speed_match_rate",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "minecraft:float",
+            "value": 1.55
+          },
+          {
+            "pin": 2,
+            "type": "minecraft:float",
+            "value": 0.5
+          },
+          {
+            "pin": 3,
+            "type": "minecraft:float",
+            "value": 1.6
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 99,
+        "x": 2900,
+        "y": 195,
+        "variable": "walkRate",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 100,
+        "x": 3100,
+        "y": 424,
+        "variable": "limbSpeed",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 101,
+        "x": 3100,
+        "y": 300,
+        "function": "akythera:math_utils_speed_match_rate",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "minecraft:float",
+            "value": 2.0
+          },
+          {
+            "pin": 2,
+            "type": "minecraft:float",
+            "value": 0.75
+          },
+          {
+            "pin": 3,
+            "type": "minecraft:float",
+            "value": 2.0
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 102,
+        "x": 3100,
+        "y": 195,
+        "variable": "runRate",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 103,
+        "x": 3300,
+        "y": 382,
+        "function": "akythera:animator_get_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 104,
+        "x": 3300,
+        "y": 300,
+        "function": "minecraft:living_entity_patch_get_head_yaw_offset",
+        "kind": "pure_function"
+      },
+      {
+        "id": 105,
+        "x": 3300,
+        "y": 195,
+        "variable": "headYaw",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 106,
+        "x": 3500,
+        "y": 382,
+        "function": "akythera:animator_get_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 107,
+        "x": 3500,
+        "y": 300,
+        "function": "minecraft:entity_patch_get_x_rot",
+        "kind": "pure_function"
+      },
+      {
+        "id": 108,
+        "x": 3500,
+        "y": 195,
+        "variable": "headPitch",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 109,
+        "x": 3700,
+        "y": 382,
+        "function": "akythera:animator_get_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 110,
+        "x": 3700,
+        "y": 300,
+        "function": "minecraft:living_entity_patch_get_y_body_rot",
+        "kind": "pure_function"
+      },
+      {
+        "id": 111,
+        "x": 3700,
+        "y": 195,
+        "variable": "bodyYaw",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      },
+      {
+        "id": 112,
+        "x": 3900,
+        "y": 485,
+        "variable": "isHurt",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 113,
+        "x": 3900,
+        "y": 546,
+        "variable": "isDead",
+        "variable_type": "minecraft:boolean",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 114,
+        "x": 3900,
+        "y": 403,
+        "op": "OR",
+        "kind": "logical_operation"
+      },
+      {
+        "id": 115,
+        "x": 3900,
+        "y": 689,
+        "literal_type": "minecraft:float",
+        "literal_value": "1.0",
+        "kind": "literal"
+      },
+      {
+        "id": 116,
+        "x": 3900,
+        "y": 750,
+        "variable": "walkWeight",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 117,
+        "x": 3900,
+        "y": 607,
+        "op": "SUBTRACT",
+        "kind": "operator"
+      },
+      {
+        "id": 118,
+        "x": 3900,
+        "y": 300,
+        "function": "akythera:select",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "minecraft:float",
+            "value": 0.0
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 119,
+        "x": 3900,
+        "y": 195,
+        "variable": "turnWeight",
+        "variable_type": "minecraft:float",
+        "kind": "variable_setter"
+      }
+    ],
+    "wires": [
+      {
+        "from": 2,
+        "from_pin": 0,
+        "to": 3,
+        "to_pin": 0
+      },
+      {
+        "from": 3,
+        "from_pin": 0,
+        "to": 5,
+        "to_pin": 0
+      },
+      {
+        "from": 4,
+        "from_pin": 0,
+        "to": 5,
+        "to_pin": 1
+      },
+      {
+        "from": 3,
+        "from_pin": 0,
+        "to": 6,
+        "to_pin": 0
+      },
+      {
+        "from": 5,
+        "from_pin": 0,
+        "to": 6,
+        "to_pin": 1
+      },
+      {
+        "from": 6,
+        "from_pin": 0,
+        "to": 7,
+        "to_pin": 0
+      },
+      {
+        "from": 7,
+        "from_pin": 0,
+        "to": 9,
+        "to_pin": 0
+      },
+      {
+        "from": 8,
+        "from_pin": 0,
+        "to": 9,
+        "to_pin": 1
+      },
+      {
+        "from": 9,
+        "from_pin": 0,
+        "to": 10,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 0,
+        "to": 11,
+        "to_pin": 0
+      },
+      {
+        "from": 10,
+        "from_pin": 0,
+        "to": 11,
+        "to_pin": 1
+      },
+      {
+        "from": 12,
+        "from_pin": 0,
+        "to": 13,
+        "to_pin": 0
+      },
+      {
+        "from": 14,
+        "from_pin": 0,
+        "to": 15,
+        "to_pin": 0
+      },
+      {
+        "from": 13,
+        "from_pin": 0,
+        "to": 15,
+        "to_pin": 1
+      },
+      {
+        "from": 15,
+        "from_pin": 0,
+        "to": 17,
+        "to_pin": 0
+      },
+      {
+        "from": 16,
+        "from_pin": 0,
+        "to": 17,
+        "to_pin": 1
+      },
+      {
+        "from": 13,
+        "from_pin": 0,
+        "to": 17,
+        "to_pin": 2
+      },
+      {
+        "from": 11,
+        "from_pin": 0,
+        "to": 18,
+        "to_pin": 0
+      },
+      {
+        "from": 17,
+        "from_pin": 0,
+        "to": 18,
+        "to_pin": 1
+      },
+      {
+        "from": 19,
+        "from_pin": 0,
+        "to": 20,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 2,
+        "to": 20,
+        "to_pin": 1
+      },
+      {
+        "from": 20,
+        "from_pin": 0,
+        "to": 22,
+        "to_pin": 0
+      },
+      {
+        "from": 21,
+        "from_pin": 0,
+        "to": 22,
+        "to_pin": 1
+      },
+      {
+        "from": 22,
+        "from_pin": 0,
+        "to": 23,
+        "to_pin": 0
+      },
+      {
+        "from": 18,
+        "from_pin": 0,
+        "to": 24,
+        "to_pin": 0
+      },
+      {
+        "from": 23,
+        "from_pin": 0,
+        "to": 24,
+        "to_pin": 1
+      },
+      {
+        "from": 25,
+        "from_pin": 0,
+        "to": 27,
+        "to_pin": 0
+      },
+      {
+        "from": 26,
+        "from_pin": 0,
+        "to": 27,
+        "to_pin": 1
+      },
+      {
+        "from": 24,
+        "from_pin": 0,
+        "to": 28,
+        "to_pin": 0
+      },
+      {
+        "from": 27,
+        "from_pin": 0,
+        "to": 28,
+        "to_pin": 1
+      },
+      {
+        "from": 29,
+        "from_pin": 0,
+        "to": 31,
+        "to_pin": 0
+      },
+      {
+        "from": 30,
+        "from_pin": 0,
+        "to": 31,
+        "to_pin": 1
+      },
+      {
+        "from": 31,
+        "from_pin": 0,
+        "to": 33,
+        "to_pin": 0
+      },
+      {
+        "from": 32,
+        "from_pin": 0,
+        "to": 33,
+        "to_pin": 1
+      },
+      {
+        "from": 33,
+        "from_pin": 0,
+        "to": 34,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 1,
+        "to": 36,
+        "to_pin": 0
+      },
+      {
+        "from": 35,
+        "from_pin": 0,
+        "to": 36,
+        "to_pin": 1
+      },
+      {
+        "from": 37,
+        "from_pin": 0,
+        "to": 38,
+        "to_pin": 0
+      },
+      {
+        "from": 36,
+        "from_pin": 0,
+        "to": 38,
+        "to_pin": 1
+      },
+      {
+        "from": 37,
+        "from_pin": 0,
+        "to": 39,
+        "to_pin": 0
+      },
+      {
+        "from": 36,
+        "from_pin": 0,
+        "to": 39,
+        "to_pin": 1
+      },
+      {
+        "from": 34,
+        "from_pin": 0,
+        "to": 40,
+        "to_pin": 0
+      },
+      {
+        "from": 38,
+        "from_pin": 0,
+        "to": 40,
+        "to_pin": 1
+      },
+      {
+        "from": 39,
+        "from_pin": 0,
+        "to": 40,
+        "to_pin": 2
+      },
+      {
+        "from": 28,
+        "from_pin": 0,
+        "to": 41,
+        "to_pin": 0
+      },
+      {
+        "from": 40,
+        "from_pin": 0,
+        "to": 41,
+        "to_pin": 1
+      },
+      {
+        "from": 42,
+        "from_pin": 0,
+        "to": 43,
+        "to_pin": 0
+      },
+      {
+        "from": 42,
+        "from_pin": 0,
+        "to": 43,
+        "to_pin": 1
+      },
+      {
+        "from": 42,
+        "from_pin": 0,
+        "to": 46,
+        "to_pin": 0
+      },
+      {
+        "from": 45,
+        "from_pin": 0,
+        "to": 46,
+        "to_pin": 1
+      },
+      {
+        "from": 44,
+        "from_pin": 0,
+        "to": 47,
+        "to_pin": 0
+      },
+      {
+        "from": 46,
+        "from_pin": 0,
+        "to": 47,
+        "to_pin": 1
+      },
+      {
+        "from": 43,
+        "from_pin": 0,
+        "to": 48,
+        "to_pin": 0
+      },
+      {
+        "from": 47,
+        "from_pin": 0,
+        "to": 48,
+        "to_pin": 1
+      },
+      {
+        "from": 41,
+        "from_pin": 0,
+        "to": 49,
+        "to_pin": 0
+      },
+      {
+        "from": 48,
+        "from_pin": 0,
+        "to": 49,
+        "to_pin": 1
+      },
+      {
+        "from": 50,
+        "from_pin": 0,
+        "to": 51,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 2,
+        "to": 51,
+        "to_pin": 1
+      },
+      {
+        "from": 51,
+        "from_pin": 0,
+        "to": 53,
+        "to_pin": 0
+      },
+      {
+        "from": 52,
+        "from_pin": 0,
+        "to": 53,
+        "to_pin": 1
+      },
+      {
+        "from": 49,
+        "from_pin": 0,
+        "to": 54,
+        "to_pin": 0
+      },
+      {
+        "from": 53,
+        "from_pin": 0,
+        "to": 54,
+        "to_pin": 1
+      },
+      {
+        "from": 55,
+        "from_pin": 0,
+        "to": 56,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 1,
+        "to": 56,
+        "to_pin": 1
+      },
+      {
+        "from": 57,
+        "from_pin": 0,
+        "to": 58,
+        "to_pin": 0
+      },
+      {
+        "from": 56,
+        "from_pin": 0,
+        "to": 58,
+        "to_pin": 1
+      },
+      {
+        "from": 54,
+        "from_pin": 0,
+        "to": 59,
+        "to_pin": 0
+      },
+      {
+        "from": 58,
+        "from_pin": 0,
+        "to": 59,
+        "to_pin": 1
+      },
+      {
+        "from": 61,
+        "from_pin": 0,
+        "to": 60,
+        "to_pin": 0
+      },
+      {
+        "from": 62,
+        "from_pin": 0,
+        "to": 64,
+        "to_pin": 0
+      },
+      {
+        "from": 63,
+        "from_pin": 0,
+        "to": 64,
+        "to_pin": 1
+      },
+      {
+        "from": 65,
+        "from_pin": 0,
+        "to": 66,
+        "to_pin": 0
+      },
+      {
+        "from": 60,
+        "from_pin": 0,
+        "to": 66,
+        "to_pin": 1
+      },
+      {
+        "from": 66,
+        "from_pin": 0,
+        "to": 67,
+        "to_pin": 0
+      },
+      {
+        "from": 64,
+        "from_pin": 0,
+        "to": 67,
+        "to_pin": 1
+      },
+      {
+        "from": 59,
+        "from_pin": 0,
+        "to": 68,
+        "to_pin": 0
+      },
+      {
+        "from": 67,
+        "from_pin": 0,
+        "to": 68,
+        "to_pin": 1
+      },
+      {
+        "from": 69,
+        "from_pin": 0,
+        "to": 70,
+        "to_pin": 0
+      },
+      {
+        "from": 70,
+        "from_pin": 0,
+        "to": 72,
+        "to_pin": 0
+      },
+      {
+        "from": 71,
+        "from_pin": 0,
+        "to": 72,
+        "to_pin": 1
+      },
+      {
+        "from": 68,
+        "from_pin": 0,
+        "to": 73,
+        "to_pin": 0
+      },
+      {
+        "from": 72,
+        "from_pin": 0,
+        "to": 73,
+        "to_pin": 1
+      },
+      {
+        "from": 74,
+        "from_pin": 0,
+        "to": 75,
+        "to_pin": 0
+      },
+      {
+        "from": 73,
+        "from_pin": 0,
+        "to": 76,
+        "to_pin": 0
+      },
+      {
+        "from": 75,
+        "from_pin": 0,
+        "to": 76,
+        "to_pin": 1
+      },
+      {
+        "from": 77,
+        "from_pin": 0,
+        "to": 78,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 1,
+        "to": 78,
+        "to_pin": 1
+      },
+      {
+        "from": 78,
+        "from_pin": 0,
+        "to": 79,
+        "to_pin": 0
+      },
+      {
+        "from": 80,
+        "from_pin": 0,
+        "to": 81,
+        "to_pin": 0
+      },
+      {
+        "from": 79,
+        "from_pin": 0,
+        "to": 81,
+        "to_pin": 2
+      },
+      {
+        "from": 76,
+        "from_pin": 0,
+        "to": 82,
+        "to_pin": 0
+      },
+      {
+        "from": 81,
+        "from_pin": 0,
+        "to": 82,
+        "to_pin": 1
+      },
+      {
+        "from": 83,
+        "from_pin": 0,
+        "to": 85,
+        "to_pin": 0
+      },
+      {
+        "from": 84,
+        "from_pin": 0,
+        "to": 85,
+        "to_pin": 1
+      },
+      {
+        "from": 86,
+        "from_pin": 0,
+        "to": 88,
+        "to_pin": 0
+      },
+      {
+        "from": 87,
+        "from_pin": 0,
+        "to": 88,
+        "to_pin": 1
+      },
+      {
+        "from": 89,
+        "from_pin": 0,
+        "to": 91,
+        "to_pin": 0
+      },
+      {
+        "from": 90,
+        "from_pin": 0,
+        "to": 91,
+        "to_pin": 1
+      },
+      {
+        "from": 92,
+        "from_pin": 0,
+        "to": 93,
+        "to_pin": 0
+      },
+      {
+        "from": 91,
+        "from_pin": 0,
+        "to": 93,
+        "to_pin": 1
+      },
+      {
+        "from": 88,
+        "from_pin": 0,
+        "to": 94,
+        "to_pin": 0
+      },
+      {
+        "from": 93,
+        "from_pin": 0,
+        "to": 94,
+        "to_pin": 1
+      },
+      {
+        "from": 85,
+        "from_pin": 0,
+        "to": 95,
+        "to_pin": 0
+      },
+      {
+        "from": 94,
+        "from_pin": 0,
+        "to": 95,
+        "to_pin": 1
+      },
+      {
+        "from": 82,
+        "from_pin": 0,
+        "to": 96,
+        "to_pin": 0
+      },
+      {
+        "from": 95,
+        "from_pin": 0,
+        "to": 96,
+        "to_pin": 1
+      },
+      {
+        "from": 97,
+        "from_pin": 0,
+        "to": 98,
+        "to_pin": 0
+      },
+      {
+        "from": 96,
+        "from_pin": 0,
+        "to": 99,
+        "to_pin": 0
+      },
+      {
+        "from": 98,
+        "from_pin": 0,
+        "to": 99,
+        "to_pin": 1
+      },
+      {
+        "from": 100,
+        "from_pin": 0,
+        "to": 101,
+        "to_pin": 0
+      },
+      {
+        "from": 99,
+        "from_pin": 0,
+        "to": 102,
+        "to_pin": 0
+      },
+      {
+        "from": 101,
+        "from_pin": 0,
+        "to": 102,
+        "to_pin": 1
+      },
+      {
+        "from": 103,
+        "from_pin": 0,
+        "to": 104,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 2,
+        "to": 104,
+        "to_pin": 1
+      },
+      {
+        "from": 102,
+        "from_pin": 0,
+        "to": 105,
+        "to_pin": 0
+      },
+      {
+        "from": 104,
+        "from_pin": 0,
+        "to": 105,
+        "to_pin": 1
+      },
+      {
+        "from": 106,
+        "from_pin": 0,
+        "to": 107,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 2,
+        "to": 107,
+        "to_pin": 1
+      },
+      {
+        "from": 105,
+        "from_pin": 0,
+        "to": 108,
+        "to_pin": 0
+      },
+      {
+        "from": 107,
+        "from_pin": 0,
+        "to": 108,
+        "to_pin": 1
+      },
+      {
+        "from": 109,
+        "from_pin": 0,
+        "to": 110,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 2,
+        "to": 110,
+        "to_pin": 1
+      },
+      {
+        "from": 108,
+        "from_pin": 0,
+        "to": 111,
+        "to_pin": 0
+      },
+      {
+        "from": 110,
+        "from_pin": 0,
+        "to": 111,
+        "to_pin": 1
+      },
+      {
+        "from": 112,
+        "from_pin": 0,
+        "to": 114,
+        "to_pin": 0
+      },
+      {
+        "from": 113,
+        "from_pin": 0,
+        "to": 114,
+        "to_pin": 1
+      },
+      {
+        "from": 115,
+        "from_pin": 0,
+        "to": 117,
+        "to_pin": 0
+      },
+      {
+        "from": 116,
+        "from_pin": 0,
+        "to": 117,
+        "to_pin": 1
+      },
+      {
+        "from": 114,
+        "from_pin": 0,
+        "to": 118,
+        "to_pin": 0
+      },
+      {
+        "from": 117,
+        "from_pin": 0,
+        "to": 118,
+        "to_pin": 2
+      },
+      {
+        "from": 111,
+        "from_pin": 0,
+        "to": 119,
+        "to_pin": 0
+      },
+      {
+        "from": 118,
+        "from_pin": 0,
+        "to": 119,
+        "to_pin": 1
+      }
+    ]
+  },
+  "variables": [
+    {
+      "name": "syncedSpeed",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    },
+    {
+      "name": "speed",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    },
+    {
+      "name": "limbSpeed",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    },
+    {
+      "name": "isMoving",
+      "type": "minecraft:boolean",
+      "default_value": false
+    },
+    {
+      "name": "moveAlpha",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    },
+    {
+      "name": "walkWeight",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    },
+    {
+      "name": "isEating",
+      "type": "minecraft:boolean",
+      "default_value": false
+    },
+    {
+      "name": "eatTime",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    },
+    {
+      "name": "startEating",
+      "type": "minecraft:boolean",
+      "default_value": false
+    },
+    {
+      "name": "isHurt",
+      "type": "minecraft:boolean",
+      "default_value": false
+    },
+    {
+      "name": "isDead",
+      "type": "minecraft:boolean",
+      "default_value": false
+    },
+    {
+      "name": "panicTime",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    },
+    {
+      "name": "isRunning",
+      "type": "minecraft:boolean",
+      "default_value": false
+    },
+    {
+      "name": "walkRate",
+      "type": "minecraft:float",
+      "default_value": 1.0
+    },
+    {
+      "name": "runRate",
+      "type": "minecraft:float",
+      "default_value": 1.0
+    },
+    {
+      "name": "headYaw",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    },
+    {
+      "name": "headPitch",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    },
+    {
+      "name": "bodyYaw",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    },
+    {
+      "name": "turnWeight",
+      "type": "minecraft:float",
+      "default_value": 0.0
+    }
+  ],
+  "pose_graph": {
+    "nodes": [
+      {
+        "id": 0,
+        "x": 510,
+        "y": 300,
+        "kind": "output_pose"
+      },
+      {
+        "id": 1,
+        "x": -150,
+        "y": 300,
+        "variable": "Main",
+        "kind": "state_machine"
+      },
+      {
+        "id": 2,
+        "x": 180,
+        "y": 300,
+        "space": "model",
+        "kind": "modify_bone",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "minecraft:string",
+            "value": "head"
+          },
+          {
+            "pin": 3,
+            "type": "minecraft:float",
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "x": -190,
+        "y": 390,
+        "function": "akythera:vector_utils_vec3",
+        "kind": "pure_function",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "minecraft:double",
+            "value": 0.0
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "x": -340,
+        "y": 380,
+        "variable": "headPitch",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 5,
+        "x": -340,
+        "y": 430,
+        "variable": "headYaw",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 6,
+        "x": 355,
+        "y": 300,
+        "variable": "akythera:base",
+        "kind": "anim_layer"
+      },
+      {
+        "id": 7,
+        "x": 15,
+        "y": 300,
+        "kind": "turn_in_place",
+        "pin_literals": [
+          {
+            "pin": 3,
+            "type": "minecraft:float",
+            "value": 0.6
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "x": -150,
+        "y": 500,
+        "variable": "bodyYaw",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      },
+      {
+        "id": 9,
+        "x": -150,
+        "y": 550,
+        "variable": "turnWeight",
+        "variable_type": "minecraft:float",
+        "kind": "variable_getter"
+      }
+    ],
+    "wires": [
+      {
+        "from": 3,
+        "from_pin": 0,
+        "to": 2,
+        "to_pin": 2
+      },
+      {
+        "from": 4,
+        "from_pin": 0,
+        "to": 3,
+        "to_pin": 0
+      },
+      {
+        "from": 5,
+        "from_pin": 0,
+        "to": 3,
+        "to_pin": 1
+      },
+      {
+        "from": 2,
+        "from_pin": 0,
+        "to": 6,
+        "to_pin": 0
+      },
+      {
+        "from": 6,
+        "from_pin": 0,
+        "to": 0,
+        "to_pin": 0
+      },
+      {
+        "from": 1,
+        "from_pin": 0,
+        "to": 7,
+        "to_pin": 0
+      },
+      {
+        "from": 8,
+        "from_pin": 0,
+        "to": 7,
+        "to_pin": 1
+      },
+      {
+        "from": 9,
+        "from_pin": 0,
+        "to": 7,
+        "to_pin": 2
+      },
+      {
+        "from": 7,
+        "from_pin": 0,
+        "to": 2,
+        "to_pin": 0
+      }
+    ]
+  },
+  "state_machines": {
+    "Main": {
+      "entry_x": 50,
+      "entry_y": 60,
+      "entry_transitions": [
+        {
+          "to": "epicfight:locomotion",
+          "condition_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "transition_result"
+              },
+              {
+                "id": 1,
+                "x": 235,
+                "y": 100,
+                "literal_type": "minecraft:boolean",
+                "literal_value": "true",
+                "kind": "literal"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          }
+        }
+      ],
+      "states": [
+        {
+          "state": "epicfight:locomotion",
+          "x": 220,
+          "y": 100,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 540,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 185,
+                "y": 60,
+                "asset": "epicfight:sheep/idle",
+                "kind": "anim_sequence_player"
+              },
+              {
+                "id": 2,
+                "x": 185,
+                "y": 140,
+                "asset": "epicfight:sheep/walk",
+                "kind": "anim_sequence_player"
+              },
+              {
+                "id": 3,
+                "x": 300,
+                "y": 140,
+                "kind": "play_rate"
+              },
+              {
+                "id": 4,
+                "x": 200,
+                "y": 200,
+                "variable": "walkRate",
+                "variable_type": "minecraft:float",
+                "kind": "variable_getter"
+              },
+              {
+                "id": 5,
+                "x": 420,
+                "y": 100,
+                "kind": "two_pose_blend"
+              },
+              {
+                "id": 6,
+                "x": 300,
+                "y": 220,
+                "variable": "walkWeight",
+                "variable_type": "minecraft:float",
+                "kind": "variable_getter"
+              }
+            ],
+            "wires": [
+              {
+                "from": 2,
+                "from_pin": 0,
+                "to": 3,
+                "to_pin": 0
+              },
+              {
+                "from": 4,
+                "from_pin": 0,
+                "to": 3,
+                "to_pin": 1
+              },
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 5,
+                "to_pin": 0
+              },
+              {
+                "from": 3,
+                "from_pin": 0,
+                "to": 5,
+                "to_pin": 1
+              },
+              {
+                "from": 6,
+                "from_pin": 0,
+                "to": 5,
+                "to_pin": 2
+              },
+              {
+                "from": 5,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          },
+          "transitions": [
+            {
+              "to": "epicfight:death",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 150,
+                    "y": 100,
+                    "variable": "isDead",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.1
+            },
+            {
+              "to": "epicfight:hurt",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 150,
+                    "y": 100,
+                    "variable": "isHurt",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.1
+            },
+            {
+              "to": "epicfight:eat",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 150,
+                    "y": 100,
+                    "variable": "startEating",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.3
+            },
+            {
+              "to": "epicfight:sprint",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 150,
+                    "y": 100,
+                    "variable": "isRunning",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.25,
+              "transfer_elapsed_time": true
+            }
+          ]
+        },
+        {
+          "state": "epicfight:sprint",
+          "x": 220,
+          "y": 220,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 680,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 195,
+                "y": 100,
+                "asset": "epicfight:sheep/run",
+                "kind": "anim_sequence_player"
+              },
+              {
+                "id": 2,
+                "x": 370,
+                "y": 100,
+                "kind": "play_rate"
+              },
+              {
+                "id": 3,
+                "x": 240,
+                "y": 170,
+                "variable": "runRate",
+                "variable_type": "minecraft:float",
+                "kind": "variable_getter"
+              },
+              {
+                "id": 4,
+                "x": 370,
+                "y": 30,
+                "asset": "epicfight:sheep/idle",
+                "kind": "anim_sequence_player"
+              },
+              {
+                "id": 5,
+                "x": 510,
+                "y": 100,
+                "kind": "two_pose_blend",
+                "pin_literals": [
+                  {
+                    "pin": 2,
+                    "type": "minecraft:float",
+                    "value": 0.7
+                  }
+                ]
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 2,
+                "to_pin": 0
+              },
+              {
+                "from": 3,
+                "from_pin": 0,
+                "to": 2,
+                "to_pin": 1
+              },
+              {
+                "from": 4,
+                "from_pin": 0,
+                "to": 5,
+                "to_pin": 0
+              },
+              {
+                "from": 2,
+                "from_pin": 0,
+                "to": 5,
+                "to_pin": 1
+              },
+              {
+                "from": 5,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          },
+          "transitions": [
+            {
+              "to": "epicfight:death",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 150,
+                    "y": 100,
+                    "variable": "isDead",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.1
+            },
+            {
+              "to": "epicfight:hurt",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 150,
+                    "y": 100,
+                    "variable": "isHurt",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.1
+            },
+            {
+              "to": "epicfight:locomotion",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 150,
+                    "y": 100,
+                    "variable": "isRunning",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  },
+                  {
+                    "id": 2,
+                    "x": 250,
+                    "y": 100,
+                    "kind": "not"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 2,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 2,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.3,
+              "transfer_elapsed_time": true
+            }
+          ]
+        },
+        {
+          "state": "epicfight:eat",
+          "x": 440,
+          "y": 60,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 185,
+                "y": 100,
+                "asset": "epicfight:sheep/eat",
+                "kind": "anim_sequence_player"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          },
+          "transitions": [
+            {
+              "to": "epicfight:death",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 150,
+                    "y": 100,
+                    "variable": "isDead",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.1
+            },
+            {
+              "to": "epicfight:hurt",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 150,
+                    "y": 100,
+                    "variable": "isHurt",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.1
+            },
+            {
+              "to": "epicfight:locomotion",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 60,
+                    "y": 100,
+                    "variable": "isEating",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  },
+                  {
+                    "id": 2,
+                    "x": 160,
+                    "y": 100,
+                    "kind": "not"
+                  },
+                  {
+                    "id": 3,
+                    "x": 160,
+                    "y": 160,
+                    "variable": "isMoving",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  },
+                  {
+                    "id": 4,
+                    "x": 270,
+                    "y": 100,
+                    "op": "OR",
+                    "kind": "logical_operation"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 2,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 2,
+                    "from_pin": 0,
+                    "to": 4,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 3,
+                    "from_pin": 0,
+                    "to": 4,
+                    "to_pin": 1
+                  },
+                  {
+                    "from": 4,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.3
+            }
+          ]
+        },
+        {
+          "state": "epicfight:hurt",
+          "x": 440,
+          "y": 140,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 185,
+                "y": 100,
+                "asset": "epicfight:sheep/hit",
+                "kind": "anim_sequence_player"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          },
+          "transitions": [
+            {
+              "to": "epicfight:death",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 150,
+                    "y": 100,
+                    "variable": "isDead",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.1
+            },
+            {
+              "to": "epicfight:sprint",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 60,
+                    "y": 100,
+                    "kind": "source_driver"
+                  },
+                  {
+                    "id": 2,
+                    "x": 160,
+                    "y": 100,
+                    "function": "akythera:animation_driver_is_finished",
+                    "kind": "pure_function"
+                  },
+                  {
+                    "id": 3,
+                    "x": 160,
+                    "y": 160,
+                    "variable": "isRunning",
+                    "variable_type": "minecraft:boolean",
+                    "kind": "variable_getter"
+                  },
+                  {
+                    "id": 4,
+                    "x": 270,
+                    "y": 100,
+                    "op": "AND",
+                    "kind": "logical_operation"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 2,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 2,
+                    "from_pin": 0,
+                    "to": 4,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 3,
+                    "from_pin": 0,
+                    "to": 4,
+                    "to_pin": 1
+                  },
+                  {
+                    "from": 4,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              }
+            },
+            {
+              "to": "epicfight:locomotion",
+              "condition_graph": {
+                "nodes": [
+                  {
+                    "id": 0,
+                    "x": 360,
+                    "y": 100,
+                    "kind": "transition_result"
+                  },
+                  {
+                    "id": 1,
+                    "x": 60,
+                    "y": 100,
+                    "kind": "source_driver"
+                  },
+                  {
+                    "id": 2,
+                    "x": 160,
+                    "y": 100,
+                    "function": "akythera:animation_driver_is_finished",
+                    "kind": "pure_function"
+                  }
+                ],
+                "wires": [
+                  {
+                    "from": 1,
+                    "from_pin": 0,
+                    "to": 2,
+                    "to_pin": 0
+                  },
+                  {
+                    "from": 2,
+                    "from_pin": 0,
+                    "to": 0,
+                    "to_pin": 0
+                  }
+                ]
+              },
+              "blend_time": 0.25
+            }
+          ]
+        },
+        {
+          "state": "epicfight:death",
+          "x": 440,
+          "y": 220,
+          "pose_graph": {
+            "nodes": [
+              {
+                "id": 0,
+                "x": 360,
+                "y": 100,
+                "kind": "output_pose"
+              },
+              {
+                "id": 1,
+                "x": 185,
+                "y": 100,
+                "asset": "epicfight:sheep/death",
+                "kind": "anim_sequence_player"
+              }
+            ],
+            "wires": [
+              {
+                "from": 1,
+                "from_pin": 0,
+                "to": 0,
+                "to_pin": 0
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

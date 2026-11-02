@@ -62,6 +62,7 @@ public enum EpicfightFSMAnimationState implements FSMAnimationState {
     MOVE("move"),
     ON_AIR("on_air"),
     ON_GROUND("on_ground"),
+    SPRINT("sprint"),
     SWIM("swim");
 
     final int id;

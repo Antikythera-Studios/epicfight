@@ -1,0 +1,280 @@
+{
+  "bodies": {
+    "head": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.2511981495033804,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "length": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ]
+    },
+    "body_bend": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.1974113561741375,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "length": [
+            0.5,
+            0.35,
+            0.25
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ]
+    },
+    "body": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.19551049067944842,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "length": [
+            0.5,
+            0.37,
+            0.25
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ]
+    }
+  },
+  "constraints": {
+    "left_knee": [
+      {
+        "type": "akythera:transformation",
+        "target": "left_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "rotation",
+          "x": {
+            "source": "x",
+            "min": 0.0,
+            "max": -45.0
+          }
+        },
+        "extrapolate": true
+      },
+      {
+        "type": "akythera:transformation",
+        "target": "left_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": -90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        }
+      }
+    ],
+    "left_elbow": [
+      {
+        "type": "akythera:transformation",
+        "target": "left_arm_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "rotation",
+          "x": {
+            "source": "x",
+            "min": 0.0,
+            "max": -45.0
+          }
+        },
+        "extrapolate": true
+      },
+      {
+        "type": "akythera:transformation",
+        "target": "left_arm_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        }
+      }
+    ],
+    "right_knee": [
+      {
+        "type": "akythera:transformation",
+        "target": "right_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "rotation",
+          "x": {
+            "source": "x",
+            "min": 0.0,
+            "max": -45.0
+          }
+        },
+        "extrapolate": true
+      },
+      {
+        "type": "akythera:transformation",
+        "target": "right_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": -90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        }
+      }
+    ],
+    "right_elbow": [
+      {
+        "type": "akythera:transformation",
+        "target": "right_arm_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "rotation",
+          "x": {
+            "source": "x",
+            "min": 0.0,
+            "max": -45.0
+          }
+        },
+        "extrapolate": true
+      },
+      {
+        "type": "akythera:transformation",
+        "target": "right_arm_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        }
+      }
+    ]
+  }
+}

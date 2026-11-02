@@ -1,0 +1,28 @@
+{
+  "parent": "akythera:hud_ctor",
+  "event_graph": {
+    "nodes": [
+      {
+        "id": 0,
+        "x": 60,
+        "y": 60,
+        "method": "onAdded",
+        "kind": "method_entry"
+      },
+      {
+        "id": 1,
+        "x": 60,
+        "y": 190,
+        "method": "onRemoved",
+        "kind": "method_entry"
+      },
+      {
+        "id": 2,
+        "x": 60,
+        "y": 320,
+        "method": "onUpdated",
+        "kind": "method_entry"
+      }
+    ]
+  }
+}

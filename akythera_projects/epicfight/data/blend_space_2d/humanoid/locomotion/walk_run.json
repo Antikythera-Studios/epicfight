@@ -1,0 +1,238 @@
+{
+  "fade_in_time": 0.25,
+  "fade_out_time": 0.0,
+  "smooth_x": 400.0,
+  "smooth_y": 6.0,
+  "min_x": -180.0,
+  "min_y": 0.0,
+  "max_x": 180.0,
+  "max_y": 1.0,
+  "loops": true,
+  "nodes": [
+    {
+      "x": -180.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/stand",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -135.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/stand",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -90.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/stand",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -45.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/stand",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 0.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/stand",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 45.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/stand",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 90.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/stand",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 135.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/stand",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 180.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/stand",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -180.0,
+      "y": 0.2732,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -135.0,
+      "y": 0.2818,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -90.0,
+      "y": 0.2428,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -45.0,
+      "y": 0.2896,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_forward_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 0.0,
+      "y": 0.2732,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_forward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 45.0,
+      "y": 0.2468,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_forward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 90.0,
+      "y": 0.2645,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 135.0,
+      "y": 0.2856,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 180.0,
+      "y": 0.2732,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -180.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -135.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -90.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -45.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_forward_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 0.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_forward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 45.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_forward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 90.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 135.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 180.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward",
+        "type": "sequence"
+      }
+    }
+  ],
+  "preview_entity_type": "minecraft:player",
+  "vertical_division": 2,
+  "axis_names": {
+    "x": "Direction",
+    "y": "Speed"
+  },
+  "axis_wraps": {
+    "x": true
+  }
+}

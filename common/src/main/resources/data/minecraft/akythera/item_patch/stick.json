@@ -1,0 +1,15 @@
+{
+  "components": {
+    "tip": {
+      "type": "akythera:transform_socket",
+      "transform": {
+        "location": [
+          0.0,
+          0.5,
+          0.0
+        ]
+      },
+      "bone_name": ""
+    }
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "fade_in_time": 0.25,
+  "fade_out_time": 0.0,
+  "smooth_x": 400.0,
+  "smooth_y": 6.0,
+  "min_x": -180.0,
+  "min_y": 0.0,
+  "max_x": 180.0,
+  "max_y": 1.0,
+  "loops": true,
+  "nodes": [
+    {
+      "x": 0.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 45.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 90.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 135.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 180.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -45.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -90.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -135.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -180.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/idle",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 0.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/walk_forward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -45.0,
+      "y": 0.8811,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/walk_forward_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 45.0,
+      "y": 0.8811,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/walk_forward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -90.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/walk_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 90.0,
+      "y": 0.86403507,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/walk_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 180.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/walk_backward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -180.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/walk_backward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -135.0,
+      "y": 0.8811,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/walk_backward_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 135.0,
+      "y": 0.8811,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/walk_backward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 0.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/run_forward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 45.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/run_forward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -45.168533,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/onehanded/run_forward_left",
+        "type": "sequence"
+      }
+    }
+  ],
+  "preview_entity_type": "minecraft:player",
+  "vertical_division": 2,
+  "axis_names": {
+    "x": "Direction",
+    "y": "Speed"
+  },
+  "axis_wraps": {
+    "x": true
+  }
+}

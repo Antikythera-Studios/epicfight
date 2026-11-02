@@ -1,0 +1,36 @@
+{
+  "mirror_bone_pairs": [
+    {
+      "first": "right_shoulder",
+      "second": "left_shoulder"
+    },
+    {
+      "first": "right_arm",
+      "second": "left_arm"
+    },
+    {
+      "first": "right_elbow",
+      "second": "left_elbow"
+    },
+    {
+      "first": "right_hand_itemholder",
+      "second": "left_hand_itemholder"
+    },
+    {
+      "first": "right_arm_bend",
+      "second": "left_arm_bend"
+    },
+    {
+      "first": "left_leg",
+      "second": "right_leg"
+    },
+    {
+      "first": "left_leg_bend",
+      "second": "right_leg_bend"
+    },
+    {
+      "first": "left_knee",
+      "second": "right_knee"
+    }
+  ]
+}

@@ -58,7 +58,8 @@ public final class EpicfightBlendSpace2Ds extends BlendSpace2DProvider {
         return ResourceKey.create(AkytheraRegistries.DataPack.BLEND_SPACE_2D_KEY, Identifier.fromNamespaceAndPath("epicfight", name));
     }
 
-    public static final ResourceKey<BlendSpace2D> WALK_RUN = createId("walk_run");
+    public static final ResourceKey<BlendSpace2D> HUMANOID_LOCOMOTION_ONEHANDED_WALK_RUN = createId("humanoid/locomotion/onehanded/walk_run");
+    public static final ResourceKey<BlendSpace2D> HUMANOID_LOCOMOTION_WALK_RUN = createId("humanoid/locomotion/walk_run");
 
     private final CompletableFuture<HolderLookup.Provider> lookupProvider;
 
@@ -73,31 +74,73 @@ public final class EpicfightBlendSpace2Ds extends BlendSpace2DProvider {
         HolderLookup.RegistryLookup<AnimationSequence> animSequenceLookup = lookupProvider.join().lookupOrThrow(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY);
 
         writer.accept(
-            WALK_RUN,
+            HUMANOID_LOCOMOTION_ONEHANDED_WALK_RUN,
             BlendSpace2D
                 .builder()
-                    .fadeInTime(0.25F).fadeOutTime(0.25F)
-                    .smoothX(0.0F).smoothY(0.0F)
-                    .minX(-180.0F).maxX(180.0F).minY(0.0F).maxY(4.317181F)
+                    .fadeInTime(0.25F).fadeOutTime(0.0F)
+                    .smoothX(0.0F).smoothY(50.0F)
+                    .wrapX(true).wrapY(false)
+                    .minX(-180.0F).maxX(180.0F).minY(0.0F).maxY(1.0F)
                     .loops(true)
-                    .putNode(0.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/idle"))))
-                    .putNode(45.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/idle"))))
-                    .putNode(90.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/idle"))))
-                    .putNode(135.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/idle"))))
-                    .putNode(180.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/idle"))))
-                    .putNode(-45.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/idle"))))
-                    .putNode(-90.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/idle"))))
-                    .putNode(-135.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/idle"))))
-                    .putNode(-180.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/idle"))))
-                    .putNode(0.0F, 4.317181F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/walk_forward"))))
-                    .putNode(-45.0F, 4.317181F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/walk_forward_left"))))
-                    .putNode(45.0F, 4.317181F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/walk_forward_right"))))
-                    .putNode(-90.0F, 4.317181F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/walk_left"))))
-                    .putNode(90.0F, 4.317181F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/walk_right"))))
-                    .putNode(180.0F, 4.317181F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/walk_backward"))))
-                    .putNode(-180.0F, 4.317181F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/walk_backward"))))
-                    .putNode(-135.0F, 4.317181F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/walk_backward_left"))))
-                    .putNode(135.0F, 4.317181F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/walk_backward_right"))))
+                    .putNode(0.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle"))))
+                    .putNode(45.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle"))))
+                    .putNode(90.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle"))))
+                    .putNode(135.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle"))))
+                    .putNode(180.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle"))))
+                    .putNode(-45.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle"))))
+                    .putNode(-90.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle"))))
+                    .putNode(-135.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle"))))
+                    .putNode(-180.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle"))))
+                    .putNode(0.0F, 0.8634F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_forward"))))
+                    .putNode(-45.0F, 0.8811F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_forward_left"))))
+                    .putNode(45.0F, 0.8811F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_forward_right"))))
+                    .putNode(-90.0F, 0.8634F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_left"))))
+                    .putNode(90.0F, 0.86403507F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_right"))))
+                    .putNode(180.0F, 0.8634F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_backward"))))
+                    .putNode(-180.0F, 0.8634F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_backward"))))
+                    .putNode(-135.0F, 0.8811F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_backward_left"))))
+                    .putNode(135.0F, 0.8811F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_backward_right"))))
+                    .putNode(0.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/run_forward"))))
+                    .putNode(45.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/run_forward_right"))))
+                    .putNode(-45.168533F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/onehanded/run_forward_left"))))
+                .create()
+        );
+        writer.accept(
+            HUMANOID_LOCOMOTION_WALK_RUN,
+            BlendSpace2D
+                .builder()
+                    .fadeInTime(0.25F).fadeOutTime(0.0F)
+                    .smoothX(0.0F).smoothY(50.0F)
+                    .wrapX(true).wrapY(false)
+                    .minX(-180.0F).maxX(180.0F).minY(0.0F).maxY(1.0F)
+                    .loops(true)
+                    .putNode(-180.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/stand"))))
+                    .putNode(-135.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/stand"))))
+                    .putNode(-90.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/stand"))))
+                    .putNode(-45.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/stand"))))
+                    .putNode(0.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/stand"))))
+                    .putNode(45.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/stand"))))
+                    .putNode(90.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/stand"))))
+                    .putNode(135.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/stand"))))
+                    .putNode(180.0F, 0.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/stand"))))
+                    .putNode(-180.0F, 0.2364F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_backward"))))
+                    .putNode(-135.0F, 0.2568F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_backward_left"))))
+                    .putNode(-90.0F, 0.2428F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_left"))))
+                    .putNode(-45.0F, 0.268F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_forward"))))
+                    .putNode(0.0F, 0.268F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_forward"))))
+                    .putNode(45.0F, 0.268F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_forward"))))
+                    .putNode(90.0F, 0.2645F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_right"))))
+                    .putNode(135.0F, 0.2488F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_backward_right"))))
+                    .putNode(180.0F, 0.2364F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_backward"))))
+                    .putNode(-180.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_backward"))))
+                    .putNode(-135.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_backward_left"))))
+                    .putNode(-90.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_left"))))
+                    .putNode(-45.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_forward"))))
+                    .putNode(0.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_forward"))))
+                    .putNode(45.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_forward"))))
+                    .putNode(90.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_right"))))
+                    .putNode(135.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_backward_right"))))
+                    .putNode(180.0F, 1.0F, animSequenceLookup.getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/walk_backward"))))
                 .create()
         );
     }

@@ -22,6 +22,12 @@ dependencies {
 }
 
 loom {
+    runs {
+        named("client") {
+            property("akytheralabs.projects_dir", rootProject.file("akythera_projects").absolutePath)
+        }
+    }
+
     mods {
         register(modId) {
             sourceSet(sourceSets.main.get())

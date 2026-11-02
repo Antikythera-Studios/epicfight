@@ -1,0 +1,101 @@
+{
+  "name": "epicfight",
+  "version": "0.1.0+alpha.1",
+  "export_data_path": ".",
+  "export_resource_path": ".",
+  "source_data_path": "../../common/src/main/java/guivnf/epicfight/akythera",
+  "source_resource_path": "../../common/src/main/resources",
+  "focused": "data/script/entity_patch/minecraft",
+  "folder_states": {
+    "assets": true,
+    "animations": true,
+    "humanoid": true,
+    "locomotion": true,
+    "textures": false,
+    "gui": true,
+    "data": true,
+    "abilities": true,
+    "ability": true,
+    "anim_montage": true,
+    "anim_sequence": true,
+    "blend_space_2d": true,
+    "item_patch": true,
+    "particle": true,
+    "script": true,
+    "entity_patch": true,
+    "datablock": true,
+    "ability_tag": true
+  },
+  "entity_preview_models": {
+    "minecraft:player": {
+      "mesh_id": "epicfight:animmodels/meshes/humanoid",
+      "mesh_type": "skeletal_mesh",
+      "armature": "epicfight:animmodels/armatures/humanoid"
+    },
+    "minecraft:sheep": {
+      "mesh_id": "epicfight:animmodels/meshes/sheep",
+      "mesh_type": "skeletal_mesh",
+      "armature": "epicfight:animmodels/armatures/sheep"
+    }
+  },
+  "layouts": {
+    "com.yesman.akytheralabs.gui.screen.ClothPhysicsDataEditorScreen": [
+      23,
+      76
+    ],
+    "com.yesman.akytheralabs.gui.screen.ParticleEditorScreen": [
+      70
+    ],
+    "com.yesman.akytheralabs.gui.screen.WidgetEditorScreen": [
+      22,
+      76,
+      40,
+      65
+    ],
+    "com.yesman.akytheralabs.gui.screen.SoundAssetEditorScreen": [
+      70,
+      70
+    ],
+    "com.yesman.akytheralabs.gui.screen.BlendSpace2DEditorScreen": [
+      62,
+      70,
+      55
+    ],
+    "com.yesman.akytheralabs.gui.screen.EntityPatchEditorScreen": [
+      26,
+      83,
+      40,
+      65
+    ],
+    "com.yesman.akytheralabs.gui.screen.AnimationAssetEditorScreen": [
+      70
+    ],
+    "com.yesman.akytheralabs.gui.screen.AnimatorScriptEditorScreen": [
+      24,
+      74,
+      48,
+      48
+    ],
+    "com.yesman.akytheralabs.gui.screen.MeshAssetEditorScreen": [
+      70
+    ],
+    "com.yesman.akytheralabs.gui.screen.MainEditorScreen": [
+      63,
+      25
+    ],
+    "com.yesman.akytheralabs.gui.screen.AnimationSequenceEditorScreen": [
+      60,
+      75,
+      70
+    ],
+    "com.yesman.akytheralabs.gui.screen.ItemPatchEditorScreen": [
+      38,
+      70
+    ],
+    "com.yesman.akytheralabs.gui.screen.AbilityEditorScreen": [
+      20,
+      76,
+      45
+    ]
+  }
+}

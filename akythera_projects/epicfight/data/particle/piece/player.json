@@ -1,0 +1,57 @@
+{
+  "mesh": "epicfight:humanoid",
+  "transform": {
+    "location": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "sca": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "armature": "epicfight:humanoid",
+  "animator_script": {
+    "animator_type": "epicfight:idle_animator_script",
+    "type": "class"
+  },
+  "armature_transform": {
+    "location": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "sca": [
+      0.9375,
+      0.9375,
+      0.9375
+    ]
+  },
+  "type": "skeletal_mesh",
+  "has_physics": false,
+  "lifetime": 35,
+  "brightness": 1.0,
+  "color": [
+    251,
+    255,
+    248,
+    116
+  ],
+  "sprites": [
+    "minecraft:generic_0"
+  ]
+}

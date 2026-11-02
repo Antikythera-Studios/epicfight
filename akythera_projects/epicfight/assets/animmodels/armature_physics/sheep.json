@@ -1,0 +1,188 @@
+{
+  "constraints": {
+    "left_hind_knee": [
+      {
+        "type": "akythera:transformation",
+        "target": "left_hind_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "rotation",
+          "x": {
+            "source": "x",
+            "min": 0.0,
+            "max": 45.0
+          }
+        },
+        "extrapolate": true
+      },
+      {
+        "type": "akythera:transformation",
+        "target": "left_hind_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": -90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        }
+      }
+    ],
+    "left_front_knee": [
+      {
+        "type": "akythera:transformation",
+        "target": "left_front_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "rotation",
+          "x": {
+            "source": "x",
+            "min": 0.0,
+            "max": 45.0
+          }
+        },
+        "extrapolate": true
+      },
+      {
+        "type": "akythera:transformation",
+        "target": "left_front_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": -90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        }
+      }
+    ],
+    "right_hind_knee": [
+      {
+        "type": "akythera:transformation",
+        "target": "right_hind_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "rotation",
+          "x": {
+            "source": "x",
+            "min": 0.0,
+            "max": 45.0
+          }
+        },
+        "extrapolate": true
+      },
+      {
+        "type": "akythera:transformation",
+        "target": "right_hind_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": -90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        }
+      }
+    ],
+    "right_front_knee": [
+      {
+        "type": "akythera:transformation",
+        "target": "right_front_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "rotation",
+          "x": {
+            "source": "x",
+            "min": 0.0,
+            "max": 45.0
+          }
+        },
+        "extrapolate": true
+      },
+      {
+        "type": "akythera:transformation",
+        "target": "right_front_leg_bend",
+        "map_from": {
+          "channel": "rotation",
+          "x": {
+            "min": 0.0,
+            "max": -90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        }
+      }
+    ]
+  }
+}

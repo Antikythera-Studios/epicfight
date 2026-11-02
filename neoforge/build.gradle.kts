@@ -13,6 +13,7 @@ neoForge {
     runs {
         create("client") {
             client()
+            systemProperty("akytheralabs.projects_dir", rootProject.file("akythera_projects").absolutePath)
         }
 
         create("server") {

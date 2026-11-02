@@ -50,22 +50,17 @@ package guivnf.epicfight.akythera.providers;
 
 // Import section is empty. Use auto import feature in IDE
 
-import com.yesman.akythera.api.animation.notify.impl.LogNotify;
-import com.yesman.akythera.api.animation.notify.impl.LogNotifyState;
 import com.yesman.akythera.api.asset.animation.AnimationManager;
 import com.yesman.akythera.api.data.provider.AnimationSequenceProvider;
 import com.yesman.akythera.core.animation.notify.AnimationNotifyTrack;
 import com.yesman.akythera.core.animation.playable.AnimationSequence;
-import com.yesman.akythera.core.math.TimeWindow;
 import com.yesman.akythera.core.registry.AkytheraRegistries;
-import com.yesman.akythera.core.util.LogicalSide;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
@@ -74,157 +69,426 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
         return ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.fromNamespaceAndPath("epicfight", name));
     }
 
-    public static final ResourceKey<AnimationSequence> HUMANOID_IDLE = createId("humanoid/idle");
-    public static final ResourceKey<AnimationSequence> HUMANOID_IDLE_AIR = createId("humanoid/idle_air");
-    public static final ResourceKey<AnimationSequence> HUMANOID_IDLE_WATER = createId("humanoid/idle_water");
-    public static final ResourceKey<AnimationSequence> HUMANOID_RUN_FORWARD = createId("humanoid/run_forward");
-    public static final ResourceKey<AnimationSequence> HUMANOID_WALK_BACKWARD = createId("humanoid/walk_backward");
-    public static final ResourceKey<AnimationSequence> HUMANOID_WALK_BACKWARD_LEFT = createId("humanoid/walk_backward_left");
-    public static final ResourceKey<AnimationSequence> HUMANOID_WALK_BACKWARD_RIGHT = createId("humanoid/walk_backward_right");
-    public static final ResourceKey<AnimationSequence> HUMANOID_WALK_FORWARD = createId("humanoid/walk_forward");
-    public static final ResourceKey<AnimationSequence> HUMANOID_WALK_FORWARD_LEFT = createId("humanoid/walk_forward_left");
-    public static final ResourceKey<AnimationSequence> HUMANOID_WALK_FORWARD_RIGHT = createId("humanoid/walk_forward_right");
-    public static final ResourceKey<AnimationSequence> HUMANOID_WALK_LEFT = createId("humanoid/walk_left");
-    public static final ResourceKey<AnimationSequence> HUMANOID_WALK_RIGHT = createId("humanoid/walk_right");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_CROUCH = createId("humanoid/locomotion/common/crouch");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_CROUCH_WALK = createId("humanoid/locomotion/common/crouch_walk");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_FALL = createId("humanoid/locomotion/common/fall");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_IDLE = createId("humanoid/locomotion/common/idle");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_IDLE_AIR = createId("humanoid/locomotion/common/idle_air");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_IDLE_WATER = createId("humanoid/locomotion/common/idle_water");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_JUMP = createId("humanoid/locomotion/common/jump");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_LAND = createId("humanoid/locomotion/common/land");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_RUN_FORWARD = createId("humanoid/locomotion/common/run_forward");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_STAND = createId("humanoid/locomotion/common/stand");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD = createId("humanoid/locomotion/common/walk_backward");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_LEFT = createId("humanoid/locomotion/common/walk_backward_left");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_RIGHT = createId("humanoid/locomotion/common/walk_backward_right");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD = createId("humanoid/locomotion/common/walk_forward");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_LEFT = createId("humanoid/locomotion/common/walk_left");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_RIGHT = createId("humanoid/locomotion/common/walk_right");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_IDLE = createId("humanoid/locomotion/onehanded/idle");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_IDLE_AIR = createId("humanoid/locomotion/onehanded/idle_air");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_IDLE_WATER = createId("humanoid/locomotion/onehanded/idle_water");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD = createId("humanoid/locomotion/onehanded/run_forward");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD_LEFT = createId("humanoid/locomotion/onehanded/run_forward_left");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD_RIGHT = createId("humanoid/locomotion/onehanded/run_forward_right");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD = createId("humanoid/locomotion/onehanded/walk_backward");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD_LEFT = createId("humanoid/locomotion/onehanded/walk_backward_left");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD_RIGHT = createId("humanoid/locomotion/onehanded/walk_backward_right");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD = createId("humanoid/locomotion/onehanded/walk_forward");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_LEFT = createId("humanoid/locomotion/onehanded/walk_forward_left");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_RIGHT = createId("humanoid/locomotion/onehanded/walk_forward_right");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_LEFT = createId("humanoid/locomotion/onehanded/walk_left");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_RIGHT = createId("humanoid/locomotion/onehanded/walk_right");
 
     public static void bootstrap(BootstrapContext<AnimationSequence> context) {
         context.register(
-            HUMANOID_IDLE,
+            HUMANOID_LOCOMOTION_COMMON_CROUCH,
             new AnimationSequence(
-                new AnimationNotifyTrack(
-                    List.of(
-                        new AnimationNotifyTrack.NotifyInTimeStamp(new LogNotify(LogicalSide.CLIENT), 30.82192F)
-                    ),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new LogNotifyState(LogicalSide.SERVER), TimeWindow.create(81.1233F, 102.7233F))
-                    )
-                ),
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/crouch")),
+                0.25F,
+                0.0F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_COMMON_CROUCH_WALK,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/crouch_walk")),
+                0.25F,
+                0.0F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_COMMON_FALL,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/fall")),
+                0.5F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_COMMON_IDLE,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/idle")),
                 0.25F,
                 0.25F,
                 true,
-                false
+                false,
+                1.0F,
+                0.0F
             )
         );
         context.register(
-            HUMANOID_IDLE_AIR,
+            HUMANOID_LOCOMOTION_COMMON_IDLE_AIR,
             new AnimationSequence(
                 AnimationNotifyTrack.EMPTY,
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/idle_air")),
                 0.25F,
                 0.25F,
                 true,
-                false
+                false,
+                1.0F,
+                0.0F
             )
         );
         context.register(
-            HUMANOID_IDLE_WATER,
+            HUMANOID_LOCOMOTION_COMMON_IDLE_WATER,
             new AnimationSequence(
                 AnimationNotifyTrack.EMPTY,
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/idle_water")),
                 0.25F,
                 0.25F,
                 true,
-                false
+                false,
+                1.0F,
+                0.0F
             )
         );
         context.register(
-            HUMANOID_RUN_FORWARD,
+            HUMANOID_LOCOMOTION_COMMON_JUMP,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/jump")),
+                0.05F,
+                0.05F,
+                false,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_COMMON_LAND,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land")),
+                0.1F,
+                0.1F,
+                false,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_COMMON_RUN_FORWARD,
             new AnimationSequence(
                 AnimationNotifyTrack.EMPTY,
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/run_forward")),
                 0.25F,
                 0.25F,
+                true,
                 false,
-                false
+                1.0F,
+                0.48F
             )
         );
         context.register(
-            HUMANOID_WALK_BACKWARD,
+            HUMANOID_LOCOMOTION_COMMON_STAND,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/stand")),
+                0.25F,
+                0.0F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD,
             new AnimationSequence(
                 AnimationNotifyTrack.EMPTY,
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/walk_backward")),
                 0.25F,
                 0.25F,
+                true,
                 false,
-                false
+                1.0F,
+                0.15F
             )
         );
         context.register(
-            HUMANOID_WALK_BACKWARD_LEFT,
+            HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_LEFT,
             new AnimationSequence(
                 AnimationNotifyTrack.EMPTY,
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/walk_backward_left")),
                 0.25F,
                 0.25F,
+                true,
                 false,
-                false
+                1.0F,
+                0.15F
             )
         );
         context.register(
-            HUMANOID_WALK_BACKWARD_RIGHT,
+            HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_RIGHT,
             new AnimationSequence(
                 AnimationNotifyTrack.EMPTY,
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/walk_backward_right")),
                 0.25F,
                 0.25F,
+                true,
                 false,
-                false
+                1.0F,
+                0.15F
             )
         );
         context.register(
-            HUMANOID_WALK_FORWARD,
+            HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD,
             new AnimationSequence(
                 AnimationNotifyTrack.EMPTY,
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/walk_forward")),
                 0.25F,
                 0.25F,
+                true,
                 false,
-                false
+                1.6667F,
+                0.91F
             )
         );
         context.register(
-            HUMANOID_WALK_FORWARD_LEFT,
-            new AnimationSequence(
-                AnimationNotifyTrack.EMPTY,
-                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/walk_forward_left")),
-                0.25F,
-                0.25F,
-                false,
-                false
-            )
-        );
-        context.register(
-            HUMANOID_WALK_FORWARD_RIGHT,
-            new AnimationSequence(
-                AnimationNotifyTrack.EMPTY,
-                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/walk_forward_right")),
-                0.25F,
-                0.25F,
-                false,
-                false
-            )
-        );
-        context.register(
-            HUMANOID_WALK_LEFT,
+            HUMANOID_LOCOMOTION_COMMON_WALK_LEFT,
             new AnimationSequence(
                 AnimationNotifyTrack.EMPTY,
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/walk_left")),
                 0.25F,
                 0.25F,
+                true,
                 false,
-                false
+                1.0F,
+                0.67F
             )
         );
         context.register(
-            HUMANOID_WALK_RIGHT,
+            HUMANOID_LOCOMOTION_COMMON_WALK_RIGHT,
             new AnimationSequence(
                 AnimationNotifyTrack.EMPTY,
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/walk_right")),
                 0.25F,
                 0.25F,
+                true,
                 false,
-                false
+                1.0F,
+                0.69F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_IDLE,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_IDLE_AIR,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle_air")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_IDLE_WATER,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/idle_water")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/run_forward")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD_LEFT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/run_forward_left")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD_RIGHT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/run_forward_right")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_backward")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD_LEFT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_backward_left")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD_RIGHT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_backward_right")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_forward")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_LEFT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_forward_left")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_RIGHT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_forward_right")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_WALK_LEFT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_left")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_ONEHANDED_WALK_RIGHT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/onehanded/walk_right")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                1.0F,
+                0.0F
             )
         );
     }
@@ -240,17 +504,35 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
     protected void buildAnimSequences(BiConsumer<ResourceKey<AnimationSequence>, AnimationSequence> writer) {
         HolderLookup.RegistryLookup<AnimationSequence> registryLookup = lookupProvider.join().lookupOrThrow(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY);
 
-        writer.accept(HUMANOID_IDLE, registryLookup.getOrThrow(HUMANOID_IDLE).value());
-        writer.accept(HUMANOID_IDLE_AIR, registryLookup.getOrThrow(HUMANOID_IDLE_AIR).value());
-        writer.accept(HUMANOID_IDLE_WATER, registryLookup.getOrThrow(HUMANOID_IDLE_WATER).value());
-        writer.accept(HUMANOID_RUN_FORWARD, registryLookup.getOrThrow(HUMANOID_RUN_FORWARD).value());
-        writer.accept(HUMANOID_WALK_BACKWARD, registryLookup.getOrThrow(HUMANOID_WALK_BACKWARD).value());
-        writer.accept(HUMANOID_WALK_BACKWARD_LEFT, registryLookup.getOrThrow(HUMANOID_WALK_BACKWARD_LEFT).value());
-        writer.accept(HUMANOID_WALK_BACKWARD_RIGHT, registryLookup.getOrThrow(HUMANOID_WALK_BACKWARD_RIGHT).value());
-        writer.accept(HUMANOID_WALK_FORWARD, registryLookup.getOrThrow(HUMANOID_WALK_FORWARD).value());
-        writer.accept(HUMANOID_WALK_FORWARD_LEFT, registryLookup.getOrThrow(HUMANOID_WALK_FORWARD_LEFT).value());
-        writer.accept(HUMANOID_WALK_FORWARD_RIGHT, registryLookup.getOrThrow(HUMANOID_WALK_FORWARD_RIGHT).value());
-        writer.accept(HUMANOID_WALK_LEFT, registryLookup.getOrThrow(HUMANOID_WALK_LEFT).value());
-        writer.accept(HUMANOID_WALK_RIGHT, registryLookup.getOrThrow(HUMANOID_WALK_RIGHT).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_CROUCH, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_CROUCH).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_CROUCH_WALK, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_CROUCH_WALK).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_FALL, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_FALL).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_IDLE, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_IDLE).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_IDLE_AIR, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_IDLE_AIR).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_IDLE_WATER, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_IDLE_WATER).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_JUMP, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_JUMP).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_LAND, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_LAND).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_RUN_FORWARD, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_RUN_FORWARD).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_STAND, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_STAND).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_LEFT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_LEFT).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_RIGHT).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_LEFT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_LEFT).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_RIGHT).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_IDLE, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_IDLE).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_IDLE_AIR, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_IDLE_AIR).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_IDLE_WATER, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_IDLE_WATER).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD_LEFT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD_LEFT).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_RUN_FORWARD_RIGHT).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD_LEFT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD_LEFT).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_BACKWARD_RIGHT).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_LEFT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_LEFT).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_RIGHT).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_LEFT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_LEFT).value());
+        writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_RIGHT).value());
     }
 }

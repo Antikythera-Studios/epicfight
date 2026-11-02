@@ -1,0 +1,15 @@
+{
+  "armature_physics": "epicfight:humanoid",
+  "parameters": {
+    "gravity_scale": 0.38368797,
+    "damping": 4.326241,
+    "bend_compliance": 0.0,
+    "max_distance": 1.6926714,
+    "collision_thickness": 0.014,
+    "friction": 0.6608187,
+    "self_collision": true,
+    "self_collision_thickness": 0.07324576,
+    "linear_inertia_scale": 0.23976608,
+    "angular_inertia_scale": 0.23684211
+  }
+}

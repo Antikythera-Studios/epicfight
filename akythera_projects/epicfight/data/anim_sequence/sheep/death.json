@@ -1,0 +1,15 @@
+{
+  "animation_path": "epicfight:sheep/death",
+  "fade_in_time": 0.1,
+  "fade_out_time": 0.1,
+  "loops": false,
+  "root_motion": false,
+  "preview_entity_type": "minecraft:sheep",
+  "notify_tracks": {
+    "tracks": [
+      {
+        "name": "Track1"
+      }
+    ]
+  }
+}

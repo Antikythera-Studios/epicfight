@@ -1,0 +1,60 @@
+{
+  "mesh": "akythera:empty",
+  "texture": "epicfight:textures/effect/test_trail.png",
+  "transform": {
+    "location": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "sca": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "armature": "akythera:empty",
+  "animator_script": {
+    "animator_type": "akythera:empty",
+    "type": "datapack"
+  },
+  "armature_transform": {
+    "location": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "sca": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "length": 2.0,
+  "interpolation": 2,
+  "trail_lifetime": 8,
+  "type": "trail",
+  "lifetime": 10,
+  "brightness": 1.0,
+  "color": [
+    204,
+    2,
+    0,
+    255
+  ],
+  "sprites": [
+    "minecraft:generic_0"
+  ]
+}

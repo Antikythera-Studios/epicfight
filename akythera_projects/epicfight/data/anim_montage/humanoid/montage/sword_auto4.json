@@ -1,0 +1,56 @@
+{
+  "animations": [
+    "epicfight:humanoid/montage/sword_auto4"
+  ],
+  "fade_in_time": 0.1,
+  "fade_out_time": 0.25,
+  "loops": false,
+  "root_motion": true,
+  "preview_entity_type": "minecraft:player",
+  "notify_tracks": {
+    "tracks": [
+      {
+        "name": "Track1",
+        "notifies": [
+          {
+            "notify": {
+              "sound": {
+                "sound_id": "epicfight:whoosh"
+              },
+              "type": "akythera:play_sound"
+            },
+            "time": 0.233
+          }
+        ]
+      },
+      {
+        "name": "Locks",
+        "notify_states": [
+          {
+            "notify_state": {
+              "type": "akythera:lock_movement",
+              "rotation": "face_view"
+            },
+            "from": 0.0,
+            "to": 0.247
+          },
+          {
+            "notify_state": {
+              "type": "akythera:lock_movement",
+              "rotation": "locked"
+            },
+            "from": 0.247,
+            "to": 0.467
+          },
+          {
+            "notify_state": {
+              "type": "akythera:cancel_on_move"
+            },
+            "from": 0.467,
+            "to": 0.8333
+          }
+        ]
+      }
+    ]
+  }
+}

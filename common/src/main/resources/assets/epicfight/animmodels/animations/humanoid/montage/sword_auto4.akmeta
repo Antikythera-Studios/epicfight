@@ -1,0 +1,7 @@
+{
+  "import_type": "common",
+  "ref_pose_timestamp": 0.0,
+  "vendor": "epicfight:humanoid",
+  "enable_mirroring": true,
+  "preview_entity_type": "minecraft:player"
+}

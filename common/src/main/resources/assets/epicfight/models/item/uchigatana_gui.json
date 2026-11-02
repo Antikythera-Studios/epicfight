@@ -1,0 +1,13 @@
+{
+	"parent": "item/generated",
+	"gui_light": "front",
+	"textures": {
+		"layer0": "epicfight:item/uchigatana_gui"
+	},
+	"display": {
+		"gui": {
+			"rotation": [0, 0, 0],
+			"translation": [0, 0.5, 0]
+		}
+	}
+}

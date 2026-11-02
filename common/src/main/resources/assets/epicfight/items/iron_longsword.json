@@ -1,0 +1,19 @@
+{
+	"model": {
+		"type": "minecraft:select",
+		"property": "minecraft:display_context",
+		"cases": [
+			{
+				"when": ["gui", "fixed", "ground"],
+				"model": {
+					"type": "minecraft:model",
+					"model": "epicfight:item/iron_longsword_gui"
+				}
+			}
+		],
+		"fallback": {
+			"type": "minecraft:model",
+			"model": "epicfight:item/iron_longsword"
+		}
+	}
+}

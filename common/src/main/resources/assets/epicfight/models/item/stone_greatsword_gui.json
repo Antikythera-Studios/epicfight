@@ -1,0 +1,7 @@
+{
+	"parent": "epicfight:item/greatsword",
+	"gui_light": "front",
+	"textures": {
+		"layer0": "epicfight:item/stone_greatsword_gui"
+	}
+}

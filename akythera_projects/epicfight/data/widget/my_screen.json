@@ -1,0 +1,120 @@
+{
+  "parent": "akythera:screen_ctor",
+  "components": {
+    "color_picker": {
+      "layout": {
+        "x1": "4%",
+        "x2": 284,
+        "y1": "6%",
+        "y2": 123,
+        "horizontal_anchor": "right_width",
+        "vertical_anchor": "bottom_height"
+      },
+      "color": [
+        84,
+        255,
+        0,
+        255
+      ],
+      "type": "akythera:color_picker"
+    },
+    "combo_box": {
+      "layout": {
+        "x1": "10%",
+        "x2": "11%",
+        "y1": "-38%",
+        "y2": 35,
+        "horizontal_anchor": "left_right",
+        "vertical_anchor": "center_height"
+      },
+      "max_rows": 9,
+      "type": "akythera:combo_box"
+    },
+    "vertical_container": {
+      "layout": {
+        "x1": 325,
+        "x2": 175,
+        "y1": 218,
+        "y2": 228
+      },
+      "components": {
+        "button": {
+          "layout": {
+            "x2": 100,
+            "y2": 20,
+            "horizontal_anchor": "center_width",
+            "vertical_anchor": "bottom_height"
+          },
+          "type": "akythera:button"
+        },
+        "button_1": {
+          "layout": {
+            "x2": 100,
+            "y2": 20,
+            "horizontal_anchor": "center_width",
+            "vertical_anchor": "bottom_height"
+          },
+          "type": "akythera:button"
+        },
+        "button_2": {
+          "layout": {
+            "x2": 147,
+            "y2": 43,
+            "horizontal_anchor": "center_width",
+            "vertical_anchor": "bottom_height"
+          },
+          "type": "akythera:button"
+        }
+      },
+      "type": "akythera:vertical_container"
+    }
+  },
+  "event_graph": {
+    "nodes": [
+      {
+        "id": 0,
+        "x": 60,
+        "y": 60,
+        "method": "construct",
+        "kind": "method_entry"
+      },
+      {
+        "id": 1,
+        "x": 60,
+        "y": 190,
+        "method": "mouseMoved",
+        "kind": "method_entry"
+      },
+      {
+        "id": 2,
+        "x": 60,
+        "y": 320,
+        "method": "onResized",
+        "kind": "method_entry"
+      },
+      {
+        "id": 3,
+        "x": 60,
+        "y": 450,
+        "method": "tick",
+        "kind": "method_entry"
+      },
+      {
+        "id": 4,
+        "x": 60,
+        "y": 580,
+        "method": "onClosed",
+        "kind": "method_entry"
+      },
+      {
+        "id": 5,
+        "x": 60,
+        "y": 710,
+        "method": "onOpened",
+        "kind": "method_entry"
+      }
+    ]
+  },
+  "canvas_width": 833,
+  "canvas_height": 517
+}

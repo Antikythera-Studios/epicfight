@@ -1,0 +1,15 @@
+{
+  "animation_path": "epicfight:humanoid/locomotion/onehanded/run_forward_left",
+  "fade_in_time": 0.25,
+  "fade_out_time": 0.25,
+  "loops": true,
+  "root_motion": false,
+  "preview_entity_type": "minecraft:player",
+  "notify_tracks": {
+    "tracks": [
+      {
+        "name": "Track1"
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "animation_path": "epicfight:sheep/eat",
+  "fade_in_time": 0.3,
+  "fade_out_time": 0.3,
+  "loops": false,
+  "root_motion": false,
+  "rate_scale": 2.5,
+  "preview_entity_type": "minecraft:sheep",
+  "notify_tracks": {
+    "tracks": [
+      {
+        "name": "Track1"
+      }
+    ]
+  }
+}

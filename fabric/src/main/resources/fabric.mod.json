@@ -18,6 +18,11 @@
         "value": "guivnf.epicfight.fabric.EpicFightFabric"
       }
     ],
+    "client": [
+      {
+        "value": "guivnf.epicfight.fabric.client.EpicFightFabricClient"
+      }
+    ],
     "fabric-datagen": [
       {
         "value": "guivnf.epicfight.fabric.EpicFightFabricDataGen"

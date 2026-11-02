@@ -1,0 +1,7 @@
+{
+	"parent": "epicfight:item/longsword",
+	"gui_light": "front",
+	"textures": {
+		"layer0": "epicfight:item/iron_longsword_gui"
+	}
+}
