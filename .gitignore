@@ -30,3 +30,4 @@ repo
 .DS_STORE
 local-maven/*
 /logs
+/src/test

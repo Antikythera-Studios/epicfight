@@ -99,11 +99,7 @@ public class SkillContainer {
         this.skillDataManager.clearData();
 
         if (skill != null) {
-            Set<Holder<SkillDataKey<?>>> datakeys = SkillDataKeyCallbacks.getSkillDataKeyMap().get(skill.getClass());
-
-            if (datakeys != null) {
-                datakeys.forEach(this.skillDataManager::registerData);
-            }
+            SkillDataKeyCallbacks.getSkillDataKeys(skill.getClass()).forEach(this.skillDataManager::registerData);
 
             skill.onInitiate(this, this.executor.getEventListener());
 
@@ -153,11 +149,9 @@ public class SkillContainer {
         this.skillDataManager.clearData();
 
         if (skill != null) {
-            Set<Holder<SkillDataKey<?>>> datakeys = SkillDataKeyCallbacks.getSkillDataKeyMap().get(skill.getClass());
-
-            if (datakeys != null && !datakeys.isEmpty()) {
-                datakeys.stream().filter(holder -> holder.value().syncronizeToRemotePlayers()).forEach(this.skillDataManager::registerData);
-            }
+            SkillDataKeyCallbacks.getSkillDataKeys(skill.getClass()).stream()
+                .filter(holder -> holder.value().syncronizeToRemotePlayers())
+                .forEach(this.skillDataManager::registerData);
 
             skill.onInitiateClient(this);
             this.executor.getPlayerSkills().setSkillToContainer(skill, this);

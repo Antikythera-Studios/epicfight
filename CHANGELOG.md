@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resource reload listener failures being swallowed before the preparation barrier
 - Mojang-mapped `InteractionHand` type names failing to resolve from animation JSON in production Fabric
 - Third-party looping player animations overriding Epic Fight battle-mode stances
+- Addon skill data keys missing for skills bound after the registry bake pass (e.g. EpicFight Nightfall), which made `SkillDataManager.getDataValue` return null and crash "Ticking player" listeners; the class→key map is now derived on first access from the per-add data and invalidated when late keys arrive
 
 ### For Devs
 - `AnimationManager.AnimationRegistryEvent` is a plain class on Fabric; when `neoforge_compat` is present it is posted on `NeoForgeCompat.MOD_BUS` via `postAny`, so listeners must match the concrete event type rather than `Event` supertypes
