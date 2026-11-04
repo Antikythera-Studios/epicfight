@@ -1,0 +1,13 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "package": "yesman.epicfight.compat.spatialgui.mixin",
+  "plugin": "yesman.epicfight.compat.spatialgui.SpatialGUIMixinPlugin",
+  "client": [
+    "MixinLocalPlayerPatch"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

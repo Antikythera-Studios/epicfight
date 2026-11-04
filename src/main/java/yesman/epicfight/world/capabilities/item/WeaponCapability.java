@@ -93,7 +93,7 @@ public class WeaponCapability extends CapabilityItem {
 		this.weaponCombinationPredicator = builder.weaponCombinationPredicator;
 		this.passiveSkill = builder.passiveSkill;
 		this.smashingSound = builder.swingSound.value();
-		this.hitParticle = builder.hitParticle.value() instanceof HitParticleType trueParticle ? trueParticle : EpicFightParticles.HIT_BLUNT.value();
+		this.hitParticle = builder.hitParticle.value() instanceof HitParticleType trueParticle ? trueParticle : (HitParticleType) EpicFightParticles.HIT_BLUNT.value();
 		this.hitSound = builder.hitSound.value();
 		this.canBePlacedOffhand = builder.canBePlacedOffhand;
 		this.comboCancel = builder.comboCancel;

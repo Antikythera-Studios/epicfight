@@ -38,7 +38,7 @@ public class ComboBox<T> extends AbstractWidget implements DataBindingComponent<
 		this.maxRows = Math.min(maxRows, items.size());
 		
 		this.responder = responder;
-		this.comboItemList = new ComboItemList(parent.getMinecraft(), this.maxRows, 15);
+		this.comboItemList = new ComboItemList(Minecraft.getInstance(), this.maxRows, 15);
 		
 		for (T item : items) {
 			this.comboItemList.addEntry(item, displayStringMapper.apply(item));

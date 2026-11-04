@@ -1,4 +1,5 @@
 package yesman.epicfight.client.renderer.patched.entity;
+import yesman.epicfight.EpicFight;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -28,6 +29,7 @@ import org.joml.Vector4f;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
 import yesman.epicfight.api.client.event.types.registry.RegisterPatchedRenderersEvent;
 import yesman.epicfight.api.client.event.types.render.PrepareModelEvent;
+import yesman.epicfight.api.extension.EntityExtension;
 import yesman.epicfight.api.client.model.SkinnedMesh;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.MathUtils;
@@ -64,7 +66,7 @@ public abstract class PatchedLivingEntityRenderer<E extends LivingEntity, T exte
 				JsonElement jsonelement = GsonHelper.fromJson(new GsonBuilder().create(), reader, JsonElement.class);
 				layers.add(Pair.of(entry.getKey(), jsonelement));
 			} catch (IllegalArgumentException | IOException | JsonParseException jsonparseexception) {
-				EpicFightMod.LOGGER.error("Failed to parse layer file {} for {}", entry.getKey(), type);
+				EpicFight.LOGGER.error("Failed to parse layer file {} for {}", entry.getKey(), type);
 				jsonparseexception.printStackTrace();
 			} finally {
 				try {
@@ -115,14 +117,18 @@ public abstract class PatchedLivingEntityRenderer<E extends LivingEntity, T exte
 	@Override
 	public void render(E entity, T entitypatch, R renderer, MultiBufferSource buffer, PoseStack poseStack, int packedLight, float partialTicks) {
 		super.render(entity, entitypatch, renderer, buffer, poseStack, packedLight, partialTicks);
-		
+
 		MixinLivingEntityRenderer livingEntityRendererAccessor = (MixinLivingEntityRenderer)renderer;
-		
+
 		boolean isVisible = livingEntityRendererAccessor.invokeIsBodyVisible(entity);
 		boolean isVisibleToPlayer = !isVisible && !entity.isInvisibleTo(Minecraft.getInstance().player);
 		boolean isGlowing = Minecraft.getInstance().shouldEntityAppearGlowing(entity);
 		RenderType renderType = livingEntityRendererAccessor.invokeGetRenderType(entity, isVisible, isVisibleToPlayer, isGlowing);
 		Armature armature = entitypatch.getArmature();
+		if (armature == null) {
+			yesman.epicfight.EpicFight.LOGGER.warn("[EpicFight] {} armature is null — cannot render Epic Fight model", entity.getType());
+			return;
+		}
 		poseStack.pushPose();
 		this.mulPoseStack(poseStack, armature, entity, entitypatch, partialTicks);
 		this.prepareVanillaModel(entity, renderer.getModel(), renderer, partialTicks);
@@ -167,7 +173,7 @@ public abstract class PatchedLivingEntityRenderer<E extends LivingEntity, T exte
 	}
 	
 	protected void prepareVanillaModel(E entity, M model, LivingEntityRenderer<E, M> renderer, float partialTicks) {
-		boolean shouldSit = entity.isPassenger() && (entity.getVehicle() != null && entity.getVehicle().shouldRiderSit());
+		boolean shouldSit = entity.isPassenger() && entity.getVehicle() != null && EntityExtension.of(entity.getVehicle()).epicfight$shouldRiderSit();
 		model.riding = shouldSit;
 		model.young = entity.isBaby();
 		float f = Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);

@@ -1,4 +1,5 @@
 package yesman.epicfight.api.client.input.controller;
+import yesman.epicfight.EpicFight;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ public final class EpicFightControllerModProvider {
     /// Logs a warning if another mod has already registered.
     public static void set(@NotNull String registrantModId, @NotNull IEpicFightControllerMod modInstance) {
         if (overriddenByOtherMod) {
-            EpicFightMod.LOGGER.warn(
+            EpicFight.LOGGER.warn(
                     "Mod '{}' is overriding the Epic Fight controller implementation, which was already set by another mod. "
                             + "Only the last registered implementation will be used. "
                             + "This may occur if multiple controller mods are installed.",
@@ -37,8 +38,8 @@ public final class EpicFightControllerModProvider {
         }
         EpicFightControllerModProvider.instance = modInstance;
 
-        if (registrantModId.equals(EpicFightMod.MODID)) {
-            EpicFightMod.LOGGER.info(
+        if (registrantModId.equals(EpicFight.MODID)) {
+            EpicFight.LOGGER.info(
                     "Epic Fight detected and registered supported controller mod: '{}'.",
                     modInstance.getModName()
             );

@@ -1,4 +1,5 @@
 package yesman.epicfight.compat.controlify;
+import yesman.epicfight.EpicFight;
 
 import dev.isxander.controlify.api.ControlifyApi;
 import dev.isxander.controlify.api.bind.ControlifyBindApi;
@@ -42,7 +43,6 @@ import yesman.epicfight.compat.controlify.screenop.EpicFightSettingScreenProcess
 import yesman.epicfight.compat.controlify.screenop.SkillBookScreenProcessor;
 import yesman.epicfight.compat.controlify.screenop.SkillEditScreenProcessor;
 import yesman.epicfight.generated.LangKeys;
-import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
@@ -55,11 +55,9 @@ import java.util.Optional;
 // EpicFightItems.UCHIGATANA.get() in onControlifyPreInit.
 @ApiStatus.Internal
 public class EpicFightControlifyEntrypoint implements ControlifyEntrypoint {
-    @Override
     public void onControllersDiscovered(ControlifyApi controlify) {
     }
 
-    @Override
     public void onControlifyInit(InitContext context) {
         // It's best to call this method in onControlifyInit,
         // ensuring that Epic Fight can use Controlify input bindings
@@ -67,7 +65,6 @@ public class EpicFightControlifyEntrypoint implements ControlifyEntrypoint {
         registerModIntegration();
     }
 
-    @Override
     public void onControlifyPreInit(PreInitContext context) {
         final ControlifyBindApi registrar = ControlifyBindApi.get();
         registerCustomRadialIcons();
@@ -138,8 +135,8 @@ public class EpicFightControlifyEntrypoint implements ControlifyEntrypoint {
     }
 
     private enum EpicFightRadialIcons {
-        UCHIGATANA(EpicFightMod.identifier("textures/item/uchigatana_gui.png")),
-        SKILL_BOOK(EpicFightMod.identifier("textures/item/skillbook.png"));
+        UCHIGATANA(EpicFight.identifier("textures/item/uchigatana_gui.png")),
+        SKILL_BOOK(EpicFight.identifier("textures/item/skillbook.png"));
 
         private final @NotNull ResourceLocation id;
 
@@ -269,7 +266,7 @@ public class EpicFightControlifyEntrypoint implements ControlifyEntrypoint {
                     builder -> applyCommonBindingProperties(action, builder)
                             .category(guiCategory)
                             .allowedContexts(EpicFightControlifyBindContexts.IN_GAME)
-                            .radialCandidate(RadialIcons.getItem(Items.REDSTONE))
+                            .radialCandidate(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(Items.REDSTONE))
             );
             case OPEN_EMOTE_WHEEL_SCREEN -> openEmoteWheelScreen = registrar.registerBinding(
                     builder -> applyCommonBindingProperties(action, builder)
@@ -318,14 +315,19 @@ public class EpicFightControlifyEntrypoint implements ControlifyEntrypoint {
             case OPEN_EMOTE_WHEEL_SCREEN -> "open_emote_wheel_screen";
             case SWITCH_VANILLA_MODEL_DEBUGGING -> "switch_vanilla_mode_debugging";
         };
-        return EpicFightMod.identifier(path);
+        return EpicFight.identifier(path);
     }
 
     private static void registerModIntegration() {
-        EpicFightControllerModProvider.set(EpicFightMod.MODID, new EpicFightControlifyControllerMod());
+        EpicFightControllerModProvider.set(EpicFight.MODID, new EpicFightControlifyControllerMod());
     }
 
     private static void registerEvents() {
+        // Registers a look-input modifier so Epic Fight's camera can take over
+        // the player's look input when in Epic Fight combat mode.
+        // Note: Controlify is currently disabled as a dependency (malformed access widener),
+        // so the stub's register() is a no-op. When Controlify is re-enabled, this will
+        // function identically to the NeoForge version.
         ControlifyEvents.LOOK_INPUT_MODIFIER.register(event -> {
             // Workaround: Since these values are normalized
             // (e.g., x = -10 with default sensitivity or -20 when sensitivity is maxed),
@@ -345,14 +347,14 @@ public class EpicFightControlifyEntrypoint implements ControlifyEntrypoint {
 
     private static void registerGuides(GuideDomainRegistry<InGameCtx> inGameRegistry, GuideDomainRegistry<ContainerCtx> containerRegistry) {
         // Facts are registered here; rules in "assets/controlify/guides/in_game.json" reference these facts.
-        inGameRegistry.registerFact(new Fact<>(EpicFightMod.identifier("can_perform_dodge"), ctx -> {
-            final LocalPlayerPatch localPlayerPatch = EpicFightCapabilities.getCachedLocalPlayerPatch();
+        inGameRegistry.registerFact(new Fact<>(EpicFight.identifier("can_perform_dodge"), ctx -> {
+            final LocalPlayerPatch localPlayerPatch = EpicFightCapabilities.ClientModule.getCachedLocalPlayerPatch();
             if (localPlayerPatch == null || !localPlayerPatch.isEpicFightMode()) {
                 return false;
             }
             return localPlayerPatch.getPlayerSkills().hasCategory(SkillCategories.DODGE);
         }));
-        containerRegistry.registerFact(new Fact<>(EpicFightMod.identifier("can_show_weapon_innate_skill_tooltip"), ctx -> {
+        containerRegistry.registerFact(new Fact<>(EpicFight.identifier("can_show_weapon_innate_skill_tooltip"), ctx -> {
             final Slot hoveredSlot = ctx.hoveredSlot();
             if (hoveredSlot == null || !ctx.hoveredSlot().hasItem()) {
                 return false;
@@ -415,7 +417,7 @@ public class EpicFightControlifyEntrypoint implements ControlifyEntrypoint {
                     "The method IEpicFightControllerMod#getInputState must not be called when the input mode is not %s",
                     InputMode.CONTROLLER.name()
             );
-            EpicFightMod.LOGGER.error(message);
+            EpicFight.LOGGER.error(message);
             throw new IllegalStateException(message);
         }
 

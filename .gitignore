@@ -28,3 +28,6 @@ run-data
 repo
 .kotlin
 .DS_STORE
+local-maven/*
+/logs
+/src/test

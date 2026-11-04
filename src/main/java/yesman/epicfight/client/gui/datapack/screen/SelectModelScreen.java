@@ -33,8 +33,8 @@ public class SelectModelScreen extends Screen {
 		super(Component.translatable("gui.epicfight.select.models"));
 		
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
-		this.font = parentScreen.getMinecraft().font;
+		this.minecraft = Minecraft.getInstance();
+		this.font = Minecraft.getInstance().font;
 		
 		this.modelPreviewer = new ModelPreviewer(10, 20, 36, 60, null, null, null, null);
 		this.modelList = new ModelList(this.minecraft, this.width, this.height - 52, 36, 21);

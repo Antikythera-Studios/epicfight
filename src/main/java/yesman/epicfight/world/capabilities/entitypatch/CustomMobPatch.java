@@ -2,10 +2,13 @@ package yesman.epicfight.world.capabilities.entitypatch;
 
 import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotion;
@@ -49,13 +52,25 @@ public class CustomMobPatch<T extends PathfinderMob> extends MobPatch<T> {
 	}
 	
 	public void initAttributes() {
-		this.original.getAttribute(EpicFightAttributes.MAX_STRIKES).setBaseValue(this.provider.getAttributeValues().getDouble(EpicFightAttributes.MAX_STRIKES));
-		this.original.getAttribute(EpicFightAttributes.ARMOR_NEGATION).setBaseValue(this.provider.getAttributeValues().getDouble(EpicFightAttributes.ARMOR_NEGATION));
-		this.original.getAttribute(EpicFightAttributes.IMPACT).setBaseValue(this.provider.getAttributeValues().getDouble(EpicFightAttributes.IMPACT));
-		this.original.getAttribute(EpicFightAttributes.STUN_ARMOR).setBaseValue(this.provider.getAttributeValues().getDouble(EpicFightAttributes.STUN_ARMOR));
-		
+		this.setBaseValueIfPresent(EpicFightAttributes.MAX_STRIKES);
+		this.setBaseValueIfPresent(EpicFightAttributes.ARMOR_NEGATION);
+		this.setBaseValueIfPresent(EpicFightAttributes.IMPACT);
+		this.setBaseValueIfPresent(EpicFightAttributes.STUN_ARMOR);
+
 		if (this.provider.getAttributeValues().containsKey(Attributes.ATTACK_DAMAGE)) {
-			this.original.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(this.provider.getAttributeValues().getDouble(Attributes.ATTACK_DAMAGE));
+			AttributeInstance attackDamage = this.original.getAttribute(Attributes.ATTACK_DAMAGE);
+
+			if (attackDamage != null) {
+				attackDamage.setBaseValue(this.provider.getAttributeValues().getDouble(Attributes.ATTACK_DAMAGE));
+			}
+		}
+	}
+
+	private void setBaseValueIfPresent(Holder<Attribute> attribute) {
+		AttributeInstance instance = this.original.getAttribute(attribute);
+
+		if (instance != null) {
+			instance.setBaseValue(this.provider.getAttributeValues().getDouble(attribute));
 		}
 	}
 	

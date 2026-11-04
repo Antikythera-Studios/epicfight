@@ -1,4 +1,5 @@
 package yesman.epicfight.world.capabilities.entitypatch.boss;
+import yesman.epicfight.platform.fabric.event.EntityAttributeModificationEvent;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
@@ -22,9 +23,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import yesman.epicfight.platform.neoforged.event.EventHooks;
+import yesman.epicfight.api.extension.BlockStateExtension;
+
+
+import yesman.epicfight.registry.deferred_shim.DeferredHolderShim;
 import org.joml.Quaternionf;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.Animator;
@@ -68,13 +71,13 @@ public class WitherPatch extends MobPatch<WitherBoss> implements BossPatch<Withe
 		super(entity);
 	}
 
-	private static final List<DeferredHolder<ExpandedEntityDataAccessor<?>, ExpandedEntityDataAccessor<Vec3>>> DATA_LASER_TARGET_LOCATION_LIST = ImmutableList.of(
+	private static final List<DeferredHolderShim<ExpandedEntityDataAccessor<?>, ExpandedEntityDataAccessor<Vec3>>> DATA_LASER_TARGET_LOCATION_LIST = ImmutableList.of(
 		  EpicFightExpandedEntityDataAccessors.WITHER_HEAD_LEFT_TARGET_LOCATION
 		, EpicFightExpandedEntityDataAccessors.WITHER_HEAD_CENTER_TARGET_LOCATION
 		, EpicFightExpandedEntityDataAccessors.WITHER_HEAD_RIGHT_TARGET_LOCATION
 	);
 	
-	private static final List<DeferredHolder<ExpandedEntityDataAccessor<?>, ExpandedEntityDataAccessor<Integer>>> DATA_TARGET_ENTITY_ID_LIST = ImmutableList.of(
+	private static final List<DeferredHolderShim<ExpandedEntityDataAccessor<?>, ExpandedEntityDataAccessor<Integer>>> DATA_TARGET_ENTITY_ID_LIST = ImmutableList.of(
 		  EpicFightExpandedEntityDataAccessors.WITHER_HEAD_LEFT_TARGET_ENTITY_ID
 		, EpicFightExpandedEntityDataAccessors.WITHER_HEAD_CENTER_TARGET_ENTITY_ID
 		, EpicFightExpandedEntityDataAccessors.WITHER_HEAD_RIGHT_TARGET_ENTITY_ID
@@ -225,7 +228,7 @@ public class WitherPatch extends MobPatch<WitherBoss> implements BossPatch<Withe
 			}
 		}
 		
-		if (this.animator.getPlayerFor(null).getAnimation().equals(Animations.WITHER_CHARGE) && this.getEntityState().attacking() && EventHooks.canEntityGrief(this.original.level(), this.original)) {
+		if (this.animator.getPlayerFor(null).getAnimation().equals(Animations.WITHER_CHARGE) && this.getEntityState().attacking() && this.original.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
 			int x = Mth.floor(this.original.getX());
 			int y = Mth.floor(this.original.getY());
 			int z = Mth.floor(this.original.getZ());
@@ -240,7 +243,7 @@ public class WitherPatch extends MobPatch<WitherBoss> implements BossPatch<Withe
 						BlockPos blockpos = new BlockPos(l2, l, i1);
 						BlockState blockstate = this.original.level().getBlockState(blockpos);
 						
-						if (blockstate.canEntityDestroy(this.original.level(), blockpos, this.original) && EventHooks.onEntityDestroyBlock(this.original, blockpos, blockstate)) {
+						if (BlockStateExtension.of(blockstate).epicfight$canEntityDestroy(this.original.level(), blockpos, this.original) && EventHooks.onEntityDestroyBlock(this.original, blockpos, blockstate)) {
 							flag = this.original.level().destroyBlock(blockpos, true, this.original) || flag;
 						}
 					}

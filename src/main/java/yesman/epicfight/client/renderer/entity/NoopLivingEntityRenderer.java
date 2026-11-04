@@ -8,8 +8,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
+import yesman.epicfight.api.client.event.types.render.RenderLivingPreEvent;
+
+
 
 public class NoopLivingEntityRenderer<T extends LivingEntity> extends LivingEntityRenderer<T, EntityModel<T>> {
 	public NoopLivingEntityRenderer(Context context, float shadowRadius) {
@@ -18,7 +20,7 @@ public class NoopLivingEntityRenderer<T extends LivingEntity> extends LivingEnti
 	
 	@Override
 	public void render(LivingEntity livingEntity, float yRot, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
-		NeoForge.EVENT_BUS.post(new RenderLivingEvent.Pre<T, EntityModel<T>>(livingEntity, this, partialTicks, poseStack, multiBufferSource, packedLight));
+		EpicFightClientEventHooks.Render.RENDER_LIVING_PRE.post(new RenderLivingPreEvent(livingEntity, this, partialTicks, poseStack, multiBufferSource, packedLight));
 	}
 
 	@Override

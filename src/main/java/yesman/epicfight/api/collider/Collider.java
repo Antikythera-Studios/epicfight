@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Pose;
@@ -90,8 +90,8 @@ public abstract class Collider {
 	
 	public List<Entity> getCollideEntities(Entity entity) {
 		List<Entity> list = entity.level().getEntities(entity, this.getHitboxAABB(), (e) -> {
-			if (e instanceof PartEntity<?> partEntity) {
-				if (partEntity.getParent().is(entity)) {
+			if (e instanceof net.minecraft.world.entity.boss.EnderDragonPart enderDragonPart) {
+				if (enderDragonPart.parentMob.is(entity)) {
 					return false;
 				}
 			}

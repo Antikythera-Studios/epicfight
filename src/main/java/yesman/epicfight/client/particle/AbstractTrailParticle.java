@@ -36,7 +36,7 @@ public abstract class AbstractTrailParticle<T extends EntityPatch<?>> extends Te
 		
 		this.hasPhysics = false;
 		this.owner = entitypatch;
-		this.trailEdges = Lists.newLinkedList();
+		this.trailEdges = Lists.newArrayList();
 		this.trailInfo = trailInfo;
 		
 		Vec3 entityPos = entitypatch.getOriginal().position();
@@ -58,7 +58,7 @@ public abstract class AbstractTrailParticle<T extends EntityPatch<?>> extends Te
 		super(null, 0, 0, 0);
 		
 		this.owner = entitypatch;
-		this.trailEdges = Lists.newLinkedList();
+		this.trailEdges = Lists.newArrayList();
 		this.trailInfo = trailInfo;
 		this.rCol = Math.max(this.trailInfo.rCol(), 0.0F);
 		this.gCol = Math.max(this.trailInfo.gCol(), 0.0F);
@@ -73,7 +73,6 @@ public abstract class AbstractTrailParticle<T extends EntityPatch<?>> extends Te
 	
 	protected abstract void createNextCurve();
 	
-	@Override
 	public void tick() {
 		if (this.shouldRemove) {
 			if (this.age >= this.lifetime) {
@@ -103,7 +102,6 @@ public abstract class AbstractTrailParticle<T extends EntityPatch<?>> extends Te
 		this.createNextCurve();
 	}
 	
-	@Override
 	public void render(VertexConsumer vertexConsumer, Camera camera, float partialTick) {
 		if (this.trailEdges.isEmpty()) {
 			return;
@@ -133,13 +131,18 @@ public abstract class AbstractTrailParticle<T extends EntityPatch<?>> extends Te
 		float from = -partialStartEdge;
 		float to = -partialStartEdge + interval;
 		
+		Vector4f pos1 = new Vector4f();
+		Vector4f pos2 = new Vector4f();
+		Vector4f pos3 = new Vector4f();
+		Vector4f pos4 = new Vector4f();
+
 		for (int i = (int)(startEdge); i < (int)endEdge + 1; i++) {
 			TrailEdge e1 = this.trailEdges.get(i);
 			TrailEdge e2 = this.trailEdges.get(i + 1);
-			Vector4f pos1 = new Vector4f((float)e1.start.x, (float)e1.start.y, (float)e1.start.z, 1.0F);
-			Vector4f pos2 = new Vector4f((float)e1.end.x, (float)e1.end.y, (float)e1.end.z, 1.0F);
-			Vector4f pos3 = new Vector4f((float)e2.end.x, (float)e2.end.y, (float)e2.end.z, 1.0F);
-			Vector4f pos4 = new Vector4f((float)e2.start.x, (float)e2.start.y, (float)e2.start.z, 1.0F);
+			pos1.set((float)e1.start.x, (float)e1.start.y, (float)e1.start.z, 1.0F);
+			pos2.set((float)e1.end.x, (float)e1.end.y, (float)e1.end.z, 1.0F);
+			pos3.set((float)e2.end.x, (float)e2.end.y, (float)e2.end.z, 1.0F);
+			pos4.set((float)e2.start.x, (float)e2.start.y, (float)e2.start.z, 1.0F);
 			
 			pos1.mul(matrix4f);
 			pos2.mul(matrix4f);
@@ -159,13 +162,11 @@ public abstract class AbstractTrailParticle<T extends EntityPatch<?>> extends Te
 		}
 	}
 	
-	@Override
 	public AABB getRenderBoundingBox(float partialTicks) {
-        return AABB.INFINITE;
+        return new AABB(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
 	
-	@Override
-	public ParticleRenderType getRenderType() {
+		public ParticleRenderType getRenderType() {
 		return EpicFightParticleRenderTypes.TRAIL_EFFECT.apply(this.trailInfo.texturePath());
 	}
 	
@@ -185,7 +186,6 @@ public abstract class AbstractTrailParticle<T extends EntityPatch<?>> extends Te
 	}
 	
 	@SuppressWarnings("deprecation")
-	@Override
 	protected int getLightColor(float pPartialTick) {
 		BlockPos blockpos = BlockPos.containing(this.x, this.y, this.z);
 		return this.level.hasChunkAt(blockpos) ? this.getLightColor(this.level, this.level.getBlockState(blockpos), blockpos) : 0;
@@ -204,7 +204,7 @@ public abstract class AbstractTrailParticle<T extends EntityPatch<?>> extends Te
 		} else {
 			int i = Mth.clamp(Math.max(this.trailInfo.skyLight(), level.getBrightness(LightLayer.SKY, pos)), 0, 15);
 			int j = Mth.clamp(Math.max(this.trailInfo.blockLight(), level.getBrightness(LightLayer.BLOCK, pos)), 0, 15);
-			int k = state.getLightEmission(level, pos);
+			int k = state.getLightEmission();
 			
 			if (j < k) {
 				j = k;

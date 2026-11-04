@@ -30,7 +30,7 @@ public abstract class PassiveSkill extends Skill {
 	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y, float partialTick) {
 		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		String remainTime = String.format("%.0f", container.getMaxResource() - container.getResource());
-		guiGraphics.drawString(gui.getFont(), remainTime, x + 12 - 4 * remainTime.length(), (y+6), 16777215, true);
+		guiGraphics.drawString(gui.getFont(), remainTime, (int)(x + 12 - 4 * remainTime.length()), (int)(y+6), 16777215, true);
 	}
 
 	@Override

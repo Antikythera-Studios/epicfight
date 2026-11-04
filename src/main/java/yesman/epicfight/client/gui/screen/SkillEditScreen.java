@@ -16,7 +16,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.api.data.reloader.SkillReloadListener;
 import yesman.epicfight.generated.LangKeys;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.client.CPChangeSkill;
 import yesman.epicfight.skill.Skill;
@@ -31,11 +31,11 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class SkillEditScreen extends Screen {
-    public static final ResourceLocation EMPTY_SKILL_SLOT_ICON = EpicFightMod.identifier("textures/gui/empty.png");
-    public static final ResourceLocation SCROLL_ARROW_UP = EpicFightMod.identifier("textures/gui/scroll_arrow_up.png");
-    public static final ResourceLocation SCROLL_ARROW_DOWN = EpicFightMod.identifier("textures/gui/scroll_arrow_down.png");
+    public static final ResourceLocation EMPTY_SKILL_SLOT_ICON = EpicFight.identifier("textures/gui/empty.png");
+    public static final ResourceLocation SCROLL_ARROW_UP = EpicFight.identifier("textures/gui/scroll_arrow_up.png");
+    public static final ResourceLocation SCROLL_ARROW_DOWN = EpicFight.identifier("textures/gui/scroll_arrow_down.png");
 
-    private static final ResourceLocation SKILL_EDIT_UI = EpicFightMod.identifier("textures/gui/screen/skill_edit.png");
+    private static final ResourceLocation SKILL_EDIT_UI = EpicFight.identifier("textures/gui/screen/skill_edit.png");
     private static final MutableComponent NO_SKILLS = Component.translatable(LangKeys.GUI_MESSAGE_SKILL_EDIT_NO_SKILLS);
 
     private static final int MAX_SKILL_OPTIONS_ROWS = 6;

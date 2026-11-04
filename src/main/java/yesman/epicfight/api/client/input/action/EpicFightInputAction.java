@@ -1,4 +1,5 @@
 package yesman.epicfight.api.client.input.action;
+import net.minecraft.client.Minecraft;
 
 import net.minecraft.client.KeyMapping;
 import org.jetbrains.annotations.NotNull;

@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+
 import yesman.epicfight.client.renderer.EpicFightRenderTypes;
 import yesman.epicfight.client.renderer.FakeBlockRenderer;
 
@@ -64,7 +64,7 @@ public class SodiumFakeBlockRenderer implements FakeBlockRenderer {
 		int originZ = (bp.getZ() & 15);
 		
 		for (Direction d : DIRECTIONS) {
-			List<BakedQuad> culledFaces = model.getQuads(bs, d, randomsource, ModelData.EMPTY, null);
+			List<BakedQuad> culledFaces = model.getQuads(bs, d, randomsource);
 			mutablepos.setWithOffset(bp, d);
 			
 			if (Block.shouldRenderFace(bs, level, bp, d, mutablepos)) {
@@ -72,7 +72,7 @@ public class SodiumFakeBlockRenderer implements FakeBlockRenderer {
 			}
 		}
 		
-		this.renderPreviewBlocks(buffer, level, model.getQuads(bs, null, randomsource, ModelData.EMPTY, null), originX, originY, originZ, offset, r, g, b, a);
+		this.renderPreviewBlocks(buffer, level, model.getQuads(bs, null, randomsource), originX, originY, originZ, offset, r, g, b, a);
 		
 		RenderSystem.getModelViewStack().pushMatrix();
 		RenderSystem.getModelViewStack().mul(poseStack.last().pose());
@@ -111,7 +111,7 @@ public class SodiumFakeBlockRenderer implements FakeBlockRenderer {
 			putBulkDataWithoutPose(consumer, bakedquad, originX, originY, originZ, offset, new float[] {f, f, f, f}, r, g, b, a, new int[] {16777215, 16777215, 16777215, 16777215}, OverlayTexture.NO_OVERLAY, false);
 		}
 	}
-	
+
 	private static void putBulkDataWithoutPose(VertexConsumer vertexConsumer, BakedQuad pQuad, int originX, int originY, int originZ, Vec3 offset, float[] pColorMuls, float pRed, float pGreen, float pBlue, float alpha, int[] pCombinedLights, int pCombinedOverlay, boolean pMulColor) {
 		float[] afloat = new float[] { pColorMuls[0], pColorMuls[1], pColorMuls[2], pColorMuls[3] };
 		int[] aint1 = pQuad.getVertices();
@@ -153,10 +153,10 @@ public class SodiumFakeBlockRenderer implements FakeBlockRenderer {
 					f5 = afloat[k] * pBlue;
 				}
 
-				int l = vertexConsumer.applyBakedLighting(pCombinedLights[k], bytebuffer);
+				int l = applyBakedLighting(pCombinedLights[k], bytebuffer);
 				float f9 = bytebuffer.getFloat(16);
 				float f10 = bytebuffer.getFloat(20);
-				vertexConsumer.applyBakedNormals(vector3f, bytebuffer, new Matrix3f());
+				applyBakedNormals(vector3f, bytebuffer, new Matrix3f());
 				float vertexAlpha = pMulColor ? alpha * (float) (bytebuffer.get(15) & 255) / 255.0F : alpha;
 				
 				vertexConsumer.addVertex(outX, outY, outZ)
@@ -168,13 +168,43 @@ public class SodiumFakeBlockRenderer implements FakeBlockRenderer {
 			}
 		}
 	}
-	
+
+	/**
+	 * Code copy from {@link IForgeVertexConsumer#applyBakedLighting}
+	 */
+	static int applyBakedLighting(int packedLight, ByteBuffer data) {
+		int bl = packedLight & 0xFFFF;
+		int sl = (packedLight >> 16) & 0xFFFF;
+		// DefaultVertexFormat.BLOCK is Position, Color, UV0, UV2, Normal, so the lightmap (UV2)
+		// starts at int 6 (byte 24) - this is NeoForge's IQuadTransformer.UV2, which has no
+		// Fabric equivalent. Reading int 4 here would decode the UV0 texture floats as light.
+		int offset = 6 * 4;
+		int blBaked = Short.toUnsignedInt(data.getShort(offset));
+		int slBaked = Short.toUnsignedInt(data.getShort(offset + 2));
+		bl = Math.max(bl, blBaked);
+		sl = Math.max(sl, slBaked);
+		return bl | (sl << 16);
+	}
+
+	/**
+	 * Code copy from {@link IForgeVertexConsumer#applyBakedNormals}
+	 */
+	static void applyBakedNormals(Vector3f generated, ByteBuffer data, Matrix3f normalTransform) {
+		byte nx = data.get(28);
+		byte ny = data.get(29);
+		byte nz = data.get(30);
+		if (nx != 0 || ny != 0 || nz != 0) {
+			generated.set(nx / 127f, ny / 127f, nz / 127f);
+			generated.mul(normalTransform);
+		}
+	}
+
 	private static float fractional(double value) {
 		float fullPrecision = (float) (value - (int)value);
 		float modifier = Math.copySign(RenderRegion.REGION_WIDTH * 16, fullPrecision);
 		return (fullPrecision + modifier) - modifier;
 	}
-	
+
 	/**
 	 * copies from {@link XHFPModelVertexType}
 	 */

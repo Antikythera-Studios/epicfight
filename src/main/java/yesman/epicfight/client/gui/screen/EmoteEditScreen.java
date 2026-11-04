@@ -148,7 +148,6 @@ public class EmoteEditScreen extends Screen {
         playerpatch.getLevel().holderLookup(EpicFightRegistries.Keys.EMOTE).listElements().forEach(this.emoteSelectionList::addEntry);
     }
 
-    @Override
     public void init() {
         this.addRenderableWidget(this.emoteWheelTab);
         this.addRenderableWidget(this.emoteSelectionList);
@@ -158,12 +157,10 @@ public class EmoteEditScreen extends Screen {
         this.repositionElements();
     }
 
-    @Override
     public void tick() {
         this.emotePreviewer.tick();
     }
 
-    @Override
     protected void rebuildWidgets() {
         this.emoteWheelTab.relocate(this.getRectangle());
         this.emoteSelectionList.relocate(this.getRectangle());
@@ -172,14 +169,12 @@ public class EmoteEditScreen extends Screen {
         this.discardButton.relocate(this.getRectangle());
     }
 
-    @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.blit(Screen.HEADER_SEPARATOR, 4, 18, 0.0F, 0.0F, this.width - 8, 2, 32, 2);
         guiGraphics.drawString(this.font, this.title, 6, 7, 16777215);
     }
 
-    @Override
     public void onClose() {
         super.onClose();
         this.emotePreviewer.onDestroy();
@@ -221,14 +216,12 @@ public class EmoteEditScreen extends Screen {
             this.children().add(new Entry(emote));
         }
 
-        @Override
         protected void renderListItems(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             guiGraphics.enableScissor(this.getX(), this.getY(), this.getX() + this.getRowWidth() + 2, this.getY() + this.getHeight());
             super.renderListItems(guiGraphics, mouseX, mouseY, partialTick);
             guiGraphics.disableScissor();
         }
 
-        @Override
         protected void renderSelection(GuiGraphics guiGraphics, int top, int width, int height, int outerColor, int innerColor) {
             if (!this.isFocused()) {
                 return;
@@ -241,18 +234,15 @@ public class EmoteEditScreen extends Screen {
             guiGraphics.fill(left + 1, top - 1, right - 1, top + height + 1, innerColor);
         }
 
-        @Override
         public int getRowLeft() {
             return this.getX() + 2;
         }
 
-        @Override
         public int getRowWidth() {
             return this.getWidth() - EMOTE_PREVIEWER_WIDTH;
         }
 
-        @Override @Nullable
-        protected EmoteSelectionList.Entry getEntryAtPosition(double mouseX, double mouseY) {
+        protected Object epicfight$getEntryAtPosition(double mouseX, double mouseY) {
             int xStart = this.getX();
             int xEnd = xStart + this.getRowWidth();
             int mouseRelativeY = Mth.floor(mouseY - (double)this.getY()) - this.headerHeight + (int)this.getScrollAmount() - 4;
@@ -260,13 +250,11 @@ public class EmoteEditScreen extends Screen {
             return mouseX >= xStart && mouseX <= xEnd && rowPosition >= 0 && mouseRelativeY >= 0 && rowPosition < this.getItemCount() ? this.children().get(rowPosition) : null;
         }
 
-        @Override
         public @NotNull ScreenRectangle getRectangle() {
             return new ScreenRectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
         }
 
-        @Override
-        protected int getScrollbarPosition() {
+        protected int epicfight$getScrollbarPosition() {
             return this.getRight() - 6;
         }
 
@@ -277,13 +265,11 @@ public class EmoteEditScreen extends Screen {
                 this.emote = emote;
             }
 
-            @Override
             public boolean mouseClicked(double mouseX, double mouseY, int button) {
                 this.onPressed();
                 return true;
             }
 
-            @Override
             public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
                 if (CommonInputs.selected(keyCode)) {
                     this.onPressed();
@@ -293,14 +279,12 @@ public class EmoteEditScreen extends Screen {
                 }
             }
 
-            @Override
             public void onPressed() {
                 if (emoteWheelTab.getLastPressedWheel() != null) {
                     emoteWheelTab.getLastPressedWheel().setEmote(this.emote);
                 }
             }
 
-            @Override
             public void setFocused(boolean flag) {
                 super.setFocused(flag);
 
@@ -318,12 +302,10 @@ public class EmoteEditScreen extends Screen {
                 }
             }
 
-            @Override
             public @NotNull Component getNarration() {
                 return Component.translatable("narrator.select", this.emote.value().title());
             }
 
-            @Override
             public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTick) {
                 guiGraphics.drawString(font, Component.translatable(this.emote.value().title()), left + 2, top + height / 2 - 3, -1);
             }
@@ -339,52 +321,42 @@ public class EmoteEditScreen extends Screen {
         private final AnchoredWidget.HorizontalAnchorType horizontalAnchorType;
         private final AnchoredWidget.VerticalAnchorType verticalAnchorType;
 
-        @Override
         public int getX1() {
             return this.x1;
         }
 
-        @Override
         public int getX2() {
             return this.x2;
         }
 
-        @Override
         public int getY1() {
             return this.y1;
         }
 
-        @Override
         public int getY2() {
             return this.y2;
         }
 
-        @Override
         public void setX1(int i) {
             this.x1 = i;
         }
 
-        @Override
         public void setX2(int i) {
             this.x2 = i;
         }
 
-        @Override
         public void setY1(int i) {
             this.y1 = i;
         }
 
-        @Override
         public void setY2(int i) {
             this.y2 = i;
         }
 
-        @Override
         public HorizontalAnchorType getHorizontalAnchorType() {
             return this.horizontalAnchorType;
         }
 
-        @Override
         public VerticalAnchorType getVerticalAnchorType() {
             return this.verticalAnchorType;
         }

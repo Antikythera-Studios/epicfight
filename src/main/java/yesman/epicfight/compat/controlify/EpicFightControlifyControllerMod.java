@@ -1,4 +1,5 @@
 package yesman.epicfight.compat.controlify;
+import dev.isxander.controlify.api.entrypoint.InitContext;
 
 import dev.isxander.controlify.api.bind.InputBinding;
 import dev.isxander.controlify.bindings.ControlifyBindings;
@@ -22,11 +23,11 @@ public class EpicFightControlifyControllerMod implements IEpicFightControllerMod
 
     @Override
     public @NotNull InputMode getInputMode() {
-        return switch (EpicFightControlifyEntrypoint.getApi().currentInputMode()) {
-            case KEYBOARD_MOUSE -> InputMode.KEYBOARD_MOUSE;
-            case CONTROLLER -> InputMode.CONTROLLER;
-            case MIXED -> InputMode.MIXED;
-        };
+        Object mode = EpicFightControlifyEntrypoint.getApi().currentInputMode();
+        if (mode == InitContext.KEYBOARD_MOUSE) return InputMode.KEYBOARD_MOUSE;
+        if (mode == InitContext.CONTROLLER) return InputMode.CONTROLLER;
+        if (mode == InitContext.MIXED) return InputMode.MIXED;
+        return InputMode.KEYBOARD_MOUSE;
     }
 
     public static @NotNull ControllerBinding getBinding(@NotNull EpicFightInputAction action) {

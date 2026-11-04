@@ -22,7 +22,7 @@ import yesman.epicfight.client.gui.screen.config.EpicFightSettingScreen;
 import yesman.epicfight.client.gui.widgets.common.AnchoredWidget;
 import yesman.epicfight.client.gui.widgets.common.PressableWidget;
 import yesman.epicfight.epicskins.client.screen.AvatarEditScreen;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -45,7 +45,7 @@ public class SideBarScreen extends Screen {
     public SideBarScreen(Screen backgroundScreen, List<SideNavigationBarEntry> entries, int sideBarWidth) {
         super(Component.empty());
 
-        this.switchableScreenList = new SwitchableScreenList(backgroundScreen.getMinecraft(), sideBarWidth);
+        this.switchableScreenList = new SwitchableScreenList(Minecraft.getInstance(), sideBarWidth);
         entries.forEach(this.switchableScreenList::addScreenEntry);
 
         this.backgroundScreen = backgroundScreen;
@@ -109,8 +109,8 @@ public class SideBarScreen extends Screen {
     }
 
     private class CloseButton extends AbstractButton implements AnchoredWidget {
-        private static final ResourceLocation ARROW_SPRITE = EpicFightMod.identifier("widget/arrow");
-        private static final ResourceLocation ARROW_HIGHLIGHTED_SPRITE = EpicFightMod.identifier("widget/arrow_highlighted");
+        private static final ResourceLocation ARROW_SPRITE = EpicFight.identifier("widget/arrow");
+        private static final ResourceLocation ARROW_HIGHLIGHTED_SPRITE = EpicFight.identifier("widget/arrow_highlighted");
 
         private CloseButton(int sideBarWidth) {
             super(0, 0, 0, 0, Component.empty());

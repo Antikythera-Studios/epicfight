@@ -405,7 +405,7 @@ public class GuardSkill extends Skill implements HoldableSkill {
 	@Override @ClientOnly
 	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y, float partialTick) {
 		guiGraphics.blit(EpicFightSkills.GUARD.get().getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
-		guiGraphics.drawString(gui.getFont(), String.format("x%.1f", container.getDataManager().getDataValue(EpicFightSkillDataKeys.PENALTY)), x, y + 6, 16777215, true);
+		guiGraphics.drawString(gui.getFont(), String.format("x%.1f", container.getDataManager().getDataValue(EpicFightSkillDataKeys.PENALTY)), (int) x, (int) y + 6, 16777215, true);
 	}
 	
 	

@@ -371,7 +371,7 @@ public class AbstractClientPlayerPatch<T extends AbstractClientPlayer> extends P
             BlockState blockstate = this.original.getInBlockState();
             float yRot = 0.0F;
 
-            if (blockstate.isBed(this.original.level(), this.original.getSleepingPos().orElse(null), this.original)) {
+            if (blockstate.getBlock() instanceof net.minecraft.world.level.block.BedBlock) {
                 if (blockstate.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
                     switch(blockstate.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
                     case EAST:

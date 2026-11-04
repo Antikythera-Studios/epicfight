@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.screen;
+import net.minecraft.client.Minecraft;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -53,7 +54,7 @@ public class MessageScreen<T> extends Screen {
 		this.messageBoxHeight = height;
 		this.onOkPressWithInput = null;
 		this.inputWidget = null;
-		this.minecraft = parentScreen.getMinecraft();
+		this.minecraft = Minecraft.getInstance();
 	}
 	
 	public MessageScreen(String title, String message, Screen parentScreen, Consumer<T> onOkPressWithInput, @Nullable Button.OnPress onCancelPress, DataBindingComponent<T, ?> inputWidget, int width, int height) {
@@ -67,7 +68,7 @@ public class MessageScreen<T> extends Screen {
 		this.messageBoxHeight = height;
 		this.onOkPressWithInput = onOkPressWithInput;
 		this.inputWidget = inputWidget;
-		this.minecraft = parentScreen.getMinecraft();
+		this.minecraft = Minecraft.getInstance();
 	}
 	
 	public MessageScreen<T> autoCalculateHeight() {

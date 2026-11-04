@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.api.client.camera.EpicFightCameraAPI;
 import yesman.epicfight.client.ClientEngine;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 
 public final class EpicFightControlifyBindContexts {
     private EpicFightControlifyBindContexts() {
@@ -17,14 +17,14 @@ public final class EpicFightControlifyBindContexts {
         }
 
         public static final BindContext COMBAT_MODE = new BindContext(
-                EpicFightMod.identifier("epicfight_combat"),
+                yesman.epicfight.EpicFight.identifier("epicfight_combat"),
                 mc -> {
                     final boolean isInGame = isInGame(mc);
                     return isInGame && ClientEngine.getInstance().isEpicFightMode();
                 }
         );
         public static final BindContext LOCK_ON = new BindContext(
-                EpicFightMod.identifier("epicfight_lock_on"),
+                yesman.epicfight.EpicFight.identifier("epicfight_lock_on"),
                 mc -> {
                     final boolean isInGame = isInGame(mc);
                     return isInGame && EpicFightCameraAPI.getInstance().isLockingOnTarget();

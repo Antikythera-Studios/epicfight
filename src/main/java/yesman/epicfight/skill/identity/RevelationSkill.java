@@ -1,4 +1,5 @@
 package yesman.epicfight.skill.identity;
+import yesman.epicfight.EpicFight;
 
 import com.google.common.collect.Maps;
 import net.minecraft.client.gui.GuiGraphics;
@@ -89,7 +90,7 @@ public class RevelationSkill extends Skill {
             if (entityType != null) {
                 this.maxRevelationStacks.put(entityType, maxStacks.getInt(registryName));
             } else {
-                EpicFightMod.LOGGER.warn("Revelation registry error: no entity type named {}", registryName);
+                EpicFight.LOGGER.warn("Revelation registry error: no entity type named {}", registryName);
             }
         }
     }
@@ -207,6 +208,6 @@ public class RevelationSkill extends Skill {
 	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y, float partialTick) {
 		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		int stacks = container.getRemainDuration() > 0 ? 0 : this.maxRevelationStacks.getOrDefault(container.getExecutor().getTarget().getType(), this.defaultRevelationStacks) - container.getDataManager().getDataValue(EpicFightSkillDataKeys.STACKS);
-		guiGraphics.drawString(gui.getFont(), String.format("%d", stacks), x + 18, y + 14, 16777215, true);
+		guiGraphics.drawString(gui.getFont(), String.format("%d", stacks), (int)(x + 18), (int)(y + 14), 16777215, true);
 	}
 }

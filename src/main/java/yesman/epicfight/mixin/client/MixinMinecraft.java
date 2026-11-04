@@ -71,6 +71,12 @@ public class MixinMinecraft {
         if (ControlEngine.shouldDisableVanillaAttack()) {
             // Prevents the player from performing vanilla attack actions while in Epic Fight mode.
             cir.cancel();
+        } else if (ControlEngine.shouldCancelVanillaAttackOnEntity()) {
+            // Blocks vanilla attacks against living entities when in vanilla mode (if gamerule disallows)
+            cir.cancel();
+        } else if (ControlEngine.shouldCancelVanillaAttackOnBlock()) {
+            // Blocks vanilla attacks against blocks when holding a combat-categorized item that can't break them
+            cir.cancel();
         }
     }
 
@@ -78,6 +84,15 @@ public class MixinMinecraft {
     private void onContinueVanillaAttack(boolean leftClick, CallbackInfo ci) {
         if (ControlEngine.shouldDisableVanillaAttack()) {
             // Prevents the player from breaking blocks such as grass while in Epic Fight mode.
+            ci.cancel();
+        }
+    }
+
+    /// Cancels vanilla use-item when in EpicFight mode and guard is available.
+    /// Replaces NeoForge's InputEvent.InteractionKeyMappingTriggered handler for USE action.
+    @Inject(at = @At("HEAD"), method = "startUseItem()V", cancellable = true)
+    private void epicfight$startUseItem(CallbackInfo ci) {
+        if (ControlEngine.shouldCancelVanillaUseItem()) {
             ci.cancel();
         }
     }

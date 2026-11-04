@@ -25,7 +25,7 @@ public class AnimationArgument implements ArgumentType<AnimationAccessor<? exten
 	private static final Collection<String> EXAMPLES = Arrays.asList("epicfight:biped_idle");
 	
 	private static final DynamicCommandExceptionType ERROR_UNKNOWN_SKILL = new DynamicCommandExceptionType((obj) -> {
-		return Component.translatable("epicfight.animationNotFound", obj);
+		return Component.translatableEscape("epicfight.animationNotFound", obj);
 	});
 	
 	public static AnimationArgument animation() {

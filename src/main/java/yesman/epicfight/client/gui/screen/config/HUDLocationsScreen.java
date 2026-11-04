@@ -21,7 +21,7 @@ import yesman.epicfight.client.gui.ScreenCalculations.VerticalBasis;
 import yesman.epicfight.config.ClientConfig;
 import yesman.epicfight.config.OptionHandler;
 import yesman.epicfight.generated.LangKeys;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 
 public class HUDLocationsScreen extends Screen {
 	protected final Screen parentScreen;
@@ -47,7 +47,7 @@ public class HUDLocationsScreen extends Screen {
 		
 		// Weapon innate icon
 		this.addRenderableWidget(new HUDComponent(weaponInnateX, weaponInnateY, weaponInnateXHandler, weaponInnateYHandler, weaponInnateBaseXHandler, weaponInnateBaseYHandler,
-			32, 32, 0, 0, 1, 1, 1, 1, 0, 163, 184, this, EpicFightMod.identifier("textures/gui/skills/weapon_innate/sweeping_edge.png")
+			32, 32, 0, 0, 1, 1, 1, 1, 0, 163, 184, this, EpicFight.identifier("textures/gui/skills/weapon_innate/sweeping_edge.png")
 		));
 		
 		int staminaX = ClientConfig.staminaBarBaseX.positionGetter.apply(this.width, ClientConfig.staminaBarX);
@@ -59,7 +59,7 @@ public class HUDLocationsScreen extends Screen {
 		
 		// Stamina bar
 		this.addRenderableWidget(new HUDComponent(staminaX, staminaY, staminaBarXHandler, staminaBarYHandler, staminaBarBaseXHandler, staminaBarBaseYHandler,
-			118, 4, 2, 38, 237, 9, 256, 256, 255, 128, 64, this, EpicFightMod.identifier("textures/gui/battle_icons.png")
+			118, 4, 2, 38, 237, 9, 256, 256, 255, 128, 64, this, EpicFight.identifier("textures/gui/battle_icons.png")
 		));
 		
 		int chargingBarX = ClientConfig.chargingBarBaseX.positionGetter.apply(this.width, ClientConfig.chargingBarX);
@@ -71,7 +71,7 @@ public class HUDLocationsScreen extends Screen {
 		
 		// Charging bar
 		this.addRenderableWidget(new HUDComponent(chargingBarX, chargingBarY, chargingBarXHandler, chargingBarYHandler, chargingBarBaseXHandler, chargingBarBaseYHandler,
-			238, 13, 1, 71, 237, 13, 256, 256, 255, 255, 255, this, EpicFightMod.identifier("textures/gui/battle_icons.png")
+			238, 13, 1, 71, 237, 13, 256, 256, 255, 255, 255, this, EpicFight.identifier("textures/gui/battle_icons.png")
 		));
 		
 		int passiveX = ClientConfig.passiveBaseX.positionGetter.apply(this.width, ClientConfig.passiveX);
@@ -84,7 +84,7 @@ public class HUDLocationsScreen extends Screen {
 		
 		// Passive skill icons
 		this.addRenderableWidget(new PassiveUIComponent(passiveX, passiveY, passiveXHandler, passiveYHandler, passiveBaseXHandler, passiveBaseYHandler, passiveAlignDirectionHandler
-			, 24, 24, 0, 0, 1, 1, 1, 1, 255, 255, 255, this, EpicFightMod.identifier("textures/gui/skills/guard/guard.png"), EpicFightMod.identifier("textures/gui/skills/passive/berserker.png")
+			, 24, 24, 0, 0, 1, 1, 1, 1, 255, 255, 255, this, EpicFight.identifier("textures/gui/skills/guard/guard.png"), EpicFight.identifier("textures/gui/skills/passive/berserker.png")
 		));
 		
 		this.addRenderableWidget(
@@ -576,7 +576,7 @@ public class HUDLocationsScreen extends Screen {
         }
 
         public static class AlignButton extends Button {
-            private static final ResourceLocation BATTLE_ICONS = EpicFightMod.identifier("textures/gui/battle_icons.png");
+            private static final ResourceLocation BATTLE_ICONS = EpicFight.identifier("textures/gui/battle_icons.png");
             private final OptionHandler<HorizontalBasis> horBasis;
             private final OptionHandler<VerticalBasis> verBasis;
             private final OptionHandler<AlignDirection> alignDirection;

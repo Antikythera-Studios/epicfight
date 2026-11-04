@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.screen;
+import net.minecraft.client.Minecraft;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -59,8 +60,8 @@ public class CombatBehaviorScreen extends Screen {
 		
 		this.isHumanoidSubTag = isHumanoidSubTag;
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
-		this.font = parentScreen.getMinecraft().font;
+		this.minecraft = Minecraft.getInstance();
+		this.font = Minecraft.getInstance().font;
 		
 		this.rootTag = rootTag;
 		this.modelPreviewer = new ModelPreviewer(0, 10, 35, 50, HorizontalSizing.LEFT_RIGHT, VerticalSizing.TOP_BOTTOM, armature, mesh);
@@ -76,7 +77,7 @@ public class CombatBehaviorScreen extends Screen {
 		animationPopupBox.applyFilter(animation -> animation.checkType(AttackAnimation.class));
 		animationPopupBox.setModel(armature, mesh);
 		
-		this.movesetGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.movesetGrid = Grid.builder(this, Minecraft.getInstance())
 									.xy1(8, 45)
 									.xy2(55, 50)
 									.horizontalSizing(HorizontalSizing.LEFT_WIDTH)
@@ -118,7 +119,7 @@ public class CombatBehaviorScreen extends Screen {
 									})
 									.build();
 		
-		this.behaviorGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.behaviorGrid = Grid.builder(this, Minecraft.getInstance())
 				.xy1(2, 0)
 				.xy2(55, 245)
 				.horizontalSizing(HorizontalSizing.LEFT_WIDTH)
@@ -249,7 +250,7 @@ public class CombatBehaviorScreen extends Screen {
 		
 		cooldownEditBox.setFilter((context) -> StringUtil.isNullOrEmpty(context) || ParseUtil.isParsable(context, Integer::parseInt));
 		
-		this.conditionGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.conditionGrid = Grid.builder(this, Minecraft.getInstance())
 									.xy1(63, 0)
 									.xy2(10, 80)
 									.horizontalSizing(HorizontalSizing.LEFT_RIGHT)
@@ -327,7 +328,7 @@ public class CombatBehaviorScreen extends Screen {
 									})
 									.build();
 		
-		this.parameterGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.parameterGrid = Grid.builder(this, Minecraft.getInstance())
 									.xy1(63, 0)
 									.xy2(10, 80)
 									.horizontalSizing(HorizontalSizing.LEFT_RIGHT)

@@ -14,6 +14,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import yesman.epicfight.platform.ModPlatformProvider;
+import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.registry.entries.EpicFightDataComponentTypes;
 import yesman.epicfight.registry.entries.EpicFightLootItemFunctions;
 import yesman.epicfight.skill.Skill;
@@ -56,10 +57,23 @@ public class SetSkillFunction extends LootItemConditionalFunction {
 		ImmutableList.Builder<FloatObjectPair<Holder<Skill>>> builder = ImmutableList.builder();
 		
 		for (int i = 0; i < skills.size(); i++) {
-			builder.add(FloatObjectPair.of(weights.get(i), skills.get(i)));
+			builder.add(FloatObjectPair.of(weights.get(i), normalizeSkill(skills.get(i))));
 		}
 		
 		this.skillSource = builder.build();
+	}
+	
+	/**
+	 * DeferredHolderShim implements Holder but is not a registry Reference, so
+	 * it fails canSerializeIn during NBT save ("Unregistered holder"). Resolve
+	 * the canonical holder straight from the skill registry by key — works for
+	 * shims and any other non-reference holder alike.
+	 */
+	private static Holder<Skill> normalizeSkill(Holder<Skill> holder) {
+		return holder.unwrapKey()
+				.flatMap(EpicFightRegistries.SKILL::getHolder)
+				.map(reference -> (Holder<Skill>) reference)
+				.orElse(holder);
 	}
 	
 	private Holder<Skill> selectRandomSkillFromSource(RandomSource randomSource) {
@@ -81,7 +95,7 @@ public class SetSkillFunction extends LootItemConditionalFunction {
 		Holder<Skill> skill = this.selectRandomSkillFromSource(context.getRandom());
 		
 		if (skill != null) {
-			itemstack.set(EpicFightDataComponentTypes.SKILL, skill);
+			itemstack.set(EpicFightDataComponentTypes.SKILL.get(), skill);
 		}
 		
 		return itemstack;

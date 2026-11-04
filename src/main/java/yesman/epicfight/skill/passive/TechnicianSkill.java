@@ -13,6 +13,8 @@ import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillSlots;
 
 public class TechnicianSkill extends PassiveSkill {
+    private static final java.util.UUID EVENT_UUID = java.util.UUID.fromString("99e5c782-fdaf-11eb-9a03-0242ac130003");
+
     public TechnicianSkill(SkillBuilder<?> builder) {
         super(builder);
     }

@@ -9,7 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import yesman.epicfight.platform.neoforged.common.ModConfigSpec;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPChangeGamerule;
 import yesman.epicfight.skill.SkillSlots;
@@ -189,7 +189,7 @@ public class EpicFightGameRules {
 						, this.ruleCategory
 						, this.ruleType.valueCreator.apply(
 							    this.configValueHolder.get()
-							  , (server, value) -> EpicFightNetworkManager.sendToAll(new SPChangeGamerule(new EpicFightGameRules.KeyValuePair((ConfigurableGameRule<Object, ?, ?>)this, this.ruleType.getRule.apply(value))))
+							  , (server, value) -> EpicFightNetworkManager.sendToAll(server, new SPChangeGamerule(new EpicFightGameRules.KeyValuePair((ConfigurableGameRule<Object, ?, ?>)this, this.ruleType.getRule.apply(value))))
 						  )
 				);
 			} else {
@@ -253,7 +253,7 @@ public class EpicFightGameRules {
 		   , (ruleValue, value) -> ruleValue.set(value, null)
 		   , ByteBufCodecs.BOOL
 		);
-		
+
 		private static final RuleType<Integer, GameRules.IntegerValue> INTEGER = new RuleType<> (
 			 GameRules.IntegerValue::create
 		   , GameRules.IntegerValue::create

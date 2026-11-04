@@ -1,4 +1,5 @@
 package yesman.epicfight.world.capabilities.entitypatch.mob;
+import yesman.epicfight.platform.fabric.event.EntityAttributeModificationEvent;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
@@ -6,7 +7,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.SwellGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.monster.Creeper;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
+
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;

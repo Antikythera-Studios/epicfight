@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.widgets;
+import net.minecraft.client.Minecraft;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,7 +20,7 @@ public abstract class InputComponentList<T> extends ContainerObjectSelectionList
 	private InputComponentList<T>.InputComponentEntry focusingEntry;
 	
 	public InputComponentList(Screen owner, int width, int height, int y, int itemHeight) {
-		super(owner.getMinecraft(), width, height, y, itemHeight);
+		super(Minecraft.getInstance(), width, height, y, itemHeight);
 		this.owner = owner;
 	}
 	

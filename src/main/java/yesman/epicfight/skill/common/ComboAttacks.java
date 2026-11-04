@@ -47,7 +47,7 @@ public class ComboAttacks extends Skill {
 	}
 
     public static void setComboCounterWithEvent(ModifyComboCounter.Causal reason, ServerPlayerPatch playerpatch, SkillContainer container, @Nullable AnimationAccessor<? extends MainFrameAnimation> causalAnimation, int counter) {
-        if (reason != ModifyComboCounter.Causal.TIME_EXPIRED && !causalAnimation.get().getProperty(ActionAnimationProperty.RESET_PLAYER_COMBO_COUNTER).orElse(true)) {
+        if (reason != ModifyComboCounter.Causal.TIME_EXPIRED && causalAnimation != null && !causalAnimation.get().getProperty(ActionAnimationProperty.RESET_PLAYER_COMBO_COUNTER).orElse(true)) {
             return;
         }
 
@@ -167,8 +167,10 @@ public class ComboAttacks extends Skill {
             } else {
                 attackMotion = combo.get(Math.abs(comboCounter) % comboSize);
 
-                // Grows the combo counter when doing combo attacks
-                comboCounter = (comboCounter + 1) % (comboSize - 2);
+                // Grows the combo counter when doing combo attacks. A moveset with
+                // only dash+air entries (size <= 2) has no regular swings — keep
+                // the counter at 0 instead of dividing by zero.
+                comboCounter = comboSize > 2 ? (comboCounter + 1) % (comboSize - 2) : 0;
             }
 		}
 

@@ -1,4 +1,5 @@
 package yesman.epicfight.world.capabilities.entitypatch.mob;
+import yesman.epicfight.platform.fabric.event.EntityAttributeModificationEvent;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
@@ -8,7 +9,7 @@ import net.minecraft.world.entity.ai.behavior.MeleeAttack;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.schedule.Activity;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
+
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;

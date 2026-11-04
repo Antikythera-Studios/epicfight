@@ -1,8 +1,9 @@
 package yesman.epicfight.world.capabilities.entitypatch.boss;
+import yesman.epicfight.platform.fabric.event.EntityAttributeModificationEvent;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
+
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;

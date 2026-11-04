@@ -145,7 +145,8 @@ public class AnimationTrailParticle extends AbstractTrailParticle<LivingEntityPa
 	@Override
 	protected boolean canContinue() {
 		AnimationPlayer animPlayer = this.owner.getAnimator().getPlayerFor(this.animation);
-		return this.owner.getOriginal().isAlive() && this.animation == animPlayer.getRealAnimation() && animPlayer.getElapsedTime() <= this.trailInfo.endTime();
+		boolean cont = this.owner.getOriginal().isAlive() && this.animation == animPlayer.getRealAnimation() && animPlayer.getElapsedTime() <= this.trailInfo.endTime();
+		return cont;
 	}
 	
 	@Override
@@ -265,6 +266,7 @@ public class AnimationTrailParticle extends AbstractTrailParticle<LivingEntityPa
 	}
 	
 	public static class Provider implements ParticleProvider<SimpleParticleType> {
+
 		@Override
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			int eid = (int)Double.doubleToRawLongBits(x);
@@ -272,25 +274,25 @@ public class AnimationTrailParticle extends AbstractTrailParticle<LivingEntityPa
 			int jointId = (int)Double.doubleToRawLongBits(xSpeed);
 			int idx = (int)Double.doubleToRawLongBits(ySpeed);
 			Entity entity = level.getEntity(eid);
-			
+
 			if (entity == null) {
 				return null;
 			}
-			
+
 			LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(entity, LivingEntityPatch.class);
-			
+
 			if (entitypatch == null) {
 				return null;
 			}
-			
+
 			AnimationAccessor<? extends StaticAnimation> animation = AnimationManager.byId(animid);
-			
+
 			if (animation == null) {
 				return null;
 			}
-			
+
 			Optional<List<TrailInfo>> trailInfo = animation.get().getProperty(ClientAnimationProperties.TRAIL_EFFECT);
-			
+
 			if (trailInfo.isEmpty()) {
 				return null;
 			}

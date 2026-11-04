@@ -8,15 +8,18 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.VillagerProfessionLayer;
 import net.minecraft.client.resources.metadata.animation.VillagerMetaDataSection;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.VillagerDataHolder;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerType;
 import yesman.epicfight.api.client.model.Meshes;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.client.mesh.VillagerMesh;
+import yesman.epicfight.mixin.client.VillagerProfessionLayerAccessor;
 import yesman.epicfight.world.capabilities.entitypatch.MobPatch;
 
 public class PatchedVillagerProfessionLayer extends ModelRenderLayer<ZombieVillager, MobPatch<ZombieVillager>, ZombieVillagerModel<ZombieVillager>, VillagerProfessionLayer<ZombieVillager, ZombieVillagerModel<ZombieVillager>>, VillagerMesh> {
@@ -31,8 +34,9 @@ public class PatchedVillagerProfessionLayer extends ModelRenderLayer<ZombieVilla
 		if (!entityliving.isInvisible()) {
 			VillagerData villagerdata = ((VillagerDataHolder)entitypatch.getOriginal()).getVillagerData();
 			
-			VillagerMetaDataSection.Hat typeHat = vanillaLayer.getHatData(vanillaLayer.typeHatCache, "type", BuiltInRegistries.VILLAGER_TYPE, villagerdata.getType());
-	        VillagerMetaDataSection.Hat professionHat = vanillaLayer.getHatData(vanillaLayer.professionHatCache, "profession", BuiltInRegistries.VILLAGER_PROFESSION, villagerdata.getProfession());
+			VillagerProfessionLayerAccessor accessor = (VillagerProfessionLayerAccessor) vanillaLayer;
+			VillagerMetaDataSection.Hat typeHat = vanillaLayer.getHatData(accessor.epicfight$getTypeHatCache(), "type", BuiltInRegistries.VILLAGER_TYPE, villagerdata.getType());
+	        VillagerMetaDataSection.Hat professionHat = vanillaLayer.getHatData(accessor.epicfight$getProfessionHatCache(), "profession", BuiltInRegistries.VILLAGER_PROFESSION, villagerdata.getProfession());
 	        
 	        if (!(typeHat == VillagerMetaDataSection.Hat.NONE || typeHat == VillagerMetaDataSection.Hat.PARTIAL && professionHat != VillagerMetaDataSection.Hat.FULL)
 	        		|| !entityliving.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {

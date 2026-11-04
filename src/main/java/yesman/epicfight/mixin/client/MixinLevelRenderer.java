@@ -16,12 +16,14 @@ import org.joml.Matrix4fStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import yesman.epicfight.api.client.camera.EpicFightCameraAPI;
+import yesman.epicfight.client.renderer.EpicFightFrustumHolder;
 import yesman.epicfight.config.ClientConfig;
 
 import java.util.Iterator;
@@ -30,10 +32,16 @@ import java.util.Iterator;
 public class MixinLevelRenderer {
 	@Shadow @Final
 	private RenderBuffers renderBuffers;
-	
+
 	@Shadow @Final
 	private Minecraft minecraft;
-	
+
+	/// Stores the current render frustum so it can be accessed outside the render loop
+	/// (e.g., by [EpicFightCameraAPI.setNextLockOnTarget]). On NeoForge, [LevelRenderer.getFrustum()]
+	/// provides this; on Fabric, the frustum is a local variable in [renderLevel].
+	@Unique
+	private Frustum epicfight$currentFrustum;
+
 	@Inject(
 		at = @At(
 			value = "INVOKE",
@@ -68,6 +76,9 @@ public class MixinLevelRenderer {
 		OutlineBufferSource local20,
 		int local21
 	) {
+		// Capture the frustum for use outside the render loop
+		EpicFightFrustumHolder.set(local9);
+
         int color = ClientConfig.packedTargetOutlineColor;
         int r = color >> 16 & 255;
         int g = color >> 8 & 255;

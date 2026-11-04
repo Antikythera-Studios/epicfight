@@ -5,10 +5,10 @@
   "package": "yesman.epicfight.compat.fgm.mixin",
   "plugin": "yesman.epicfight.compat.fgm.FGMMixinPlugin",
   "client": [
-    "FemaleLayerAccessor",
-    "MixinGenderLayer"
+    "MixinGenderLayer",
+    "FemaleLayerAccessor"
   ],
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 0
   }
 }

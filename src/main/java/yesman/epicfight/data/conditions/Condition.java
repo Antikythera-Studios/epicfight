@@ -1,4 +1,5 @@
 package yesman.epicfight.data.conditions;
+import net.fabricmc.api.Environment;
 
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -10,8 +11,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+
 import yesman.epicfight.api.utils.ExtensibleEnum;
 import yesman.epicfight.api.utils.ExtensibleEnumManager;
 import yesman.epicfight.api.utils.side.ClientOnly;
@@ -75,9 +76,9 @@ public interface Condition<T> {
 		}
 	}
 
-    // TODO: Remove OnlyIn annotation and completely decouple the widget provider code
+    // TODO: Remove @Environment annotation and completely decouple the widget provider code
     @ClientOnly
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
 	List<ParameterEditor> getAcceptingParameters(Screen screen);
 	
 	abstract class EntityPatchCondition implements Condition<LivingEntityPatch<?>> {
