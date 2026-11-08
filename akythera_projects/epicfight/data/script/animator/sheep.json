@@ -413,7 +413,7 @@
         "id": 51,
         "x": 1500,
         "y": 382,
-        "function": "minecraft:sheep_head_eat_position_scale",
+        "function": "epicfight:sheep_head_eat_position_scale",
         "kind": "pure_function"
       },
       {
@@ -901,96 +901,6 @@
         "x": 3500,
         "y": 195,
         "variable": "headPitch",
-        "variable_type": "minecraft:float",
-        "kind": "variable_setter"
-      },
-      {
-        "id": 109,
-        "x": 3700,
-        "y": 382,
-        "function": "akythera:animator_get_owner",
-        "kind": "pure_function"
-      },
-      {
-        "id": 110,
-        "x": 3700,
-        "y": 300,
-        "function": "minecraft:living_entity_patch_get_y_body_rot",
-        "kind": "pure_function"
-      },
-      {
-        "id": 111,
-        "x": 3700,
-        "y": 195,
-        "variable": "bodyYaw",
-        "variable_type": "minecraft:float",
-        "kind": "variable_setter"
-      },
-      {
-        "id": 112,
-        "x": 3900,
-        "y": 485,
-        "variable": "isHurt",
-        "variable_type": "minecraft:boolean",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 113,
-        "x": 3900,
-        "y": 546,
-        "variable": "isDead",
-        "variable_type": "minecraft:boolean",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 114,
-        "x": 3900,
-        "y": 403,
-        "op": "OR",
-        "kind": "logical_operation"
-      },
-      {
-        "id": 115,
-        "x": 3900,
-        "y": 689,
-        "literal_type": "minecraft:float",
-        "literal_value": "1.0",
-        "kind": "literal"
-      },
-      {
-        "id": 116,
-        "x": 3900,
-        "y": 750,
-        "variable": "walkWeight",
-        "variable_type": "minecraft:float",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 117,
-        "x": 3900,
-        "y": 607,
-        "op": "SUBTRACT",
-        "kind": "operator"
-      },
-      {
-        "id": 118,
-        "x": 3900,
-        "y": 300,
-        "function": "akythera:select",
-        "pin_literals": [
-          {
-            "pin": 1,
-            "type": "minecraft:float",
-            "value": 0.0
-          }
-        ],
-        "kind": "pure_function"
-      },
-      {
-        "id": 119,
-        "x": 3900,
-        "y": 195,
-        "variable": "turnWeight",
         "variable_type": "minecraft:float",
         "kind": "variable_setter"
       }
@@ -1715,78 +1625,6 @@
         "from_pin": 0,
         "to": 108,
         "to_pin": 1
-      },
-      {
-        "from": 109,
-        "from_pin": 0,
-        "to": 110,
-        "to_pin": 0
-      },
-      {
-        "from": 0,
-        "from_pin": 2,
-        "to": 110,
-        "to_pin": 1
-      },
-      {
-        "from": 108,
-        "from_pin": 0,
-        "to": 111,
-        "to_pin": 0
-      },
-      {
-        "from": 110,
-        "from_pin": 0,
-        "to": 111,
-        "to_pin": 1
-      },
-      {
-        "from": 112,
-        "from_pin": 0,
-        "to": 114,
-        "to_pin": 0
-      },
-      {
-        "from": 113,
-        "from_pin": 0,
-        "to": 114,
-        "to_pin": 1
-      },
-      {
-        "from": 115,
-        "from_pin": 0,
-        "to": 117,
-        "to_pin": 0
-      },
-      {
-        "from": 116,
-        "from_pin": 0,
-        "to": 117,
-        "to_pin": 1
-      },
-      {
-        "from": 114,
-        "from_pin": 0,
-        "to": 118,
-        "to_pin": 0
-      },
-      {
-        "from": 117,
-        "from_pin": 0,
-        "to": 118,
-        "to_pin": 2
-      },
-      {
-        "from": 111,
-        "from_pin": 0,
-        "to": 119,
-        "to_pin": 0
-      },
-      {
-        "from": 118,
-        "from_pin": 0,
-        "to": 119,
-        "to_pin": 1
       }
     ]
   },
@@ -1875,16 +1713,6 @@
       "name": "headPitch",
       "type": "minecraft:float",
       "default_value": 0.0
-    },
-    {
-      "name": "bodyYaw",
-      "type": "minecraft:float",
-      "default_value": 0.0
-    },
-    {
-      "name": "turnWeight",
-      "type": "minecraft:float",
-      "default_value": 0.0
     }
   ],
   "pose_graph": {
@@ -1957,35 +1785,6 @@
         "y": 300,
         "variable": "akythera:base",
         "kind": "anim_layer"
-      },
-      {
-        "id": 7,
-        "x": 15,
-        "y": 300,
-        "kind": "turn_in_place",
-        "pin_literals": [
-          {
-            "pin": 3,
-            "type": "minecraft:float",
-            "value": 0.6
-          }
-        ]
-      },
-      {
-        "id": 8,
-        "x": -150,
-        "y": 500,
-        "variable": "bodyYaw",
-        "variable_type": "minecraft:float",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 9,
-        "x": -150,
-        "y": 550,
-        "variable": "turnWeight",
-        "variable_type": "minecraft:float",
-        "kind": "variable_getter"
       }
     ],
     "wires": [
@@ -2021,24 +1820,6 @@
       },
       {
         "from": 1,
-        "from_pin": 0,
-        "to": 7,
-        "to_pin": 0
-      },
-      {
-        "from": 8,
-        "from_pin": 0,
-        "to": 7,
-        "to_pin": 1
-      },
-      {
-        "from": 9,
-        "from_pin": 0,
-        "to": 7,
-        "to_pin": 2
-      },
-      {
-        "from": 7,
         "from_pin": 0,
         "to": 2,
         "to_pin": 0

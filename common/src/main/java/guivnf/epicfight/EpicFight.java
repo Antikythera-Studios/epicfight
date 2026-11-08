@@ -2,6 +2,7 @@ package guivnf.epicfight;
 
 import com.mojang.serialization.MapCodec;
 import com.yesman.akythera.api.animation.animator.AnimationInterfaceKey;
+import com.yesman.akythera.api.data.modularize.ScriptFunction;
 import com.yesman.akythera.api.data.modularize.ScriptType;
 import com.yesman.akythera.api.world.ability.AbilitySlot;
 import com.yesman.akythera.api.world.ability.AbilitySlotGroup;
@@ -17,6 +18,7 @@ import guivnf.epicfight.akythera.datablocks.EpicfightAbilitySlot;
 import guivnf.epicfight.akythera.datablocks.EpicfightAbilitySlotGroup;
 import guivnf.epicfight.akythera.datablocks.EpicfightAnimationInterfaceKey;
 import guivnf.epicfight.akythera.datablocks.EpicfightFSMAnimationState;
+import guivnf.epicfight.akythera.registries.EpicFightScriptFunctions;
 import guivnf.epicfight.akythera.registries.EpicFightScriptTypes;
 import guivnf.epicfight.world.item.datablock.EpicFightWeaponCategory;
 import guivnf.epicfight.world.item.datablock.EpicFightWeaponStance;
@@ -40,6 +42,10 @@ public final class EpicFight {
         ModPlatform.Registrar<ScriptType> scriptTypes =
             ModPlatformProvider.get().getRegistrar(AkytheraRegistries.Frozen.SCRIPT_TYPE_KEY, MODID);
         EpicFightScriptTypes.register((name, type) -> scriptTypes.register(name, () -> type));
+
+        ModPlatform.Registrar<ScriptFunction> scriptFunctions =
+            ModPlatformProvider.get().getRegistrar(AkytheraRegistries.Frozen.SCRIPT_FUNCTION_KEY, MODID);
+        EpicFightScriptFunctions.register((name, function) -> scriptFunctions.register(name, function));
 
         ModPlatform.Registrar<MapCodec<? extends ComponentBlueprint<?, ?>>> itemPatchComponents =
             ModPlatformProvider.get().getRegistrar(AkytheraRegistries.Frozen.ITEM_PATCH_COMPONENT_TYPES_KEY, MODID);

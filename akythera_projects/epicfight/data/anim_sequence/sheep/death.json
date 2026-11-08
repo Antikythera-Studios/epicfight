@@ -4,6 +4,7 @@
   "fade_out_time": 0.1,
   "loops": false,
   "root_motion": false,
+  "ik_type": "akythera:none",
   "preview_entity_type": "minecraft:sheep",
   "notify_tracks": {
     "tracks": [

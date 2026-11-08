@@ -52,6 +52,7 @@ package guivnf.epicfight.akythera.providers;
 
 import com.yesman.akythera.api.asset.animation.AnimationManager;
 import com.yesman.akythera.api.data.provider.AnimationSequenceProvider;
+import com.yesman.akythera.core.animation.ik.IKType;
 import com.yesman.akythera.core.animation.notify.AnimationNotifyTrack;
 import com.yesman.akythera.core.animation.playable.AnimationSequence;
 import com.yesman.akythera.core.registry.AkytheraRegistries;
@@ -83,6 +84,8 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
     public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_LEFT = createId("humanoid/locomotion/common/walk_backward_left");
     public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_RIGHT = createId("humanoid/locomotion/common/walk_backward_right");
     public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD = createId("humanoid/locomotion/common/walk_forward");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD_LEFT = createId("humanoid/locomotion/common/walk_forward_left");
+    public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD_RIGHT = createId("humanoid/locomotion/common/walk_forward_right");
     public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_LEFT = createId("humanoid/locomotion/common/walk_left");
     public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_COMMON_WALK_RIGHT = createId("humanoid/locomotion/common/walk_right");
     public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_IDLE = createId("humanoid/locomotion/onehanded/idle");
@@ -99,6 +102,12 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
     public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_RIGHT = createId("humanoid/locomotion/onehanded/walk_forward_right");
     public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_LEFT = createId("humanoid/locomotion/onehanded/walk_left");
     public static final ResourceKey<AnimationSequence> HUMANOID_LOCOMOTION_ONEHANDED_WALK_RIGHT = createId("humanoid/locomotion/onehanded/walk_right");
+    public static final ResourceKey<AnimationSequence> SHEEP_DEATH = createId("sheep/death");
+    public static final ResourceKey<AnimationSequence> SHEEP_EAT = createId("sheep/eat");
+    public static final ResourceKey<AnimationSequence> SHEEP_HIT = createId("sheep/hit");
+    public static final ResourceKey<AnimationSequence> SHEEP_IDLE = createId("sheep/idle");
+    public static final ResourceKey<AnimationSequence> SHEEP_RUN = createId("sheep/run");
+    public static final ResourceKey<AnimationSequence> SHEEP_WALK = createId("sheep/walk");
 
     public static void bootstrap(BootstrapContext<AnimationSequence> context) {
         context.register(
@@ -110,8 +119,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.0F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -123,8 +134,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.0F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -136,8 +149,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -149,8 +164,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -162,8 +179,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -175,8 +194,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -188,8 +209,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.05F,
                 false,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -201,8 +224,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.1F,
                 false,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -214,8 +239,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.48F
+                0.78F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -227,8 +254,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.0F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -240,8 +269,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.15F
+                0.99F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -253,8 +284,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.15F
+                0.45F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -266,8 +299,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.15F
+                0.97F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -279,8 +314,40 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
-                1.6667F,
-                0.91F
+                true,
+                1.0F,
+                0.22F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD_LEFT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/walk_forward_left")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                true,
+                1.0F,
+                0.22F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
+            )
+        );
+        context.register(
+            HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD_RIGHT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/walk_forward_right")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                true,
+                1.0F,
+                0.22F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -292,8 +359,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.67F
+                0.97F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -305,8 +374,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.69F
+                0.99F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -318,8 +389,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -331,8 +404,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -344,8 +419,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -357,8 +434,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -370,8 +449,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -383,8 +464,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -396,8 +479,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -409,8 +494,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -422,8 +509,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -435,8 +524,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -448,8 +539,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -461,8 +554,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -474,8 +569,10 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
             )
         );
         context.register(
@@ -487,8 +584,100 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
                 0.25F,
                 true,
                 false,
+                true,
                 1.0F,
-                0.0F
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
+            )
+        );
+        context.register(
+            SHEEP_DEATH,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:sheep/death")),
+                0.1F,
+                0.1F,
+                false,
+                false,
+                true,
+                1.0F,
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:none"))
+            )
+        );
+        context.register(
+            SHEEP_EAT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:sheep/eat")),
+                0.3F,
+                0.3F,
+                false,
+                false,
+                true,
+                2.5F,
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
+            )
+        );
+        context.register(
+            SHEEP_HIT,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:sheep/hit")),
+                0.1F,
+                0.1F,
+                false,
+                false,
+                true,
+                1.0F,
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:none"))
+            )
+        );
+        context.register(
+            SHEEP_IDLE,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:sheep/idle")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                true,
+                1.0F,
+                0.0F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:procedural"))
+            )
+        );
+        context.register(
+            SHEEP_RUN,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:sheep/run")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                true,
+                1.0F,
+                0.48F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:animation_curve"))
+            )
+        );
+        context.register(
+            SHEEP_WALK,
+            new AnimationSequence(
+                AnimationNotifyTrack.EMPTY,
+                AnimationManager.accessor(Identifier.parse("epicfight:sheep/walk")),
+                0.25F,
+                0.25F,
+                true,
+                false,
+                true,
+                1.0F,
+                0.14F,
+                IKType.ENUM_MANAGER.getOrThrow(Identifier.parse("akythera:animation_curve"))
             )
         );
     }
@@ -518,6 +707,8 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
         writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_LEFT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_LEFT).value());
         writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_BACKWARD_RIGHT).value());
         writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD_LEFT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD_LEFT).value());
+        writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_FORWARD_RIGHT).value());
         writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_LEFT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_LEFT).value());
         writer.accept(HUMANOID_LOCOMOTION_COMMON_WALK_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_COMMON_WALK_RIGHT).value());
         writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_IDLE, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_IDLE).value());
@@ -534,5 +725,11 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
         writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_FORWARD_RIGHT).value());
         writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_LEFT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_LEFT).value());
         writer.accept(HUMANOID_LOCOMOTION_ONEHANDED_WALK_RIGHT, registryLookup.getOrThrow(HUMANOID_LOCOMOTION_ONEHANDED_WALK_RIGHT).value());
+        writer.accept(SHEEP_DEATH, registryLookup.getOrThrow(SHEEP_DEATH).value());
+        writer.accept(SHEEP_EAT, registryLookup.getOrThrow(SHEEP_EAT).value());
+        writer.accept(SHEEP_HIT, registryLookup.getOrThrow(SHEEP_HIT).value());
+        writer.accept(SHEEP_IDLE, registryLookup.getOrThrow(SHEEP_IDLE).value());
+        writer.accept(SHEEP_RUN, registryLookup.getOrThrow(SHEEP_RUN).value());
+        writer.accept(SHEEP_WALK, registryLookup.getOrThrow(SHEEP_WALK).value());
     }
 }

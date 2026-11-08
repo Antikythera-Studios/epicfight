@@ -5,6 +5,7 @@
   "loops": true,
   "root_motion": false,
   "phase_offset": 0.48,
+  "ik_type": "akythera:animation_curve",
   "preview_entity_type": "minecraft:sheep",
   "notify_tracks": {
     "tracks": [
