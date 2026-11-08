@@ -49,6 +49,7 @@ import java.util.Map;
 
 public abstract class PatchedLivingEntityRenderer<E extends LivingEntity, T extends LivingEntityPatch<E>, M extends EntityModel<E>, R extends LivingEntityRenderer<E, M>, AM extends SkinnedMesh> extends PatchedEntityRenderer<E, T, R, AM> implements LayerRenderer<E, T, M> {
 	protected final Map<Class<?>, PatchedLayer<E, T, M, ? extends RenderLayer<E, M>>> patchedLayers = Maps.newHashMap();
+	private final Map<Class<?>, PatchedLayer<E, T, M, ? extends RenderLayer<E, M>>> unregisteredLayers = Maps.newHashMap();
 	protected final List<PatchedLayer<E, T, M, ? extends RenderLayer<E, M>>> customLayers = Lists.newArrayList();
 	
 	public PatchedLivingEntityRenderer(EntityRendererProvider.Context context, EntityType<?> entityType) {
@@ -239,9 +240,23 @@ public abstract class PatchedLivingEntityRenderer<E extends LivingEntity, T exte
 				layerClass = layerClass.getSuperclass();
 			}
 			
-			if (this.patchedLayers.containsKey(layerClass)) {
-				this.patchedLayers.get(layerClass).renderLayer(entity, entitypatch, layer, poseStack, buffer, packedLight, poses, bob, f2, f7, partialTicks);
+			PatchedLayer<E, T, M, ? extends RenderLayer<E, M>> patchedLayer = this.patchedLayers.get(layerClass);
+			
+			if (patchedLayer == null) {
+				// initLayerLast only knows the layers that exist when this renderer is built. A mod that adds its
+				// layer later (on a resource reload, for instance) never gets a patched counterpart, and skipping
+				// it silently made its geometry disappear as soon as the vanilla renderer was replaced. Draw those
+				// layers on the original model, the same way initLayerLast does for the vanilla layers it captures.
+				patchedLayer = this.unregisteredLayers.get(layerClass);
+				
+				if (patchedLayer == null) {
+					patchedLayer = new RenderOriginalModelLayer<> ("Root", new Vec3f(0.0F, this.getDefaultLayerHeightCorrection(), 0.0F), new Vec3f(0.0F, 0.0F, 0.0F));
+					this.unregisteredLayers.put(layerClass, patchedLayer);
+					EpicFightMod.LOGGER.info("Rendering unregistered layer {} for {} on the original model", layerClass.getName(), EntityType.getKey(entity.getType()));
+				}
 			}
+			
+			patchedLayer.renderLayer(entity, entitypatch, layer, poseStack, buffer, packedLight, poses, bob, f2, f7, partialTicks);
 		}
 		
 		for (PatchedLayer<E, T, M, ? extends RenderLayer<E, M>> patchedLayer : this.customLayers) {
