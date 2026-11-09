@@ -136,7 +136,7 @@
                 "id": 1,
                 "x": 135,
                 "y": -5,
-                "function": "minecraft:sheep_wool_color",
+                "function": "epicfight:sheep_wool_color",
                 "kind": "pure_function"
               }
             ],
@@ -214,7 +214,7 @@
         "id": 4,
         "x": 120,
         "y": 330,
-        "function": "minecraft:sheep_is_sheared",
+        "function": "epicfight:sheep_is_sheared",
         "kind": "pure_function"
       },
       {
@@ -336,6 +336,20 @@
             "value": "armature"
           }
         ]
+      },
+      {
+        "id": 15,
+        "x": 55,
+        "y": -135,
+        "method": "onJoinWorld",
+        "kind": "method_entry"
+      },
+      {
+        "id": 14,
+        "x": 315,
+        "y": -135,
+        "function": "epicfight:smooth_locomotion",
+        "kind": "flow_function"
       }
     ],
     "wires": [
@@ -422,6 +436,12 @@
         "from_pin": 0,
         "to": 13,
         "to_pin": 3
+      },
+      {
+        "from": 15,
+        "from_pin": 0,
+        "to": 14,
+        "to_pin": 0
       }
     ]
   },

@@ -24,31 +24,5 @@
       "first": "right_front_knee",
       "second": "left_front_knee"
     }
-  ],
-  "legs": [
-    {
-      "thigh": "right_hind_leg",
-      "shin": "right_hind_leg_bend",
-      "leads": "left",
-      "step_height": 0.1
-    },
-    {
-      "thigh": "left_hind_leg",
-      "shin": "left_hind_leg_bend",
-      "leads": "right",
-      "step_height": 0.1
-    },
-    {
-      "thigh": "right_front_leg",
-      "shin": "right_front_leg_bend",
-      "leads": "right",
-      "step_height": 0.1
-    },
-    {
-      "thigh": "left_front_leg",
-      "shin": "left_front_leg_bend",
-      "leads": "left",
-      "step_height": 0.1
-    }
   ]
 }

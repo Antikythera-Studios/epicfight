@@ -10,395 +10,31 @@
         "kind": "method_entry"
       },
       {
-        "id": 10,
-        "x": -260,
-        "y": 0,
-        "outputs": 5,
-        "kind": "sequence"
-      },
-      {
-        "id": 11,
-        "x": -420,
-        "y": 140,
-        "function": "akythera:ability_system_component_get_owner",
-        "kind": "pure_function"
-      },
-      {
-        "id": 12,
-        "x": -260,
-        "y": 140,
-        "function": "minecraft:entity_patch_get_tick_count",
-        "kind": "pure_function"
-      },
-      {
-        "id": 13,
-        "x": -260,
-        "y": 200,
-        "variable": "last_attack_tick",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 14,
-        "x": -100,
-        "y": 160,
-        "op": "SUBTRACT",
-        "kind": "operator"
-      },
-      {
-        "id": 15,
-        "x": -260,
-        "y": 260,
-        "variable": "current_lock_ticks",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 16,
-        "x": -260,
-        "y": 300,
-        "variable": "combo_grace_ticks",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 17,
-        "x": -100,
-        "y": 260,
-        "op": "ADD",
-        "kind": "operator"
-      },
-      {
-        "id": 18,
-        "x": 40,
-        "y": 200,
-        "op": "GREATER",
-        "kind": "comparator"
-      },
-      {
-        "id": 19,
-        "x": 160,
-        "y": -120,
-        "kind": "branch"
-      },
-      {
-        "id": 20,
-        "x": 320,
-        "y": -120,
-        "variable": "combo_counter",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_setter"
-      },
-      {
-        "id": 21,
-        "x": 160,
-        "y": -60,
-        "literal_type": "minecraft:integer",
-        "literal_value": "0",
-        "kind": "literal"
-      },
-      {
-        "id": 22,
-        "x": 160,
-        "y": -20,
-        "variable": "current_lock_ticks",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_setter"
-      },
-      {
-        "id": 23,
-        "x": -100,
-        "y": 20,
-        "variable": "combo_lock_ticks",
-        "variable_type": {
-          "element": "minecraft:integer",
-          "container": "list"
-        },
-        "kind": "variable_getter"
-      },
-      {
-        "id": 24,
-        "x": -100,
-        "y": 60,
-        "variable": "combo_counter",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 25,
-        "x": 40,
-        "y": 20,
-        "function": "minecraft:list_get",
-        "kind": "pure_function"
-      },
-      {
         "id": 1,
-        "x": 320,
-        "y": 60,
-        "function": "akythera:ability_system_component_activate_task",
-        "kind": "flow_function"
+        "x": -200,
+        "y": 0,
+        "function": "swing",
+        "kind": "function_call"
       },
       {
         "id": 2,
-        "x": 160,
-        "y": 100,
-        "function": "akythera:play_montage_task_ctor",
-        "kind": "pure_function",
-        "pin_literals": [
-          {
-            "pin": 0,
-            "type": "akythera:anim_montage",
-            "registry_key": true,
-            "value": "epicfight:humanoid/montage/sword_auto1"
-          },
-          {
-            "pin": 1,
-            "type": "minecraft:string",
-            "value": ""
-          }
-        ]
+        "x": -420,
+        "y": 160,
+        "method": "onRecast",
+        "kind": "method_entry"
       },
       {
         "id": 3,
-        "x": -100,
-        "y": 100,
-        "variable": "combo_montages",
-        "variable_type": {
-          "element": "akythera:anim_montage",
-          "container": "list"
-        },
-        "kind": "variable_getter"
-      },
-      {
-        "id": 4,
-        "x": 40,
-        "y": 100,
-        "function": "minecraft:list_get",
-        "kind": "pure_function",
-        "pin_literals": [
-          {
-            "pin": 1,
-            "type": "minecraft:integer",
-            "value": 0
-          }
-        ]
-      },
-      {
-        "id": 5,
-        "x": -100,
-        "y": 140,
-        "variable": "combo_counter",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 26,
-        "x": 160,
-        "y": 340,
-        "variable": "combo_counter",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_setter"
-      },
-      {
-        "id": 27,
-        "x": -100,
-        "y": 340,
-        "variable": "combo_counter",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 28,
-        "x": 40,
-        "y": 340,
-        "op": "ADD",
-        "kind": "operator"
-      },
-      {
-        "id": 29,
-        "x": -100,
-        "y": 380,
-        "literal_type": "minecraft:integer",
-        "literal_value": "1",
-        "kind": "literal"
-      },
-      {
-        "id": 30,
-        "x": 320,
-        "y": 340,
-        "kind": "branch"
-      },
-      {
-        "id": 31,
-        "x": 160,
-        "y": 420,
-        "op": "GREATER_EQUAL",
-        "kind": "comparator"
-      },
-      {
-        "id": 32,
-        "x": 40,
-        "y": 420,
-        "variable": "combo_counter",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_getter"
-      },
-      {
-        "id": 33,
-        "x": 40,
-        "y": 460,
-        "function": "minecraft:list_size",
-        "kind": "pure_function"
-      },
-      {
-        "id": 34,
-        "x": -100,
-        "y": 460,
-        "variable": "combo_montages",
-        "variable_type": {
-          "element": "akythera:anim_montage",
-          "container": "list"
-        },
-        "kind": "variable_getter"
-      },
-      {
-        "id": 35,
-        "x": 480,
-        "y": 340,
-        "variable": "combo_counter",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_setter"
-      },
-      {
-        "id": 36,
-        "x": 320,
-        "y": 420,
-        "literal_type": "minecraft:integer",
-        "literal_value": "0",
-        "kind": "literal"
-      },
-      {
-        "id": 37,
-        "x": 160,
-        "y": 520,
-        "variable": "last_attack_tick",
-        "variable_type": "minecraft:integer",
-        "kind": "variable_setter"
-      },
-      {
-        "id": 38,
-        "x": 100,
-        "y": 140,
-        "function": "akythera:anim_montage_key",
-        "kind": "pure_function"
+        "x": -200,
+        "y": 160,
+        "function": "swing",
+        "kind": "function_call"
       }
     ],
     "wires": [
       {
         "from": 0,
         "from_pin": 0,
-        "to": 10,
-        "to_pin": 0
-      },
-      {
-        "from": 0,
-        "from_pin": 1,
-        "to": 11,
-        "to_pin": 0
-      },
-      {
-        "from": 11,
-        "from_pin": 0,
-        "to": 12,
-        "to_pin": 0
-      },
-      {
-        "from": 12,
-        "from_pin": 0,
-        "to": 14,
-        "to_pin": 0
-      },
-      {
-        "from": 13,
-        "from_pin": 0,
-        "to": 14,
-        "to_pin": 1
-      },
-      {
-        "from": 15,
-        "from_pin": 0,
-        "to": 17,
-        "to_pin": 0
-      },
-      {
-        "from": 16,
-        "from_pin": 0,
-        "to": 17,
-        "to_pin": 1
-      },
-      {
-        "from": 14,
-        "from_pin": 0,
-        "to": 18,
-        "to_pin": 0
-      },
-      {
-        "from": 17,
-        "from_pin": 0,
-        "to": 18,
-        "to_pin": 1
-      },
-      {
-        "from": 10,
-        "from_pin": 0,
-        "to": 19,
-        "to_pin": 0
-      },
-      {
-        "from": 18,
-        "from_pin": 0,
-        "to": 19,
-        "to_pin": 1
-      },
-      {
-        "from": 19,
-        "from_pin": 0,
-        "to": 20,
-        "to_pin": 0
-      },
-      {
-        "from": 21,
-        "from_pin": 0,
-        "to": 20,
-        "to_pin": 1
-      },
-      {
-        "from": 10,
-        "from_pin": 1,
-        "to": 22,
-        "to_pin": 0
-      },
-      {
-        "from": 23,
-        "from_pin": 0,
-        "to": 25,
-        "to_pin": 0
-      },
-      {
-        "from": 24,
-        "from_pin": 0,
-        "to": 25,
-        "to_pin": 1
-      },
-      {
-        "from": 25,
-        "from_pin": 0,
-        "to": 22,
-        "to_pin": 1
-      },
-      {
-        "from": 10,
-        "from_pin": 2,
         "to": 1,
         "to_pin": 0
       },
@@ -417,110 +53,20 @@
       {
         "from": 2,
         "from_pin": 0,
-        "to": 1,
-        "to_pin": 3
-      },
-      {
-        "from": 3,
-        "from_pin": 0,
-        "to": 4,
+        "to": 3,
         "to_pin": 0
       },
       {
-        "from": 5,
-        "from_pin": 0,
-        "to": 4,
+        "from": 2,
+        "from_pin": 1,
+        "to": 3,
         "to_pin": 1
       },
       {
-        "from": 10,
-        "from_pin": 3,
-        "to": 26,
-        "to_pin": 0
-      },
-      {
-        "from": 27,
-        "from_pin": 0,
-        "to": 28,
-        "to_pin": 0
-      },
-      {
-        "from": 29,
-        "from_pin": 0,
-        "to": 28,
-        "to_pin": 1
-      },
-      {
-        "from": 28,
-        "from_pin": 0,
-        "to": 26,
-        "to_pin": 1
-      },
-      {
-        "from": 26,
-        "from_pin": 0,
-        "to": 30,
-        "to_pin": 0
-      },
-      {
-        "from": 32,
-        "from_pin": 0,
-        "to": 31,
-        "to_pin": 0
-      },
-      {
-        "from": 34,
-        "from_pin": 0,
-        "to": 33,
-        "to_pin": 0
-      },
-      {
-        "from": 33,
-        "from_pin": 0,
-        "to": 31,
-        "to_pin": 1
-      },
-      {
-        "from": 31,
-        "from_pin": 0,
-        "to": 30,
-        "to_pin": 1
-      },
-      {
-        "from": 30,
-        "from_pin": 0,
-        "to": 35,
-        "to_pin": 0
-      },
-      {
-        "from": 36,
-        "from_pin": 0,
-        "to": 35,
-        "to_pin": 1
-      },
-      {
-        "from": 10,
-        "from_pin": 4,
-        "to": 37,
-        "to_pin": 0
-      },
-      {
-        "from": 12,
-        "from_pin": 0,
-        "to": 37,
-        "to_pin": 1
-      },
-      {
-        "from": 4,
-        "from_pin": 0,
-        "to": 38,
-        "to_pin": 0
-      },
-      {
-        "from": 38,
-        "from_pin": 0,
-        "to": 2,
-        "to_pin": 0
+        "from": 2,
+        "from_pin": 2,
+        "to": 3,
+        "to_pin": 2
       }
     ]
   },
@@ -730,10 +276,884 @@
           "to_pin": 1
         }
       ]
+    },
+    "canRecast": {
+      "nodes": [
+        {
+          "id": 0,
+          "x": 50,
+          "y": 60,
+          "method": "canRecast",
+          "kind": "method_entry"
+        },
+        {
+          "id": 1,
+          "x": 250,
+          "y": 60,
+          "kind": "parent_call"
+        },
+        {
+          "id": 2,
+          "x": 780,
+          "y": 60,
+          "kind": "return",
+          "pin_literals": [
+            {
+              "pin": 1,
+              "type": "minecraft:boolean",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "x": 50,
+          "y": 160,
+          "function": "akythera:ability_system_component_get_owner",
+          "kind": "pure_function"
+        },
+        {
+          "id": 4,
+          "x": 200,
+          "y": 160,
+          "function": "minecraft:entity_patch_get_tick_count",
+          "kind": "pure_function"
+        },
+        {
+          "id": 5,
+          "x": 200,
+          "y": 220,
+          "variable": "last_attack_tick",
+          "variable_type": "minecraft:integer",
+          "kind": "variable_getter"
+        },
+        {
+          "id": 6,
+          "x": 350,
+          "y": 180,
+          "op": "SUBTRACT",
+          "kind": "operator"
+        },
+        {
+          "id": 7,
+          "x": 350,
+          "y": 240,
+          "variable": "current_lock_ticks",
+          "variable_type": "minecraft:integer",
+          "kind": "variable_getter"
+        },
+        {
+          "id": 8,
+          "x": 480,
+          "y": 200,
+          "op": "GREATER_EQUAL",
+          "kind": "comparator"
+        },
+        {
+          "id": 9,
+          "x": 560,
+          "y": 120,
+          "op": "AND",
+          "kind": "logical_operation"
+        },
+        {
+          "id": 10,
+          "x": 350,
+          "y": 300,
+          "function": "minecraft:living_entity_patch_get_stance",
+          "kind": "pure_function"
+        },
+        {
+          "id": 11,
+          "x": 480,
+          "y": 300,
+          "function": "akythera:is_null",
+          "kind": "pure_function"
+        },
+        {
+          "id": 12,
+          "x": 580,
+          "y": 300,
+          "kind": "not"
+        },
+        {
+          "id": 13,
+          "x": 640,
+          "y": 200,
+          "op": "AND",
+          "kind": "logical_operation"
+        }
+      ],
+      "wires": [
+        {
+          "from": 0,
+          "from_pin": 0,
+          "to": 1,
+          "to_pin": 0
+        },
+        {
+          "from": 1,
+          "from_pin": 0,
+          "to": 2,
+          "to_pin": 0
+        },
+        {
+          "from": 0,
+          "from_pin": 1,
+          "to": 3,
+          "to_pin": 0
+        },
+        {
+          "from": 3,
+          "from_pin": 0,
+          "to": 4,
+          "to_pin": 0
+        },
+        {
+          "from": 4,
+          "from_pin": 0,
+          "to": 6,
+          "to_pin": 0
+        },
+        {
+          "from": 5,
+          "from_pin": 0,
+          "to": 6,
+          "to_pin": 1
+        },
+        {
+          "from": 6,
+          "from_pin": 0,
+          "to": 8,
+          "to_pin": 0
+        },
+        {
+          "from": 7,
+          "from_pin": 0,
+          "to": 8,
+          "to_pin": 1
+        },
+        {
+          "from": 1,
+          "from_pin": 1,
+          "to": 9,
+          "to_pin": 0
+        },
+        {
+          "from": 8,
+          "from_pin": 0,
+          "to": 9,
+          "to_pin": 1
+        },
+        {
+          "from": 3,
+          "from_pin": 0,
+          "to": 10,
+          "to_pin": 0
+        },
+        {
+          "from": 10,
+          "from_pin": 0,
+          "to": 11,
+          "to_pin": 0
+        },
+        {
+          "from": 11,
+          "from_pin": 0,
+          "to": 12,
+          "to_pin": 0
+        },
+        {
+          "from": 9,
+          "from_pin": 0,
+          "to": 13,
+          "to_pin": 0
+        },
+        {
+          "from": 12,
+          "from_pin": 0,
+          "to": 13,
+          "to_pin": 1
+        },
+        {
+          "from": 13,
+          "from_pin": 0,
+          "to": 2,
+          "to_pin": 1
+        }
+      ]
     }
   },
+  "functions": [
+    {
+      "name": "swing",
+      "parameters": [
+        {
+          "name": "abilitySystemComponent",
+          "type": "akythera:ability_system_component"
+        },
+        {
+          "name": "abilityInstance",
+          "type": "akythera:ability_instance"
+        }
+      ],
+      "graph": {
+        "nodes": [
+          {
+            "id": 0,
+            "x": -420,
+            "y": 0,
+            "method": "swing",
+            "kind": "method_entry"
+          },
+          {
+            "id": 10,
+            "x": -260,
+            "y": 0,
+            "outputs": 6,
+            "kind": "sequence"
+          },
+          {
+            "id": 11,
+            "x": -420,
+            "y": 140,
+            "function": "akythera:ability_system_component_get_owner",
+            "kind": "pure_function"
+          },
+          {
+            "id": 12,
+            "x": -260,
+            "y": 140,
+            "function": "minecraft:entity_patch_get_tick_count",
+            "kind": "pure_function"
+          },
+          {
+            "id": 13,
+            "x": -260,
+            "y": 200,
+            "variable": "last_attack_tick",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_getter"
+          },
+          {
+            "id": 14,
+            "x": -100,
+            "y": 160,
+            "op": "SUBTRACT",
+            "kind": "operator"
+          },
+          {
+            "id": 15,
+            "x": -260,
+            "y": 260,
+            "variable": "current_lock_ticks",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_getter"
+          },
+          {
+            "id": 16,
+            "x": -260,
+            "y": 300,
+            "variable": "combo_grace_ticks",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_getter"
+          },
+          {
+            "id": 17,
+            "x": -100,
+            "y": 260,
+            "op": "ADD",
+            "kind": "operator"
+          },
+          {
+            "id": 18,
+            "x": 40,
+            "y": 200,
+            "op": "GREATER",
+            "kind": "comparator"
+          },
+          {
+            "id": 19,
+            "x": 160,
+            "y": -120,
+            "kind": "branch"
+          },
+          {
+            "id": 20,
+            "x": 320,
+            "y": -120,
+            "variable": "combo_counter",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_setter"
+          },
+          {
+            "id": 21,
+            "x": 160,
+            "y": -60,
+            "literal_type": "minecraft:integer",
+            "literal_value": "0",
+            "kind": "literal"
+          },
+          {
+            "id": 22,
+            "x": 160,
+            "y": -20,
+            "variable": "current_lock_ticks",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_setter"
+          },
+          {
+            "id": 23,
+            "x": -100,
+            "y": 20,
+            "variable": "combo_lock_ticks",
+            "variable_type": {
+              "element": "minecraft:integer",
+              "container": "list"
+            },
+            "kind": "variable_getter"
+          },
+          {
+            "id": 24,
+            "x": -100,
+            "y": 60,
+            "variable": "combo_counter",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_getter"
+          },
+          {
+            "id": 25,
+            "x": 40,
+            "y": 20,
+            "function": "minecraft:list_get",
+            "kind": "pure_function"
+          },
+          {
+            "id": 1,
+            "x": 320,
+            "y": 60,
+            "function": "akythera:ability_system_component_activate_task",
+            "kind": "flow_function"
+          },
+          {
+            "id": 2,
+            "x": 160,
+            "y": 100,
+            "function": "akythera:play_montage_task_ctor",
+            "kind": "pure_function",
+            "pin_literals": [
+              {
+                "pin": 0,
+                "type": "akythera:anim_montage",
+                "registry_key": true,
+                "value": "epicfight:humanoid/montage/sword_auto1"
+              },
+              {
+                "pin": 1,
+                "type": "minecraft:string",
+                "value": ""
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "x": -100,
+            "y": 100,
+            "variable": "combo_montages",
+            "variable_type": {
+              "element": "akythera:anim_montage",
+              "container": "list"
+            },
+            "kind": "variable_getter"
+          },
+          {
+            "id": 4,
+            "x": 40,
+            "y": 100,
+            "function": "minecraft:list_get",
+            "kind": "pure_function",
+            "pin_literals": [
+              {
+                "pin": 1,
+                "type": "minecraft:integer",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "x": -100,
+            "y": 140,
+            "variable": "combo_counter",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_getter"
+          },
+          {
+            "id": 26,
+            "x": 160,
+            "y": 340,
+            "variable": "combo_counter",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_setter"
+          },
+          {
+            "id": 27,
+            "x": -100,
+            "y": 340,
+            "variable": "combo_counter",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_getter"
+          },
+          {
+            "id": 28,
+            "x": 40,
+            "y": 340,
+            "op": "ADD",
+            "kind": "operator"
+          },
+          {
+            "id": 29,
+            "x": -100,
+            "y": 380,
+            "literal_type": "minecraft:integer",
+            "literal_value": "1",
+            "kind": "literal"
+          },
+          {
+            "id": 30,
+            "x": 320,
+            "y": 340,
+            "kind": "branch"
+          },
+          {
+            "id": 31,
+            "x": 160,
+            "y": 420,
+            "op": "GREATER_EQUAL",
+            "kind": "comparator"
+          },
+          {
+            "id": 32,
+            "x": 40,
+            "y": 420,
+            "variable": "combo_counter",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_getter"
+          },
+          {
+            "id": 33,
+            "x": 40,
+            "y": 460,
+            "function": "minecraft:list_size",
+            "kind": "pure_function"
+          },
+          {
+            "id": 34,
+            "x": -100,
+            "y": 460,
+            "variable": "combo_montages",
+            "variable_type": {
+              "element": "akythera:anim_montage",
+              "container": "list"
+            },
+            "kind": "variable_getter"
+          },
+          {
+            "id": 35,
+            "x": 480,
+            "y": 340,
+            "variable": "combo_counter",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_setter"
+          },
+          {
+            "id": 36,
+            "x": 320,
+            "y": 420,
+            "literal_type": "minecraft:integer",
+            "literal_value": "0",
+            "kind": "literal"
+          },
+          {
+            "id": 37,
+            "x": 160,
+            "y": 520,
+            "variable": "last_attack_tick",
+            "variable_type": "minecraft:integer",
+            "kind": "variable_setter"
+          },
+          {
+            "id": 38,
+            "x": 100,
+            "y": 140,
+            "function": "akythera:anim_montage_key",
+            "kind": "pure_function"
+          },
+          {
+            "id": 40,
+            "x": -100,
+            "y": -260,
+            "variable": "current_swing",
+            "variable_type": "akythera:ability_task_handle",
+            "kind": "variable_getter"
+          },
+          {
+            "id": 41,
+            "x": 40,
+            "y": -220,
+            "function": "akythera:is_null",
+            "kind": "pure_function"
+          },
+          {
+            "id": 42,
+            "x": 160,
+            "y": -260,
+            "kind": "branch"
+          },
+          {
+            "id": 43,
+            "x": 320,
+            "y": -260,
+            "function": "akythera:ability_task_handle_invalidate",
+            "kind": "flow_function"
+          },
+          {
+            "id": 44,
+            "x": 560,
+            "y": 60,
+            "variable": "current_swing",
+            "variable_type": "akythera:ability_task_handle",
+            "kind": "variable_setter"
+          },
+          {
+            "id": 45,
+            "x": 560,
+            "y": 140,
+            "function": "akythera:ability_system_component_end_ability",
+            "kind": "flow_function",
+            "pin_literals": [
+              {
+                "pin": 2,
+                "type": "akythera:ability_slot",
+                "value": "epicfight:combo_attack"
+              }
+            ]
+          },
+          {
+            "id": 46,
+            "x": 560,
+            "y": 240,
+            "function": "akythera:ability_system_component_end_ability",
+            "kind": "flow_function",
+            "pin_literals": [
+              {
+                "pin": 2,
+                "type": "akythera:ability_slot",
+                "value": "epicfight:combo_attack"
+              }
+            ]
+          }
+        ],
+        "wires": [
+          {
+            "from": 0,
+            "from_pin": 0,
+            "to": 10,
+            "to_pin": 0
+          },
+          {
+            "from": 0,
+            "from_pin": 1,
+            "to": 11,
+            "to_pin": 0
+          },
+          {
+            "from": 11,
+            "from_pin": 0,
+            "to": 12,
+            "to_pin": 0
+          },
+          {
+            "from": 12,
+            "from_pin": 0,
+            "to": 14,
+            "to_pin": 0
+          },
+          {
+            "from": 13,
+            "from_pin": 0,
+            "to": 14,
+            "to_pin": 1
+          },
+          {
+            "from": 15,
+            "from_pin": 0,
+            "to": 17,
+            "to_pin": 0
+          },
+          {
+            "from": 16,
+            "from_pin": 0,
+            "to": 17,
+            "to_pin": 1
+          },
+          {
+            "from": 14,
+            "from_pin": 0,
+            "to": 18,
+            "to_pin": 0
+          },
+          {
+            "from": 17,
+            "from_pin": 0,
+            "to": 18,
+            "to_pin": 1
+          },
+          {
+            "from": 10,
+            "from_pin": 1,
+            "to": 19,
+            "to_pin": 0
+          },
+          {
+            "from": 18,
+            "from_pin": 0,
+            "to": 19,
+            "to_pin": 1
+          },
+          {
+            "from": 19,
+            "from_pin": 0,
+            "to": 20,
+            "to_pin": 0
+          },
+          {
+            "from": 21,
+            "from_pin": 0,
+            "to": 20,
+            "to_pin": 1
+          },
+          {
+            "from": 10,
+            "from_pin": 2,
+            "to": 22,
+            "to_pin": 0
+          },
+          {
+            "from": 23,
+            "from_pin": 0,
+            "to": 25,
+            "to_pin": 0
+          },
+          {
+            "from": 24,
+            "from_pin": 0,
+            "to": 25,
+            "to_pin": 1
+          },
+          {
+            "from": 25,
+            "from_pin": 0,
+            "to": 22,
+            "to_pin": 1
+          },
+          {
+            "from": 10,
+            "from_pin": 3,
+            "to": 1,
+            "to_pin": 0
+          },
+          {
+            "from": 0,
+            "from_pin": 1,
+            "to": 1,
+            "to_pin": 1
+          },
+          {
+            "from": 0,
+            "from_pin": 2,
+            "to": 1,
+            "to_pin": 2
+          },
+          {
+            "from": 2,
+            "from_pin": 0,
+            "to": 1,
+            "to_pin": 3
+          },
+          {
+            "from": 3,
+            "from_pin": 0,
+            "to": 4,
+            "to_pin": 0
+          },
+          {
+            "from": 5,
+            "from_pin": 0,
+            "to": 4,
+            "to_pin": 1
+          },
+          {
+            "from": 10,
+            "from_pin": 4,
+            "to": 26,
+            "to_pin": 0
+          },
+          {
+            "from": 27,
+            "from_pin": 0,
+            "to": 28,
+            "to_pin": 0
+          },
+          {
+            "from": 29,
+            "from_pin": 0,
+            "to": 28,
+            "to_pin": 1
+          },
+          {
+            "from": 28,
+            "from_pin": 0,
+            "to": 26,
+            "to_pin": 1
+          },
+          {
+            "from": 26,
+            "from_pin": 0,
+            "to": 30,
+            "to_pin": 0
+          },
+          {
+            "from": 32,
+            "from_pin": 0,
+            "to": 31,
+            "to_pin": 0
+          },
+          {
+            "from": 34,
+            "from_pin": 0,
+            "to": 33,
+            "to_pin": 0
+          },
+          {
+            "from": 33,
+            "from_pin": 0,
+            "to": 31,
+            "to_pin": 1
+          },
+          {
+            "from": 31,
+            "from_pin": 0,
+            "to": 30,
+            "to_pin": 1
+          },
+          {
+            "from": 30,
+            "from_pin": 0,
+            "to": 35,
+            "to_pin": 0
+          },
+          {
+            "from": 36,
+            "from_pin": 0,
+            "to": 35,
+            "to_pin": 1
+          },
+          {
+            "from": 10,
+            "from_pin": 5,
+            "to": 37,
+            "to_pin": 0
+          },
+          {
+            "from": 12,
+            "from_pin": 0,
+            "to": 37,
+            "to_pin": 1
+          },
+          {
+            "from": 4,
+            "from_pin": 0,
+            "to": 38,
+            "to_pin": 0
+          },
+          {
+            "from": 38,
+            "from_pin": 0,
+            "to": 2,
+            "to_pin": 0
+          },
+          {
+            "from": 40,
+            "from_pin": 0,
+            "to": 41,
+            "to_pin": 0
+          },
+          {
+            "from": 10,
+            "from_pin": 0,
+            "to": 42,
+            "to_pin": 0
+          },
+          {
+            "from": 41,
+            "from_pin": 0,
+            "to": 42,
+            "to_pin": 1
+          },
+          {
+            "from": 42,
+            "from_pin": 1,
+            "to": 43,
+            "to_pin": 0
+          },
+          {
+            "from": 40,
+            "from_pin": 0,
+            "to": 43,
+            "to_pin": 1
+          },
+          {
+            "from": 1,
+            "from_pin": 0,
+            "to": 44,
+            "to_pin": 0
+          },
+          {
+            "from": 1,
+            "from_pin": 3,
+            "to": 44,
+            "to_pin": 1
+          },
+          {
+            "from": 1,
+            "from_pin": 1,
+            "to": 45,
+            "to_pin": 0
+          },
+          {
+            "from": 0,
+            "from_pin": 1,
+            "to": 45,
+            "to_pin": 1
+          },
+          {
+            "from": 1,
+            "from_pin": 2,
+            "to": 46,
+            "to_pin": 0
+          },
+          {
+            "from": 0,
+            "from_pin": 1,
+            "to": 46,
+            "to_pin": 1
+          }
+        ]
+      }
+    }
+  ],
   "properties": {
-    "activation_type": "instant",
     "instantiation_scope": "local_and_server",
     "triggers": [
       {
@@ -745,8 +1165,7 @@
       "activation_blocked_tags": [
         "epicfight:activation/combo_attack"
       ]
-    },
-    "input_action": "epicfight:combo_attack"
+    }
   },
   "variables": [
     {
@@ -794,6 +1213,10 @@
       "name": "last_attack_tick",
       "type": "minecraft:integer",
       "default_value": -100000
+    },
+    {
+      "name": "current_swing",
+      "type": "akythera:ability_task_handle"
     }
   ]
 }

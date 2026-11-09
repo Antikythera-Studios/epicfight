@@ -1,5 +1,116 @@
 {
   "import_type": "common",
   "ref_pose_timestamp": 0.0,
+  "ik": {
+    "right_hind_leg_bend": {
+      "plant": [
+        {
+          "time": 0.0,
+          "value": 0.0
+        },
+        {
+          "time": 0.26666665,
+          "value": 0.0
+        },
+        {
+          "time": 0.2833333,
+          "value": 1.0
+        },
+        {
+          "time": 0.5833333,
+          "value": 1.0
+        },
+        {
+          "time": 0.6833333,
+          "value": 0.0
+        },
+        {
+          "time": 0.7,
+          "value": 0.0
+        }
+      ]
+    },
+    "right_front_leg_bend": {
+      "plant": [
+        {
+          "time": 0.0,
+          "value": 1.0
+        },
+        {
+          "time": 0.18333328,
+          "value": 1.0
+        },
+        {
+          "time": 0.31249994,
+          "value": 0.0
+        },
+        {
+          "time": 0.6833333,
+          "value": 0.0
+        },
+        {
+          "time": 0.7,
+          "value": 1.0
+        }
+      ]
+    },
+    "left_hind_leg_bend": {
+      "plant": [
+        {
+          "time": 0.0,
+          "value": 0.0
+        },
+        {
+          "time": 0.23333332,
+          "value": 0.0
+        },
+        {
+          "time": 0.24999999,
+          "value": 1.0
+        },
+        {
+          "time": 0.59999996,
+          "value": 1.0
+        },
+        {
+          "time": 0.6875,
+          "value": 0.0
+        },
+        {
+          "time": 0.7,
+          "value": 0.0
+        }
+      ]
+    },
+    "left_front_leg_bend": {
+      "plant": [
+        {
+          "time": 0.0,
+          "value": 0.0
+        },
+        {
+          "time": 0.049999997,
+          "value": 0.0
+        },
+        {
+          "time": 0.06666666,
+          "value": 1.0
+        },
+        {
+          "time": 0.19999999,
+          "value": 1.0
+        },
+        {
+          "time": 0.34166664,
+          "value": 0.0
+        },
+        {
+          "time": 0.7,
+          "value": 0.0
+        }
+      ]
+    }
+  },
+  "vendor": "epicfight:sheep",
   "preview_entity_type": "minecraft:sheep"
 }

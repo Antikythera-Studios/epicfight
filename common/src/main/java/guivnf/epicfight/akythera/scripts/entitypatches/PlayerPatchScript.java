@@ -20,6 +20,7 @@ import com.yesman.akythera.api.asset.armature.ArmatureManager;
 import com.yesman.akythera.api.component.TransformInheritPolicy;
 import com.yesman.akythera.api.component.impl.EquipmentSlotBinderBlueprint;
 import com.yesman.akythera.api.data.modularize.node.PureNode;
+import com.yesman.akythera.api.world.ability.AbilitySystemComponent;
 import com.yesman.akythera.api.world.patch.entity.EntityPatch;
 import com.yesman.akythera.api.world.patch.entity.PlayerPatch;
 import com.yesman.akythera.api.world.patch.entity.component.EntityMovementComponent;
@@ -28,6 +29,7 @@ import com.yesman.akythera.client.api.component.impl.SkinnedArmorRendererBluepri
 import com.yesman.akythera.client.api.data.modularize.AkytheraClientScriptFunctions;
 import com.yesman.akythera.client.api.mesh.MeshManager;
 import com.yesman.akythera.client.core.asset.mesh.SkeletalMesh;
+import com.yesman.akythera.client.input.InputManager;
 import com.yesman.akythera.core.asset.armature.Armature;
 import com.yesman.akythera.core.asset.armature.TransformSocket;
 import com.yesman.akythera.core.blueprint.AbilitySystemComponentBlueprint;
@@ -38,7 +40,9 @@ import com.yesman.akythera.core.blueprint.RootMotionComponentBlueprint;
 import com.yesman.akythera.core.blueprint.script.EntityPatchScript;
 import com.yesman.akythera.core.math.Transform;
 import com.yesman.akythera.core.registry.AkytheraRegistries;
+import com.yesman.akythera.core.util.StaticRegistryAccess;
 import guivnf.epicfight.akythera.datablocks.EpicfightAbilitySlot;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -69,11 +73,23 @@ public final class PlayerPatchScript implements EntityPatchScript {
     }
 
     @Override
+    public void onPossessed() {
+        EntityPatchScript.super.onPossessed();
+        if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:combo_attack"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().bindAction(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:combo_attack"))).value(), null, () -> { ((AbilitySystemComponent) (this.owner == null || "ability_system" == null ? null : this.owner.getComponentAt("ability_system"))).requestActivation(EpicfightAbilitySlot.COMBO_ATTACK); }, null, null);
+    }
+
+    @Override
+    public void onUnpossessed() {
+        EntityPatchScript.super.onUnpossessed();
+        if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:combo_attack"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().unbindAction(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:combo_attack"))).value());
+    }
+
+    @Override
     public void update() {
         if (this.owner.isLogicalClient()) {
-            var cse_26_0 = ((((PlayerPatch) this.owner).getPlayerSkin() == null ? PlayerModelType.WIDE : ((PlayerPatch) this.owner).getPlayerSkin().model()) == PlayerModelType.SLIM);
-            if ((this.owner == null || "armature/main_mesh" == null ? null : this.owner.getComponentAt("armature/main_mesh")) != null) (this.owner == null || "armature/main_mesh" == null ? null : this.owner.getComponentAt("armature/main_mesh")).setEnabled(Boolean.TRUE.equals(!(cse_26_0)));
-            if ((this.owner == null || "armature/slim_mesh" == null ? null : this.owner.getComponentAt("armature/slim_mesh")) != null) (this.owner == null || "armature/slim_mesh" == null ? null : this.owner.getComponentAt("armature/slim_mesh")).setEnabled(Boolean.TRUE.equals(cse_26_0));
+            var cse_12_0 = ((((PlayerPatch) this.owner).getPlayerSkin() == null ? PlayerModelType.WIDE : ((PlayerPatch) this.owner).getPlayerSkin().model()) == PlayerModelType.SLIM);
+            if ((this.owner == null || "armature/main_mesh" == null ? null : this.owner.getComponentAt("armature/main_mesh")) != null) (this.owner == null || "armature/main_mesh" == null ? null : this.owner.getComponentAt("armature/main_mesh")).setEnabled(Boolean.TRUE.equals(!(cse_12_0)));
+            if ((this.owner == null || "armature/slim_mesh" == null ? null : this.owner.getComponentAt("armature/slim_mesh")) != null) (this.owner == null || "armature/slim_mesh" == null ? null : this.owner.getComponentAt("armature/slim_mesh")).setEnabled(Boolean.TRUE.equals(cse_12_0));
         }
     }
 

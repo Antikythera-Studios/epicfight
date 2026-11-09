@@ -1,0 +1,2 @@
+<#-- epicfight:sheep_is_sheared (entityPatch) -> boolean --><#t>
+(${params[0]} != null && ${params[0]}.getOriginal() instanceof net.minecraft.world.entity.animal.sheep.Sheep && ((net.minecraft.world.entity.animal.sheep.Sheep) ${params[0]}.getOriginal()).isSheared())<#t>

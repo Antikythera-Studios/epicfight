@@ -660,6 +660,69 @@
             "value": false
           }
         ]
+      },
+      {
+        "id": 18,
+        "x": 55,
+        "y": 900,
+        "method": "onPossessed",
+        "kind": "method_entry"
+      },
+      {
+        "id": 19,
+        "x": 205,
+        "y": 900,
+        "function": "akythera:bind_action",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:input_action",
+            "value": "epicfight:combo_attack"
+          }
+        ]
+      },
+      {
+        "id": 20,
+        "x": 355,
+        "y": 1000,
+        "path": "ability_system",
+        "kind": "component_getter"
+      },
+      {
+        "id": 21,
+        "x": 505,
+        "y": 940,
+        "function": "akythera:ability_system_component_request_activation",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:combo_attack"
+          }
+        ]
+      },
+      {
+        "id": 22,
+        "x": 55,
+        "y": 1100,
+        "method": "onUnpossessed",
+        "kind": "method_entry"
+      },
+      {
+        "id": 23,
+        "x": 205,
+        "y": 1100,
+        "function": "akythera:unbind_action",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:input_action",
+            "value": "epicfight:combo_attack"
+          }
+        ]
       }
     ],
     "wires": [
@@ -757,6 +820,30 @@
         "from": 12,
         "from_pin": 0,
         "to": 13,
+        "to_pin": 0
+      },
+      {
+        "from": 18,
+        "from_pin": 0,
+        "to": 19,
+        "to_pin": 0
+      },
+      {
+        "from": 19,
+        "from_pin": 2,
+        "to": 21,
+        "to_pin": 0
+      },
+      {
+        "from": 20,
+        "from_pin": 0,
+        "to": 21,
+        "to_pin": 1
+      },
+      {
+        "from": 22,
+        "from_pin": 0,
+        "to": 23,
         "to_pin": 0
       }
     ]

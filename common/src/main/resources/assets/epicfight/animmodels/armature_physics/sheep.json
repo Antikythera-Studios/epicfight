@@ -184,5 +184,112 @@
         }
       }
     ]
+  },
+  "ik_chains": [
+    {
+      "tip_bone": "right_hind_leg_bend",
+      "chain_length": 2,
+      "solver": {
+        "type": "akythera:two_bone"
+      },
+      "stepping": {
+        "distance_threshold": 0.12,
+        "angular_threshold": 12.0,
+        "step_height": 0.05,
+        "ray_max_distance": 0.25,
+        "step_time": 0.15,
+        "step_cooldown": 0.0,
+        "prediction": 0.2,
+        "reset_time": 0.6,
+        "reset_distance": 0.06,
+        "reset_angle": 8.0,
+        "reset_step_time": 0.2,
+        "hold_facing": true,
+        "turn_lead": "left",
+        "gait_group": "a"
+      }
+    },
+    {
+      "tip_bone": "left_hind_leg_bend",
+      "chain_length": 2,
+      "solver": {
+        "type": "akythera:two_bone"
+      },
+      "stepping": {
+        "distance_threshold": 0.12,
+        "angular_threshold": 12.0,
+        "step_height": 0.05,
+        "ray_max_distance": 0.25,
+        "step_time": 0.15,
+        "step_cooldown": 0.0,
+        "prediction": 0.2,
+        "reset_time": 0.6,
+        "reset_distance": 0.06,
+        "reset_angle": 8.0,
+        "reset_step_time": 0.2,
+        "hold_facing": true,
+        "turn_lead": "right",
+        "gait_group": "b"
+      }
+    },
+    {
+      "tip_bone": "right_front_leg_bend",
+      "chain_length": 2,
+      "solver": {
+        "type": "akythera:two_bone"
+      },
+      "stepping": {
+        "distance_threshold": 0.12,
+        "angular_threshold": 12.0,
+        "step_height": 0.05,
+        "ray_max_distance": 0.25,
+        "step_time": 0.15,
+        "step_cooldown": 0.0,
+        "prediction": 0.2,
+        "reset_time": 0.6,
+        "reset_distance": 0.06,
+        "reset_angle": 8.0,
+        "reset_step_time": 0.2,
+        "hold_facing": true,
+        "turn_lead": "right",
+        "gait_group": "b"
+      }
+    },
+    {
+      "tip_bone": "left_front_leg_bend",
+      "chain_length": 2,
+      "solver": {
+        "type": "akythera:two_bone"
+      },
+      "stepping": {
+        "distance_threshold": 0.12,
+        "angular_threshold": 12.0,
+        "step_height": 0.05,
+        "ray_max_distance": 0.25,
+        "step_time": 0.15,
+        "step_cooldown": 0.0,
+        "prediction": 0.2,
+        "reset_time": 0.6,
+        "reset_distance": 0.06,
+        "reset_angle": 8.0,
+        "reset_step_time": 0.2,
+        "hold_facing": true,
+        "turn_lead": "left",
+        "gait_group": "a"
+      }
+    }
+  ],
+  "root_fitting": {
+    "enabled": true,
+    "max_drop": 0.0
+  },
+  "body_turn": {
+    "enabled": true,
+    "turn_time": 0.1,
+    "max_turn_speed": 400.0,
+    "max_step_turn_speed": 120.0,
+    "steady_bones": [
+      "head"
+    ]
   }
 }
