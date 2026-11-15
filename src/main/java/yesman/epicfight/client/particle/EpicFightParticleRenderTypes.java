@@ -69,6 +69,7 @@ public class EpicFightParticleRenderTypes {
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 RenderSystem.depthMask(false);
+                RenderSystem.setShader(GameRenderer::getParticleShader);
                 RenderSystem.setShaderTexture(0, textureLocation);
 
                 return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);

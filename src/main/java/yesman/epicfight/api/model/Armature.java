@@ -1,5 +1,6 @@
 package yesman.epicfight.api.model;
 
+import yesman.epicfight.EpicFight;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -48,7 +49,7 @@ public class Armature {
 	protected Joint getOrLogException(Map<String, Joint> jointMap, String name) {
 		if (!jointMap.containsKey(name)) {
 			if (EpicFightSharedConstants.IS_DEV_ENV) {
-				EpicFightMod.LOGGER.debug("Cannot find the joint named " + name + " in " + this.getClass().getCanonicalName());
+				EpicFight.LOGGER.debug("Cannot find the joint named " + name + " in " + this.getClass().getCanonicalName());
 			}
 			
 			return Joint.EMPTY;

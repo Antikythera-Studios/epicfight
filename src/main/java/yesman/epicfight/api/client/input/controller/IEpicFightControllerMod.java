@@ -1,4 +1,5 @@
 package yesman.epicfight.api.client.input.controller;
+import net.minecraft.client.Minecraft;
 
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.api.client.input.InputMode;

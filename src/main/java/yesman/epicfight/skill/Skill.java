@@ -33,7 +33,7 @@ import yesman.epicfight.client.events.engine.ControlEngine;
 import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.client.gui.screen.SkillBookScreen;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.main.EpicFightSharedConstants;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.client.CPSkillRequest;
@@ -118,7 +118,7 @@ public abstract class Skill implements IdentifierProvider {
 
 	@ApiStatus.Internal
 	private Skill() {
-        this.registryName = EpicFightMod.identifier("empty");
+        this.registryName = EpicFight.identifier("empty");
 		this.category = SkillCategories.EMPTY;
 		this.creativeTab = null;
 		this.activateType = ActivateType.ONE_SHOT;
@@ -544,6 +544,11 @@ public abstract class Skill implements IdentifierProvider {
 	}
 	
 	public Holder<Skill> holder() {
+		if (this.holder == null && this.registryName != null) {
+			this.holder = EpicFightRegistries.SKILL.getHolder(
+				net.minecraft.resources.ResourceKey.create(EpicFightRegistries.Keys.SKILL, this.registryName)
+			).orElse(null);
+		}
 		return this.holder;
 	}
 	

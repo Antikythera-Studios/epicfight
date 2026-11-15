@@ -163,6 +163,9 @@
   "gui.epicfight.title.settings.camera.tps_settings": "TPS settings",
   "gui.epicfight.title.settings.control.item_category": "Item Category",
   "gui.epicfight.title.skill_edit": "Edit Skills",
+  "gui.epicfight.select": "%s List",
+  "gui.epicfight.select.animations": "Animations",
+  "gui.epicfight.select.models": "Models",
 
   "gui.epicfight.widget.common.save": "Save Changes",
   "gui.epicfight.widget.common.discard": "Discard Changes",
@@ -505,6 +508,7 @@
   "weapon_category.epicfight.dagger": "Dagger",
   "weapon_category.epicfight.shield": "Shield",
   "weapon_category.epicfight.ranged": "Ranged",
+  "weapon_category.epicfight.bow": "Bow",
 
   "epicfight.tip.weight": "Weight shortens stun, raises skill stamina use, and slows attack speed, especially on fast items.",
   "epicfight.tip.stun_armor": "Stun Armor extends the time between stuns, boosting overall resilience and defense.",

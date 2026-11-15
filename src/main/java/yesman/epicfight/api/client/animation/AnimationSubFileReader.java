@@ -1,4 +1,5 @@
 package yesman.epicfight.api.client.animation;
+import yesman.epicfight.EpicFight;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -54,7 +55,7 @@ public class AnimationSubFileReader {
 		try {
 			subFileType.apply(inputstream, animation);
 		} catch (JsonParseException e) {
-			EpicFightMod.LOGGER.warn("Can't read sub file " + subFileType.directory + " for " + animation);
+			EpicFight.LOGGER.warn("Can't read sub file " + subFileType.directory + " for " + animation);
 			e.printStackTrace();
 		}
 	}
@@ -163,7 +164,7 @@ public class AnimationSubFileReader {
 						String type = GsonHelper.getAsString(jointMaskEntry, "type");
 						
 						if (!type.contains(":")) {
-							type = (new StringBuilder(EpicFightMod.MODID)).append(":").append(type).toString();
+							type = (new StringBuilder(EpicFight.MODID)).append(":").append(type).toString();
 						}
 						
 						if (livingMotionName.equals("ALL")) {

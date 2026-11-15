@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+
 import yesman.epicfight.api.utils.math.MathUtils;
 import yesman.epicfight.world.level.block.entity.FractureBlockEntity;
 
@@ -48,7 +48,7 @@ public class FractureBlockRenderer implements BlockEntityRenderer<FractureBlockE
 		poseStack.translate(translate.x(), translate.y() + bouncingAnimation, translate.z());
 		poseStack.translate(-0.5D, -0.5D, -0.5D);	
 		
-		this.blockRenderDispatcher.renderBreakingTexture(blockEntity.getOriginalBlockState(), blockEntity.getBlockPos().above(), blockEntity.getLevel(), poseStack, multiBufferSource.getBuffer(RenderType.cutout()), ModelData.EMPTY);
+		this.blockRenderDispatcher.renderBreakingTexture(blockEntity.getOriginalBlockState(), blockEntity.getBlockPos().above(), blockEntity.getLevel(), poseStack, multiBufferSource.getBuffer(RenderType.cutout()));
 		
 		poseStack.popPose();
 	}

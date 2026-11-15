@@ -15,8 +15,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
-import net.neoforged.neoforge.registries.DeferredHolder;
+
+import yesman.epicfight.registry.deferred_shim.DeferredHolderShim;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.AnimationVariables;
@@ -233,7 +233,7 @@ public class AttackAnimation extends ActionAnimation {
 				LivingEntity trueEntity = this.getTrueEntity(target);
 				
 				if (trueEntity != null && trueEntity.isAlive() && !entitypatch.getCurrentlyAttackTriedEntities().contains(trueEntity) && !entitypatch.isTargetInvulnerable(target)) {
-					if (target instanceof LivingEntity || target instanceof PartEntity) {
+					if (target instanceof LivingEntity || target instanceof net.minecraft.world.entity.boss.EnderDragonPart) {
 						AABB aabb = target.getBoundingBox();
 						
 						if (MathUtils.canBeSeen(target, entity, target.position().distanceTo(entity.getEyePosition()) + aabb.getCenter().distanceTo(new Vec3(aabb.maxX, aabb.maxY, aabb.maxZ)))) {
@@ -269,8 +269,8 @@ public class AttackAnimation extends ActionAnimation {
 	public LivingEntity getTrueEntity(Entity entity) {
 		if (entity instanceof LivingEntity livingEntity) {
 			return livingEntity;
-		} else if (entity instanceof PartEntity<?> partEntity) {
-			Entity parentEntity = partEntity.getParent();
+		} else if (entity instanceof net.minecraft.world.entity.boss.EnderDragonPart enderDragonPart) {
+			Entity parentEntity = enderDragonPart.parentMob;
 			
 			if (parentEntity instanceof LivingEntity livingEntity) {
 				return livingEntity;
@@ -333,8 +333,8 @@ public class AttackAnimation extends ActionAnimation {
 	}
 	
 	protected void spawnHitParticle(ServerLevel world, LivingEntityPatch<?> attacker, Entity hit, Phase phase) {
-		Optional<DeferredHolder<ParticleType<?>, HitParticleType>> particleOptional = phase.getProperty(AttackPhaseProperty.PARTICLE);
-		HitParticleType particle = particleOptional.map(DeferredHolder::get).orElseGet(() -> attacker.getWeaponHitParticle(phase.effectiveHand(attacker)));
+		Optional<DeferredHolderShim<ParticleType<?>, HitParticleType>> particleOptional = phase.getProperty(AttackPhaseProperty.PARTICLE);
+		HitParticleType particle = particleOptional.map(DeferredHolderShim::get).orElseGet(() -> attacker.getWeaponHitParticle(phase.effectiveHand(attacker)));
 		particle.spawnParticleWithArgument(world, null, null, hit, attacker.getOriginal());
 	}
 	

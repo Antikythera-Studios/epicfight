@@ -36,7 +36,12 @@ public class EventHook<T extends Event> {
         for (var subscriber : subscribers.values()) {
             for (var listener : subscriber) {
                 if (listener.subscriptionType() instanceof DefaultEventSubscription<T> passiveSubscription) {
-                    passiveSubscription.fire(event);
+                    try {
+                        passiveSubscription.fire(event);
+                    } catch (Throwable t) {
+                        org.slf4j.LoggerFactory.getLogger(EventHook.class).warn(
+                                "Event listener {} threw during post of {}: {}", listener.identifier(), event.getClass().getSimpleName(), t.toString());
+                    }
                 }
             }
         }
@@ -55,7 +60,12 @@ public class EventHook<T extends Event> {
                 .sorted(EventHook::reverseOrder)
                 .forEach(subs -> {
                     if (subs.subscriptionType() instanceof DefaultEventSubscription<T> passiveSubscription) {
-                        passiveSubscription.fire(event);
+                        try {
+                            passiveSubscription.fire(event);
+                        } catch (Throwable t) {
+                            org.slf4j.LoggerFactory.getLogger(EventHook.class).warn(
+                                    "Event listener {} threw during postWithListener of {}: {}", subs.identifier(), event.getClass().getSimpleName(), t.toString());
+                        }
                     }
                 });
         return event;

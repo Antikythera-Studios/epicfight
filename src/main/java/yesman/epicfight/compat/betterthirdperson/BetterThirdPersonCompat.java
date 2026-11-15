@@ -1,33 +1,43 @@
 package yesman.epicfight.compat.betterthirdperson;
 
-import net.neoforged.bus.api.IEventBus;
+import io.socol.betterthirdperson.BetterThirdPerson;
+import io.socol.betterthirdperson.api.action.MouseAction;
+import io.socol.betterthirdperson.impl.PlayerAdapter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Player;
 import yesman.epicfight.client.camera.EpicFightTpsCameraDisableState;
 import yesman.epicfight.client.camera.EpicFightTpsCameraDisabledReason;
 import yesman.epicfight.compat.ICompatModule;
 
-// Disables the Epic Fight's TPS perspective when this mod is installed,
-// otherwise, both mods will make modifications to the vanilla third-person back perspective,
-// which results in buggy behavior.
-// Note: This does not support the "Better Third Person" mod,
-// features like dodge, attack, and lock-on may not work with Epic Fight.
 public final class BetterThirdPersonCompat implements ICompatModule {
     @Override
-    public void onModEventBus(IEventBus eventBus) {
+	public void onInitialize() {
 
     }
 
     @Override
-    public void onGameEventBus(IEventBus eventBus) {
+	public void onInitializeServer() {
 
     }
 
     @Override
-    public void onModEventBusClient(IEventBus eventBus) {
+	public void onInitializeClient() {
         EpicFightTpsCameraDisableState.disable(EpicFightTpsCameraDisabledReason.BetterThirdPerson);
+        EpicFightTpsCameraDisableState.setActionDeferral(BetterThirdPersonCompat::deferToCameraMod);
+    }
+
+    private static boolean deferToCameraMod(Runnable action) {
+        Player player = Minecraft.getInstance().player;
+
+        if (player == null) {
+            return false;
+        }
+
+        return BetterThirdPerson.getCameraManager().onMouseAction(new PlayerAdapter(player), new MouseAction(action));
     }
 
     @Override
-    public void onGameEventBusClient(IEventBus eventBus) {
+	public void onInitializeClientServer() {
 
     }
 }

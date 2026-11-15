@@ -10,7 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import yesman.epicfight.api.client.camera.EpicFightCameraAPI;
 import yesman.epicfight.client.renderer.EpicFightRenderTypes;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 import javax.annotation.Nullable;
@@ -20,7 +20,7 @@ public abstract class EntityUI {
 	public static final List<EntityUI> ENTITY_UI_LIST = Lists.newArrayList();
 	public static final TargetIndicator TARGET_INDICATOR = new TargetIndicator();
 	public static final HealthBar HEALTH_BAR  = new HealthBar();
-    public static final ResourceLocation BATTLE_ICON = EpicFightMod.identifier("textures/gui/battle_icons.png");
+    public static final ResourceLocation BATTLE_ICON = EpicFight.identifier("textures/gui/battle_icons.png");
 	
 	public EntityUI() {
 		ENTITY_UI_LIST.add(this);

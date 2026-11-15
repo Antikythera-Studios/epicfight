@@ -1,4 +1,5 @@
 package yesman.epicfight.api.client.input.controller;
+import net.minecraft.client.Minecraft;
 
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;

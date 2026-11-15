@@ -21,12 +21,12 @@ import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+
 import yesman.epicfight.registry.deferred.holders.DeferredPreset;
 import yesman.epicfight.registry.entries.EpicFightItemCapabilityPresets;
 import yesman.epicfight.world.capabilities.item.*;
 
-public final class CommonItemCapabilityProvider implements ICapabilityProvider<ItemStack, Void, CapabilityItem> {
+public final class CommonItemCapabilityProvider {
 	public static final CommonItemCapabilityProvider INSTANCE = new CommonItemCapabilityProvider();
 	
 	private CommonItemCapabilityProvider() {}
@@ -52,12 +52,21 @@ public final class CommonItemCapabilityProvider implements ICapabilityProvider<I
 	}
 	
 	public CapabilityItem get(Item item) {
-		return capabilities.getOrDefault(item, getDefault(item));
+		CapabilityItem capability = capabilities.get(item);
+		if (capability != null) {
+			return capability;
+		}
+		for (Class<?> clazz = item.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
+			if (this.typedCapabilities.containsKey(clazz)) {
+				return getDefault(item, clazz);
+			}
+		}
+		return null;
 	}
 
-	private CapabilityItem getDefault(Item item)
+	private CapabilityItem getDefault(Item item, Class<?> clazz)
 	{
-		DeferredPreset<? extends CapabilityItem.Builder<?>> builderEntry = this.typedCapabilities.getOrDefault(item.getClass(), null);
+		DeferredPreset<? extends CapabilityItem.Builder<?>> builderEntry = this.typedCapabilities.getOrDefault(clazz, null);
 		CapabilityItem.Builder<?> result = null;
 		if (builderEntry != null)
 		{
@@ -86,32 +95,32 @@ public final class CommonItemCapabilityProvider implements ICapabilityProvider<I
 		BuiltInRegistries.ITEM.entrySet().stream().filter(entry -> !this.capabilities.containsKey(entry.getValue())).forEach(entry -> {
 			Function<Item, ? extends CapabilityItem.Builder<?>> type = null;
 			Item item = entry.getValue();
-			
+
 			if (item instanceof BlockItem) {
 				return;
 			}
-			
+
 			for (Map.Entry<ResourceLocation, ItemKeywordReloadListener.ItemRegex> regexEntry : ItemKeywordReloadListener.getRegexes().entrySet()) {
 				if (regexEntry.getValue().matchesAny(entry.getKey().location().toString())) {
 					type = WeaponTypeReloadListener.get(regexEntry.getKey());
-					
+
 					if (type != null) {
 						this.capabilities.put(item, type.apply(item).build());
 						break;
 					}
 				}
 			}
-			
+
 			if (type == null) {
 				Class<?> clazz = item.getClass();
 				CapabilityItem capability = null;
-				
+
 				for (; clazz != null && capability == null; clazz = clazz.getSuperclass()) {
 					if (this.typedCapabilities.containsKey(clazz)) {
-						capability = getDefault(item);
+						capability = getDefault(item, clazz);
 					}
 				}
-				
+
 				if (capability != null) {
 					this.capabilities.put(item, capability);
 				}
@@ -119,7 +128,6 @@ public final class CommonItemCapabilityProvider implements ICapabilityProvider<I
 		});
 	}
 	
-	@Override
 	public @Nullable CapabilityItem getCapability(ItemStack itemstack, Void context) {
 		if (this.capabilities.containsKey(itemstack.getItem())) {
 			CapabilityItem itemCapability = this.capabilities.get(itemstack.getItem());

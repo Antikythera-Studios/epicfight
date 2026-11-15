@@ -1,6 +1,7 @@
 package yesman.epicfight.api.animation.types;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import yesman.epicfight.api.animation.AnimationClip;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.Pose;
@@ -23,10 +24,14 @@ public class ConcurrentLinkAnimation extends DynamicAnimation implements Animati
 		this.animationClip = new AnimationClip();
 	}
 	
+	private static float cycleTime(float elapsed, float duration) {
+		return Float.isFinite(elapsed) && Float.isFinite(duration) && duration > 0.0F ? elapsed % duration : 0.0F;
+	}
+	
 	public void acceptFrom(AssetAccessor<? extends DynamicAnimation> currentAnimation, AssetAccessor<? extends StaticAnimation> nextAnimation, float time) {
 		this.currentAnimation = currentAnimation;
 		this.nextAnimation = nextAnimation;
-		this.startsAt = time;
+		this.startsAt = Float.isFinite(time) ? time : 0.0F;
 		this.setTotalTime(nextAnimation.get().getTransitionTime());
 	}
 	
@@ -64,11 +69,12 @@ public class ConcurrentLinkAnimation extends DynamicAnimation implements Animati
 	@Override
 	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
 		float elapsed = time + this.startsAt;
-		float currentElapsed = elapsed % this.currentAnimation.get().getTotalTime();
-		float nextElapsed = elapsed % this.nextAnimation.get().getTotalTime();
+		float currentElapsed = cycleTime(elapsed, this.currentAnimation.get().getTotalTime());
+		float nextElapsed = cycleTime(elapsed, this.nextAnimation.get().getTotalTime());
 		Pose currentAnimPose = this.currentAnimation.get().getPoseByTime(entitypatch, currentElapsed, 1.0F);
 		Pose nextAnimPose = this.nextAnimation.get().getPoseByTime(entitypatch, nextElapsed, 1.0F);
-		float interpolate = time / this.getTotalTime();
+		float interpolate = Float.isFinite(time) && Float.isFinite(this.getTotalTime()) && this.getTotalTime() > 0.0F
+			? Mth.clamp(time / this.getTotalTime(), 0.0F, 1.0F) : 1.0F;
 		
 		Pose interpolatedPose = Pose.interpolatePose(currentAnimPose, nextAnimPose, interpolate);
 		JointMaskEntry maskEntry = this.nextAnimation.get().getJointMaskEntry(entitypatch, true).orElse(null);

@@ -1,4 +1,5 @@
 package yesman.epicfight.api.utils;
+import yesman.epicfight.EpicFight;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -23,10 +24,10 @@ public class ExtensibleEnumManager<T extends ExtensibleEnum> {
 
     public void registerEnumCls(String modid, Class<? extends ExtensibleEnum> cls) {
         if (this.enums.containsKey(modid)) {
-            EpicFightMod.LOGGER.error("{} is already registered in {}", modid, this.enumName);
+            EpicFight.LOGGER.error("{} is already registered in {}", modid, this.enumName);
         }
 
-        EpicFightMod.LOGGER.debug("Registered Extensible Enum {} in ", this.enumName);
+        EpicFight.LOGGER.debug("Registered Extensible Enum {} in ", this.enumName);
 
         this.enums.put(modid, cls);
     }
@@ -43,17 +44,17 @@ public class ExtensibleEnumManager<T extends ExtensibleEnum> {
                 Method m = cls.getMethod("values");
                 m.invoke(null);
 
-                EpicFightMod.LOGGER.debug("Loaded enums in {}", cls);
+                EpicFight.LOGGER.debug("Loaded enums in {}", cls);
             }
         } catch (ClassCastException e) {
-            EpicFightMod.LOGGER.error("{} is not an Extensible Enum!", cls.getCanonicalName(), e);
+            EpicFight.LOGGER.error("{} is not an Extensible Enum!", cls.getCanonicalName(), e);
         } catch (NoSuchMethodException e) {
-            EpicFightMod.LOGGER.error("{} is not an Enum class!", cls.getCanonicalName(), e);
+            EpicFight.LOGGER.error("{} is not an Enum class!", cls.getCanonicalName(), e);
         } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            EpicFightMod.LOGGER.warn("Error while loading extensible enum {}", cls.getCanonicalName(), e);
+            EpicFight.LOGGER.warn("Error while loading extensible enum {}", cls.getCanonicalName(), e);
         }
 
-        EpicFightMod.LOGGER.debug("All enums are loaded: {} {}", this.enumName, this.enumMapByName.values());
+        EpicFight.LOGGER.debug("All enums are loaded: {} {}", this.enumName, this.enumMapByName.values());
     }
 
     public int assign(T value) {
@@ -83,6 +84,13 @@ public class ExtensibleEnumManager<T extends ExtensibleEnum> {
         String key = ParseUtil.toLowerCase(name);
 
         if (!this.enumMapByName.containsKey(key)) {
+            // Addon enum classes may register via registerEnumCls after the first
+            // loadEnum pass (mod construction order is not guaranteed). Pull in any
+            // pending enum classes before declaring the identifier missing.
+            loadPendingEnums();
+        }
+
+        if (!this.enumMapByName.containsKey(key)) {
             throw new NoSuchElementException("Enum identifier " + key + " does not exist in " + this.enumName);
         }
 
@@ -94,7 +102,24 @@ public class ExtensibleEnumManager<T extends ExtensibleEnum> {
     }
 
     public T get(String name) {
-        return this.enumMapByName.get(ParseUtil.toLowerCase(name));
+        String key = ParseUtil.toLowerCase(name);
+        T value = this.enumMapByName.get(key);
+
+        if (value == null) {
+            loadPendingEnums();
+            value = this.enumMapByName.get(key);
+        }
+
+        return value;
+    }
+
+    private int loadedEnumCount;
+
+    private void loadPendingEnums() {
+        if (this.enums.size() != this.loadedEnumCount) {
+            loadEnum();
+            this.loadedEnumCount = this.enums.size();
+        }
     }
 
     public Collection<T> universalValues() {
@@ -102,6 +127,6 @@ public class ExtensibleEnumManager<T extends ExtensibleEnum> {
     }
 
     public String toTranslated(ExtensibleEnum e) {
-        return Component.translatable(String.format("%s.%s.%s", EpicFightMod.MODID, this.enumName, ParseUtil.toLowerCase(e.toString()))).getString();
+        return Component.translatable(String.format("%s.%s.%s", EpicFight.MODID, this.enumName, ParseUtil.toLowerCase(e.toString()))).getString();
     }
 }

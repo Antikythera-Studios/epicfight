@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.screen;
+import net.minecraft.client.Minecraft;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,11 +50,11 @@ public class HumanoidWeaponMotionScreen extends Screen {
 		super(Component.translatable("datapack_edit.mob_patch.humanoid_weapon_motions"));
 		
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
-		this.font = parentScreen.getMinecraft().font;
+		this.minecraft = Minecraft.getInstance();
+		this.font = Minecraft.getInstance().font;
 		
 		this.rootTag = rootTag;
-		this.motionSetGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.motionSetGrid = Grid.builder(this, Minecraft.getInstance())
 									.xy1(8, 45)
 									.xy2(150, 50)
 									.horizontalSizing(HorizontalSizing.LEFT_WIDTH)
@@ -123,7 +124,7 @@ public class HumanoidWeaponMotionScreen extends Screen {
 		this.inputComponentsList.addComponentCurrentRow(new Static(this, this.inputComponentsList.nextStart(5), 100, 0, 15, HorizontalSizing.LEFT_WIDTH, null, "datapack_edit.mob_patch.humanoid_weapon_motions.weapon_categories"));
 		this.inputComponentsList.newRow();
 		this.inputComponentsList.newRow();
-		this.inputComponentsList.addComponentCurrentRow(Grid.builder(this, parentScreen.getMinecraft())
+		this.inputComponentsList.addComponentCurrentRow(Grid.builder(this, Minecraft.getInstance())
 															.xy1(this.inputComponentsList.nextStart(5), 0)
 															.xy2(10, 80)
 															.horizontalSizing(HorizontalSizing.LEFT_RIGHT)
@@ -166,7 +167,7 @@ public class HumanoidWeaponMotionScreen extends Screen {
 		this.inputComponentsList.addComponentCurrentRow(new Static(this, this.inputComponentsList.nextStart(5), 100, 0, 15, HorizontalSizing.LEFT_WIDTH, null, "datapack_edit.mob_patch.humanoid_weapon_motions.living_animations"));
 		this.inputComponentsList.newRow();
 		this.inputComponentsList.newRow();
-		this.inputComponentsList.addComponentCurrentRow(Grid.builder(this, parentScreen.getMinecraft())
+		this.inputComponentsList.addComponentCurrentRow(Grid.builder(this, Minecraft.getInstance())
 															.xy1(this.inputComponentsList.nextStart(5), 0)
 															.xy2(10, 80)
 															.horizontalSizing(HorizontalSizing.LEFT_RIGHT)

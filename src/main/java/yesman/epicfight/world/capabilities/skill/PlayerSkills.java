@@ -27,6 +27,14 @@ public class PlayerSkills {
 	private final HashMultimap<SkillCategory, Skill> learnedSkills = HashMultimap.create();
 	
 	public PlayerSkills(PlayerPatch<?> playerpatch) {
+		// Addons register their SkillSlot/SkillCategory enum classes during mod
+		// init, but an entrypoint that runs after EpicFight's own loadEnum never
+		// gets its enum class-initialized; the ordinal is then assigned lazily on
+		// first access and lands past the end of this array. Loading again here
+		// is a no-op for already-initialized enums and guarantees every
+		// registered slot exists before the array is sized.
+		SkillCategory.ENUM_MANAGER.loadEnum();
+		SkillSlot.ENUM_MANAGER.loadEnum();
 		Collection<SkillSlot> slots = SkillSlot.ENUM_MANAGER.universalValues();
 		this.skillContainers = new SkillContainer[slots.size()];
 		

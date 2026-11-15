@@ -1,0 +1,16 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "package": "yesman.epicfight.platform.fabric.mixin",
+  "client": [
+    "MixinClientLevel"
+  ],
+  "mixins": [
+    "MixinServerLevel",
+    "SpawnPlacementsAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

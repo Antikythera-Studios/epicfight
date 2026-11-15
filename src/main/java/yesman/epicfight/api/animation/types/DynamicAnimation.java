@@ -14,7 +14,7 @@ import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.client.animation.property.JointMaskEntry;
 import yesman.epicfight.api.utils.datastructure.ParameterizedMap;
 import yesman.epicfight.api.utils.side.ClientOnly;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.main.EpicFightSharedConstants;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
@@ -139,7 +139,7 @@ public abstract class DynamicAnimation {
     }
 
     public ResourceLocation getRegistryName() {
-        return EpicFightMod.identifier("");
+        return EpicFight.identifier("");
     }
 
     public int getId() {

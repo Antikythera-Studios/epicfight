@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.screen;
+import net.minecraft.client.Minecraft;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -39,12 +40,12 @@ public class OffhandValidatorScreen extends Screen {
 	public OffhandValidatorScreen(Screen parentScreen, CompoundTag rootTag) {
 		super(Component.translatable("datapack_edit.weapon_type.offhand_validator"));
 		
-		this.minecraft = parentScreen.getMinecraft();
-		this.font = parentScreen.getMinecraft().font;
+		this.minecraft = Minecraft.getInstance();
+		this.font = Minecraft.getInstance().font;
 		this.rootTag = rootTag;
 		this.parentScreen = parentScreen;
 		
-		this.conditionGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.conditionGrid = Grid.builder(this, Minecraft.getInstance())
 									.xy1(15, 45)
 									.xy2(100, 45)
 									.horizontalSizing(HorizontalSizing.LEFT_WIDTH)
@@ -113,7 +114,7 @@ public class OffhandValidatorScreen extends Screen {
 									})
 									.build();
 		
-		this.parameterGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.parameterGrid = Grid.builder(this, Minecraft.getInstance())
 									.xy1(125, 45)
 									.xy2(12, 45)
 									.horizontalSizing(HorizontalSizing.LEFT_RIGHT)

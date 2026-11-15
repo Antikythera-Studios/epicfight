@@ -1,0 +1,58 @@
+{
+    "schemaVersion": 1,
+    "id": "${modId}",
+    "version": "${modVersion}",
+    "name": "${displayName}",
+    "description": "${description}",
+    "authors": [
+        "${authors}"
+    ],
+    "contact": {
+        "homepage": "${displayUrl}",
+        "sources": "${sourceCode}",
+        "issues": "${issueTracker}"
+    },
+    "license": "${license}",
+    "icon": "assets/epicfight/logo.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "yesman.epicfight.EpicFightFabric"
+        ],
+        "client": [
+            "yesman.epicfight.EpicFightFabricClient"
+        ]
+    },
+    "mixins": [
+        "epicfight.mixins.json",
+        "epicfight-platform.fabric.mixins.json",
+        "epicfight-compat.fgm.mixins.json",
+        "epicfight-compat.geckolib.mixins.json",
+        "epicfight-compat.skinlayers3d.mixins.json",
+        "epicfight-compat.spatialgui.mixins.json"
+    ],
+    "accessWidener": "epicfight.accesswidener",
+    "depends": {
+        "fabricloader": ">=0.19.3",
+        "minecraft": "~1.21.1",
+        "java": ">=21",
+        "fabric-api": "*"
+    },
+    "suggests": {
+        "azurelib": "*",
+        "betterthirdperson": "*",
+        "controlify": "*",
+        "trinkets": "*",
+        "female-gender": "*",
+        "firstperson": "*",
+        "geckolib": "*",
+        "irisshaders": "*",
+        "jei": "*",
+        "playeranimator": "*",
+        "playerrevive": "*",
+        "shoulder-surfing-reloaded": "*",
+        "simply-tooltips": "*",
+        "skinlayers3d": "*",
+        "sodium": "*"
+    }
+}

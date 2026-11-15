@@ -1,7 +1,5 @@
 package yesman.epicfight.world.capabilities.provider;
 
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,8 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.api.event.EpicFightEventHooks;
 import yesman.epicfight.api.event.types.registry.EntityPatchRegistryEvent;
 import yesman.epicfight.api.utils.side.ClientOnly;
-import yesman.epicfight.client.world.capabilites.entitypatch.player.AbstractClientPlayerPatch;
-import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.registry.entries.EpicFightEntityTypes;
 import yesman.epicfight.world.capabilities.entitypatch.EntityPatch;
@@ -87,9 +83,16 @@ public final class CommonEntityPatchProvider {
 
         this.typedCapabilities.put(AbstractArrow.class, entity -> new ArrowPatch<>((AbstractArrow) entity));
 
+        this.capabilities.putAll(registry);
+    }
+
+    /// Fired lazily at [DeferredInitPhase] — mod entity types are only bound after all
+    /// Fabric entrypoints run, so addon holders (e.g. cdmoveset CORRUPTDOG) resolve to
+    /// real types instead of defaulted-registry fallbacks (missing -> minecraft:pig).
+    public void fireEntityPatchRegistryEvent() {
+        Map<EntityType<?>, Function<Entity, EntityPatch<?>>> registry = new HashMap<> ();
         EntityPatchRegistryEvent entitypatchRegistryEvent = new EntityPatchRegistryEvent(registry);
         EpicFightEventHooks.Registry.ENTITY_PATCH.post(entitypatchRegistryEvent);
-
         this.capabilities.putAll(registry);
     }
 
@@ -100,6 +103,10 @@ public final class CommonEntityPatchProvider {
             @NotNull EntityType<T> entityType,
             @NotNull Function<T, EntityPatch<T>> entityPatchFactory
     ) {
+        if (entityType == null) {
+            EpicFightMod.LOGGER.warn("Skipping entity patch registration: entity type holder not bound yet");
+            return;
+        }
         //noinspection unchecked
         registry.put(
                 entityType, (entity) -> entityPatchFactory.apply((T) entity)
@@ -166,8 +173,8 @@ public final class CommonEntityPatchProvider {
     public static class ClientModule {
         public static void registerClientPlayerPatches() {
             INSTANCE.capabilities.put(EntityType.PLAYER, entity -> switch (entity) {
-                case LocalPlayer localPlayer -> new LocalPlayerPatch(localPlayer);
-                case RemotePlayer remotePlayer -> new AbstractClientPlayerPatch<>(remotePlayer);
+                case net.minecraft.client.player.LocalPlayer localPlayer -> new yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch(localPlayer);
+                case net.minecraft.client.player.RemotePlayer remotePlayer -> new yesman.epicfight.client.world.capabilites.entitypatch.player.AbstractClientPlayerPatch<>(remotePlayer);
                 case ServerPlayer serverPlayer -> new ServerPlayerPatch(serverPlayer);
                 case null, default -> null;
             });

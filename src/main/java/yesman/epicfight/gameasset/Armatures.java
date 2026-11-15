@@ -1,4 +1,5 @@
 package yesman.epicfight.gameasset;
+import yesman.epicfight.EpicFight;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,18 +46,18 @@ public class Armatures {
 	private static final Map<ArmatureAccessor<? extends Armature>, Armature> ARMATURES = new HashMap<> ();
 	private static final Map<EntityType<?>, AssetAccessor<? extends Armature>> ENTITY_TYPE_ARMATURE_MAPPER = new HashMap<> ();
 	
-	public static final ArmatureAccessor<HumanoidArmature> BIPED = ArmatureAccessor.create(EpicFightMod.MODID, "entity/biped", HumanoidArmature::new);
-	public static final ArmatureAccessor<CreeperArmature> CREEPER = ArmatureAccessor.create(EpicFightMod.MODID, "entity/creeper", CreeperArmature::new);
-	public static final ArmatureAccessor<EndermanArmature> ENDERMAN = ArmatureAccessor.create(EpicFightMod.MODID, "entity/enderman", EndermanArmature::new);
-	public static final ArmatureAccessor<HumanoidArmature> SKELETON = ArmatureAccessor.create(EpicFightMod.MODID, "entity/skeleton", HumanoidArmature::new);
-	public static final ArmatureAccessor<SpiderArmature> SPIDER = ArmatureAccessor.create(EpicFightMod.MODID, "entity/spider", SpiderArmature::new);
-	public static final ArmatureAccessor<IronGolemArmature> IRON_GOLEM = ArmatureAccessor.create(EpicFightMod.MODID, "entity/iron_golem", IronGolemArmature::new);
-	public static final ArmatureAccessor<RavagerArmature> RAVAGER = ArmatureAccessor.create(EpicFightMod.MODID, "entity/ravager", RavagerArmature::new);
-	public static final ArmatureAccessor<VexArmature> VEX = ArmatureAccessor.create(EpicFightMod.MODID, "entity/vex", VexArmature::new);
-	public static final ArmatureAccessor<PiglinArmature> PIGLIN = ArmatureAccessor.create(EpicFightMod.MODID, "entity/piglin", PiglinArmature::new);
-	public static final ArmatureAccessor<HoglinArmature> HOGLIN = ArmatureAccessor.create(EpicFightMod.MODID, "entity/hoglin", HoglinArmature::new);
-	public static final ArmatureAccessor<DragonArmature> DRAGON = ArmatureAccessor.create(EpicFightMod.MODID, "entity/dragon", DragonArmature::new);
-	public static final ArmatureAccessor<WitherArmature> WITHER = ArmatureAccessor.create(EpicFightMod.MODID, "entity/wither", WitherArmature::new);
+	public static final ArmatureAccessor<HumanoidArmature> BIPED = ArmatureAccessor.create(EpicFight.MODID, "entity/biped", HumanoidArmature::new);
+	public static final ArmatureAccessor<CreeperArmature> CREEPER = ArmatureAccessor.create(EpicFight.MODID, "entity/creeper", CreeperArmature::new);
+	public static final ArmatureAccessor<EndermanArmature> ENDERMAN = ArmatureAccessor.create(EpicFight.MODID, "entity/enderman", EndermanArmature::new);
+	public static final ArmatureAccessor<HumanoidArmature> SKELETON = ArmatureAccessor.create(EpicFight.MODID, "entity/skeleton", HumanoidArmature::new);
+	public static final ArmatureAccessor<SpiderArmature> SPIDER = ArmatureAccessor.create(EpicFight.MODID, "entity/spider", SpiderArmature::new);
+	public static final ArmatureAccessor<IronGolemArmature> IRON_GOLEM = ArmatureAccessor.create(EpicFight.MODID, "entity/iron_golem", IronGolemArmature::new);
+	public static final ArmatureAccessor<RavagerArmature> RAVAGER = ArmatureAccessor.create(EpicFight.MODID, "entity/ravager", RavagerArmature::new);
+	public static final ArmatureAccessor<VexArmature> VEX = ArmatureAccessor.create(EpicFight.MODID, "entity/vex", VexArmature::new);
+	public static final ArmatureAccessor<PiglinArmature> PIGLIN = ArmatureAccessor.create(EpicFight.MODID, "entity/piglin", PiglinArmature::new);
+	public static final ArmatureAccessor<HoglinArmature> HOGLIN = ArmatureAccessor.create(EpicFight.MODID, "entity/hoglin", HoglinArmature::new);
+	public static final ArmatureAccessor<DragonArmature> DRAGON = ArmatureAccessor.create(EpicFight.MODID, "entity/dragon", DragonArmature::new);
+	public static final ArmatureAccessor<WitherArmature> WITHER = ArmatureAccessor.create(EpicFight.MODID, "entity/wither", WitherArmature::new);
 	
 	public static void registerEntityTypes() {
 		registerEntityTypeArmature(EntityType.CAVE_SPIDER, SPIDER);
@@ -97,12 +98,21 @@ public class Armatures {
 	}
 	
 	public static void registerEntityTypeArmature(EntityType<?> entityType, AssetAccessor<? extends Armature> armatureAccessor) {
+		if (entityType == null) {
+			yesman.epicfight.EpicFight.LOGGER.warn("Skipping armature mapping: entity type holder not bound yet");
+			return;
+		}
 		ENTITY_TYPE_ARMATURE_MAPPER.put(entityType, armatureAccessor);
 	}
 	
 	//For presets
 	public static void registerEntityTypeArmatureByPreset(EntityType<?> entityType, String presetName) {
-		EntityType<?> presetEntityType = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(presetName));
+		ResourceLocation presetKey = ResourceLocation.parse(presetName);
+		if (!BuiltInRegistries.ENTITY_TYPE.containsKey(presetKey)) {
+			yesman.epicfight.EpicFight.LOGGER.warn("No armature preset entity named {} — skipping", presetKey);
+			return;
+		}
+		EntityType<?> presetEntityType = BuiltInRegistries.ENTITY_TYPE.get(presetKey);
 		ENTITY_TYPE_ARMATURE_MAPPER.put(entityType, ENTITY_TYPE_ARMATURE_MAPPER.get(presetEntityType));
 	}
 	

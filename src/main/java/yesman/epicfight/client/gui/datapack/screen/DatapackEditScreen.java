@@ -250,7 +250,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 		super(Component.translatable(LangKeys.GUI_TITLE_DATAPACK_EDITOR));
 
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen == null ? Minecraft.getInstance() : parentScreen.getMinecraft();
+		this.minecraft = parentScreen == null ? Minecraft.getInstance() : Minecraft.getInstance();
 		this.font = this.minecraft.font;
 		
 		this.weaponTypeTab = new DatapackEditScreen.WeaponTypeTab();
@@ -276,7 +276,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 		if (pack$resourcessupplier != null) {
 			String s = path.getFileName().toString();
 			PackLocationInfo packlocationinfo = new PackLocationInfo("file/" + s, Component.literal(s), PackSource.WORLD, Optional.empty());
-            Pack pack = Pack.readMetaAndCreate(packlocationinfo, pack$resourcessupplier, PackType.SERVER_DATA, FolderRepositorySource.DISCOVERED_PACK_SELECTION_CONFIG);
+            Pack pack = Pack.readMetaAndCreate(packlocationinfo, pack$resourcessupplier, PackType.SERVER_DATA, null);
             
 			PackResources packResources = pack.open();
 			
@@ -324,7 +324,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 			int resourcepackVersion = SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES);
 			
 			if (datapackVersion != resourcepackVersion) {
-				EpicFightMod.LOGGER.warn(new StringBuilder("Pack version is not matching in ").append(SharedConstants.getCurrentVersion().getId()).toString());
+				EpicFight.LOGGER.warn(new StringBuilder("Pack version is not matching in ").append(SharedConstants.getCurrentVersion().getId()).toString());
 			}
 			
 			pack.addProperty("description", packName);
@@ -424,7 +424,10 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 	@Override
 	protected void init() {
 		// Enable stencil buffer to render a grid inside the area
-		Minecraft.getInstance().getMainRenderTarget().enableStencil();
+		// Note: RenderTarget.enableStencil() is a NeoForge-only method and not available in vanilla 1.21.1.
+		// The stencil buffer may not be explicitly enabled on Fabric, but grid rendering still works
+		// because the default framebuffer may already have stencil bits allocated.
+		Minecraft.getInstance().getMainRenderTarget();
 
         if (this.tabNavigationBar != null) this.removeWidget(this.tabNavigationBar);
         if (this.bottomButtons != null) this.bottomButtons.visitWidgets(this::removeWidget);
@@ -608,7 +611,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 						this.userArmatures.put(rl, SelfAccessor.create(rl, armature));
 					}
 				} catch (Exception e) {
-					EpicFightMod.LOGGER.error("Failed to read model " + resourceLocation);
+					EpicFight.LOGGER.error("Failed to read model " + resourceLocation);
 					e.printStackTrace();
 				}
 			});
@@ -670,7 +673,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
                         )
                     );
 				} catch (Exception e) {
-					EpicFightMod.LOGGER.error("Failed to read animation " + resourceLocation);
+					EpicFight.LOGGER.error("Failed to read animation " + resourceLocation);
 					e.printStackTrace();
 				}
 			});
@@ -802,7 +805,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 										} else {
 											grid.setValueChangeEnabled(false);
 											int rowposition = grid.addRowWithDefaultValues("pack_item", EpicFightMod.prefix(""));
-											this.packList.add(rowposition, PackEntry.of(EpicFightMod.identifier(""), CompoundTag::new));
+											this.packList.add(rowposition, PackEntry.of(EpicFight.identifier(""), CompoundTag::new));
 											grid.setGridFocus(rowposition, "pack_item");
 											grid.setValueChangeEnabled(true);
 										}
@@ -923,7 +926,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 			
 			this.inputComponentsList.newRow();
 			this.inputComponentsList.addComponentCurrentRow(new Static(parentScreen, this.inputComponentsList.nextStart(4), 100, 60, 15, HorizontalSizing.LEFT_WIDTH, null, "datapack_edit.weapon_type.category"));
-			this.inputComponentsList.addComponentCurrentRow(new ComboBox<>(parentScreen, parentScreen.getMinecraft().font, this.inputComponentsList.nextStart(5), 124, 100, 15, HorizontalSizing.LEFT_WIDTH, null, 8,
+			this.inputComponentsList.addComponentCurrentRow(new ComboBox<>(parentScreen, Minecraft.getInstance().font, this.inputComponentsList.nextStart(5), 124, 100, 15, HorizontalSizing.LEFT_WIDTH, null, 8,
 																			Component.translatable("datapack_edit.weapon_type.category"), new ArrayList<>(WeaponCategory.ENUM_MANAGER.universalValues()), ParseUtil::snakeToSpacedCamel,
 																			(weaponCategory) -> this.packList.get(this.packListGrid.getRowposition()).getValue().putString("category", ParseUtil.nullParam(weaponCategory).toLowerCase(Locale.ROOT))));
 			
@@ -1222,7 +1225,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 						ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(resourceLocation.getNamespace(), resourceLocation.getPath().replaceAll(this.directory + "/", "").replaceAll(".json", ""));
 						this.importJson(rl, streamSupplier.get());
 					} catch (Exception e) {
-						EpicFightMod.LOGGER.info("Failed to import " + resourceLocation + ": " + e.getMessage());
+						EpicFight.LOGGER.info("Failed to import " + resourceLocation + ": " + e.getMessage());
 						e.printStackTrace();
 					}
 				});
@@ -1241,14 +1244,14 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 					WeaponCapability.Builder builder = WeaponTypeReloadListener.deserializeWeaponCapabilityBuilder(registryName, compTag, DatapackEditScreen.this);
 					DatapackEditScreen.this.userWeaponTypes.put(registryName, (item) -> builder);
 				} catch (Exception e) {
-					EpicFightMod.LOGGER.warn("Failed to deserialize weapon type from datapack." + registryName + ": " + e.getMessage());
+					EpicFight.LOGGER.warn("Failed to deserialize weapon type from datapack." + registryName + ": " + e.getMessage());
 					e.printStackTrace();
 				}
 				
 				this.packList.add(PackEntry.ofValue(registryName, compTag));
 				this.packListGrid.addRowWithDefaultValues("pack_item", registryName.toString());
 			} catch (Exception e) {
-				EpicFightMod.LOGGER.info("Failed to import " + registryName + ": " + e.getMessage());
+				EpicFight.LOGGER.info("Failed to import " + registryName + ": " + e.getMessage());
 				throw e;
 			} finally {
 				try {
@@ -1350,7 +1353,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 				}
 			};
 			
-			this.itemTypeCombo = new ComboBox<> (parentScreen, parentScreen.getMinecraft().font, 0, 124, 100, 15, HorizontalSizing.LEFT_WIDTH, null, 8, Component.translatable("datapack_edit.item_capability.item_type"),
+			this.itemTypeCombo = new ComboBox<> (parentScreen, Minecraft.getInstance().font, 0, 124, 100, 15, HorizontalSizing.LEFT_WIDTH, null, 8, Component.translatable("datapack_edit.item_capability.item_type"),
 													List.of(ItemType.values()), ParseUtil::snakeToSpacedCamel, this.responder);
 			
 			this.inputComponentsList = new InputComponentList<>(DatapackEditScreen.this, 0, 0, 0, 30) {
@@ -2080,7 +2083,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 							}
 						}
 					} catch (Exception e) {
-						EpicFightMod.LOGGER.info("Failed to import " + resourceLocation + ": " + e.getMessage());
+						EpicFight.LOGGER.info("Failed to import " + resourceLocation + ": " + e.getMessage());
 						e.printStackTrace();
 					}
 				});
@@ -2153,7 +2156,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 				this.packList.add(PackEntry.ofValue(registryName, compTag));
 				this.packListGrid.addRowWithDefaultValues("pack_item", registryName.toString());
 			} catch (Exception e) {
-				EpicFightMod.LOGGER.info("Failed to import " + registryName + ": " + e.getMessage());
+				EpicFight.LOGGER.info("Failed to import " + registryName + ": " + e.getMessage());
 				throw e;
 			} finally {
 				try {
@@ -2341,12 +2344,12 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 				this.packList.get(this.packListGrid.getRowposition()).getValue().putString("armature", pair.getFirst());
 			});
 			
-			final ResizableEditBox impactEditBox = new ResizableEditBox(DatapackEditScreen.this.getMinecraft().font, 0, 0, 0, 0, Component.literal("impact"), null, null);
-			final ResizableEditBox armorNegationEditBox = new ResizableEditBox(DatapackEditScreen.this.getMinecraft().font, 0, 0, 0, 0, Component.literal("armor_negation"), null, null);
-			final ResizableEditBox maxStrikesEditBox = new ResizableEditBox(DatapackEditScreen.this.getMinecraft().font, 0, 0, 0, 0, Component.literal("max_strikes"), null, null);
-			final ResizableEditBox chasingSpeedEditBox = new ResizableEditBox(DatapackEditScreen.this.getMinecraft().font, 0, 0, 0, 0, Component.literal("chasing_speed"), null, null);
-			final ResizableEditBox scaleEditBox = new ResizableEditBox(DatapackEditScreen.this.getMinecraft().font, 0, 0, 0, 0, Component.literal("scale"), null, null);
-			final ResizableEditBox stunArmorBox = new ResizableEditBox(DatapackEditScreen.this.getMinecraft().font, 0, 0, 0, 0, Component.literal("stun_armor"), null, null);
+			final ResizableEditBox impactEditBox = new ResizableEditBox(Minecraft.getInstance().font, 0, 0, 0, 0, Component.literal("impact"), null, null);
+			final ResizableEditBox armorNegationEditBox = new ResizableEditBox(Minecraft.getInstance().font, 0, 0, 0, 0, Component.literal("armor_negation"), null, null);
+			final ResizableEditBox maxStrikesEditBox = new ResizableEditBox(Minecraft.getInstance().font, 0, 0, 0, 0, Component.literal("max_strikes"), null, null);
+			final ResizableEditBox chasingSpeedEditBox = new ResizableEditBox(Minecraft.getInstance().font, 0, 0, 0, 0, Component.literal("chasing_speed"), null, null);
+			final ResizableEditBox scaleEditBox = new ResizableEditBox(Minecraft.getInstance().font, 0, 0, 0, 0, Component.literal("scale"), null, null);
+			final ResizableEditBox stunArmorBox = new ResizableEditBox(Minecraft.getInstance().font, 0, 0, 0, 0, Component.literal("stun_armor"), null, null);
 			
 			impactEditBox.setFilter((context) -> StringUtil.isNullOrEmpty(context) || ParseUtil.isParsableAllowingMinus(context, Double::parseDouble));
 			armorNegationEditBox.setFilter((context) -> StringUtil.isNullOrEmpty(context) || ParseUtil.isParsableAllowingMinus(context, Double::parseDouble));
@@ -2417,21 +2420,21 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 				
 				this.inputComponentsList.newRow();
 				this.inputComponentsList.addComponentCurrentRow(new Static(parentScreen, this.inputComponentsList.nextStart(4), 100, 60, 15, HorizontalSizing.LEFT_WIDTH, null, "datapack_edit.mob_patch.faction"));
-				this.inputComponentsList.addComponentCurrentRow(new ComboBox<>(parentScreen, parentScreen.getMinecraft().font, this.inputComponentsList.nextStart(5), 124, 100, 15, HorizontalSizing.LEFT_WIDTH, null, 8,
+				this.inputComponentsList.addComponentCurrentRow(new ComboBox<>(parentScreen, Minecraft.getInstance().font, this.inputComponentsList.nextStart(5), 124, 100, 15, HorizontalSizing.LEFT_WIDTH, null, 8,
 					Component.translatable("datapack_edit.mob_patch.faction"), Faction.ENUM_MANAGER.universalValues(), (faction) -> ParseUtil.snakeToSpacedCamel(faction), (faction) -> {
 						this.packList.get(this.packListGrid.getRowposition()).getValue().putString("faction", ParseUtil.nullOrToString(faction, (value) -> value.toString().toLowerCase(Locale.ROOT)));
 					}));
 				
 				this.inputComponentsList.newRow();
 				this.inputComponentsList.addComponentCurrentRow(new Static(parentScreen, this.inputComponentsList.nextStart(4), 100, 60, 15, HorizontalSizing.LEFT_WIDTH, null, "datapack_edit.mob_patch.swing_sound"));
-				this.inputComponentsList.addComponentCurrentRow(new PopupBox.SoundPopupBox(parentScreen, parentScreen.getMinecraft().font, this.inputComponentsList.nextStart(5), 15, 0, 15, HorizontalSizing.LEFT_RIGHT, null,
+				this.inputComponentsList.addComponentCurrentRow(new PopupBox.SoundPopupBox(parentScreen, Minecraft.getInstance().font, this.inputComponentsList.nextStart(5), 15, 0, 15, HorizontalSizing.LEFT_RIGHT, null,
 					Component.translatable("datapack_edit.mob_patch.swing_sound"), (soundevent) -> {
 						this.packList.get(this.packListGrid.getRowposition()).getValue().putString("swing_sound", ParseUtil.getRegistryName(soundevent.getSecond(), BuiltInRegistries.SOUND_EVENT));
 					}));
 				
 				this.inputComponentsList.newRow();
 				this.inputComponentsList.addComponentCurrentRow(new Static(parentScreen, this.inputComponentsList.nextStart(4), 100, 60, 15, HorizontalSizing.LEFT_WIDTH, null, "datapack_edit.mob_patch.hit_sound"));
-				this.inputComponentsList.addComponentCurrentRow(new PopupBox.SoundPopupBox(parentScreen, parentScreen.getMinecraft().font, this.inputComponentsList.nextStart(5), 15, 0, 15, HorizontalSizing.LEFT_RIGHT, null,
+				this.inputComponentsList.addComponentCurrentRow(new PopupBox.SoundPopupBox(parentScreen, Minecraft.getInstance().font, this.inputComponentsList.nextStart(5), 15, 0, 15, HorizontalSizing.LEFT_RIGHT, null,
 					Component.translatable("datapack_edit.mob_patch.hit_sound"), (soundevent) -> {
 						this.packList.get(this.packListGrid.getRowposition()).getValue().putString("hit_sound", ParseUtil.getRegistryName(soundevent.getSecond(), BuiltInRegistries.SOUND_EVENT));
 					}));
@@ -2447,7 +2450,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 				this.inputComponentsList.addComponentCurrentRow(new Static(parentScreen, this.inputComponentsList.nextStart(4), 100, 60, 15, HorizontalSizing.LEFT_WIDTH, null, "datapack_edit.mob_patch.attributes"));
 				this.inputComponentsList.newRow();
 				this.inputComponentsList.newRow();
-				this.inputComponentsList.addComponentCurrentRow(Grid.builder(parentScreen, parentScreen.getMinecraft())
+				this.inputComponentsList.addComponentCurrentRow(Grid.builder(parentScreen, Minecraft.getInstance())
 																	.xy1(this.inputComponentsList.nextStart(5), 0)
 																	.xy2(15, 90)
 																	.horizontalSizing(HorizontalSizing.LEFT_RIGHT)
@@ -2592,7 +2595,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 					this.inputComponentsList.addComponentCurrentRow(new Static(parentScreen, this.inputComponentsList.nextStart(4), 140, 60, 15, HorizontalSizing.LEFT_WIDTH, null, "datapack_edit.mob_patch.humanoid_weapon_motions"));
 					this.inputComponentsList.addComponentCurrentRow(SubScreenOpenButton.builder().subScreen(() -> {
 						if (this.armaturePopupBox._getValue() == null || this.meshPopupBox._getValue() == null) {
-							return new MessageScreen<>("", "Define model and armature first.", DatapackEditScreen.this, (button2) -> DatapackEditScreen.this.getMinecraft().setScreen(DatapackEditScreen.this), 180, 60);
+							return new MessageScreen<>("", "Define model and armature first.", DatapackEditScreen.this, (button2) -> Minecraft.getInstance().setScreen(DatapackEditScreen.this), 180, 60);
 						} else {
 							return new HumanoidWeaponMotionScreen(DatapackEditScreen.this, this.packList.get(this.packListGrid.getRowposition()).getValue(), this.armaturePopupBox._getValue(), this.meshPopupBox._getValue());
 						}
@@ -2603,7 +2606,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 				this.inputComponentsList.addComponentCurrentRow(new Static(parentScreen, this.inputComponentsList.nextStart(4), 140, 60, 15, HorizontalSizing.LEFT_WIDTH, null, "datapack_edit.mob_patch.combat_behavior"));
 				this.inputComponentsList.addComponentCurrentRow(SubScreenOpenButton.builder().subScreen(() -> {
 					if (this.armaturePopupBox._getValue() == null || this.meshPopupBox._getValue() == null) {
-						return new MessageScreen<>("", "Define model and armature first.", DatapackEditScreen.this, (button2) -> DatapackEditScreen.this.getMinecraft().setScreen(DatapackEditScreen.this), 180, 60);
+						return new MessageScreen<>("", "Define model and armature first.", DatapackEditScreen.this, (button2) -> Minecraft.getInstance().setScreen(DatapackEditScreen.this), 180, 60);
 					} else if (isHumanoid) {
 						return new HumanoidCombatBehaviorScreen(DatapackEditScreen.this, this.packList.get(this.packListGrid.getRowposition()).getValue(), this.armaturePopupBox._getValue(), this.meshPopupBox._getValue());
 					} else {
@@ -2703,7 +2706,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 					try {
 						this.importJson(rl, streamSupplier.get());
 					} catch (Exception e) {
-						EpicFightMod.LOGGER.info("Failed to import " + resourceLocation + ": " + e.getMessage());
+						EpicFight.LOGGER.info("Failed to import " + resourceLocation + ": " + e.getMessage());
 						e.printStackTrace();
 					}
 				});

@@ -10,7 +10,7 @@ import yesman.epicfight.api.event.IdentifierProvider;
 import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.api.utils.side.ClientOnly;
 import yesman.epicfight.client.gui.BattleModeGui;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.network.EntityPairingPacketTypes;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPEntityPairingPacket;
@@ -21,7 +21,7 @@ import yesman.epicfight.skill.SkillContainer;
 import java.util.List;
 
 public class BonebreakerSkill extends PassiveSkill {
-    public static final IdentifierProvider CRACKINESS = IdentifierProvider.constant(EpicFightMod.identifier("bonebreaker_target_crackiness"));
+    public static final IdentifierProvider CRACKINESS = IdentifierProvider.constant(EpicFight.identifier("bonebreaker_target_crackiness"));
 
 	private float damageBonus;
 	private int maxDamageBonusStacks;
@@ -135,7 +135,7 @@ public class BonebreakerSkill extends PassiveSkill {
 	@Override @ClientOnly
 	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y, float partialTick) {
 		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
-		guiGraphics.drawString(gui.getFont(), String.valueOf(container.getDataManager().getDataValue(EpicFightSkillDataKeys.STACKS)), x + 10, y + 10, 16777215, true);
+		guiGraphics.drawString(gui.getFont(), String.valueOf(container.getDataManager().getDataValue(EpicFightSkillDataKeys.STACKS)), (int)(x + 10), (int)(y + 10), 16777215, true);
 	}
 	
 	@Override @ClientOnly

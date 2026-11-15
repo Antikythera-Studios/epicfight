@@ -45,24 +45,36 @@ public class AnimationPlayer {
 			this.elapsedTime = time.getSecond();
 		}
 		
-		if (this.elapsedTime > currentPlay.getTotalTime()) {
+		float totalTime = currentPlay.getTotalTime();
+		
+		if (currentPlay.isRepeat() && (!Float.isFinite(totalTime) || totalTime <= 0.0F)) {
+			// A zero/nonfinite-duration repeat clip cannot advance; hold both clocks at zero
+			// rather than modulo-dividing by zero.
+			this.prevElapsedTime = 0.0F;
+			this.elapsedTime = 0.0F;
+		} else if (this.elapsedTime > totalTime) {
 			if (currentPlay.isRepeat()) {
-				this.prevElapsedTime = this.prevElapsedTime - currentPlay.getTotalTime();
-				this.elapsedTime %= currentPlay.getTotalTime();
+				this.prevElapsedTime = this.prevElapsedTime - totalTime;
+				this.elapsedTime %= totalTime;
 			} else {
-				this.elapsedTime = currentPlay.getTotalTime();
+				this.elapsedTime = totalTime;
 				currentPlay.end(entitypatch, null, true);
 				this.isEnd = true;
 			}
 		} else if (this.elapsedTime < 0) {
 			if (currentPlay.isRepeat()) {
-				this.prevElapsedTime = currentPlay.getTotalTime() - this.elapsedTime;
-				this.elapsedTime = currentPlay.getTotalTime() + this.elapsedTime;
+				this.prevElapsedTime = totalTime - this.elapsedTime;
+				this.elapsedTime = totalTime + this.elapsedTime;
 			} else {
 				this.elapsedTime = 0.0F;
 				currentPlay.end(entitypatch, null, true);
 				this.isEnd = true;
 			}
+		}
+		
+		if (!Float.isFinite(this.elapsedTime) || !Float.isFinite(this.prevElapsedTime)) {
+			this.prevElapsedTime = 0.0F;
+			this.elapsedTime = 0.0F;
 		}
 	}
 	

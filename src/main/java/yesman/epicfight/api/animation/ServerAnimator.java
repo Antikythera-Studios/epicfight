@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.mojang.datafixers.util.Pair;
 
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.LinkAnimation;
@@ -34,6 +35,11 @@ public class ServerAnimator extends Animator {
 	/** Play an animation by animation instance **/
 	@Override
 	public void playAnimation(AssetAccessor<? extends StaticAnimation> nextAnimation, float transitionTimeModifier) {
+		if (AnimationManager.checkNull(nextAnimation)) {
+			EpicFight.LOGGER.warn("Skipping playback of an empty animation ({})", nextAnimation == null ? "null" : nextAnimation.registryName());
+			return;
+		}
+		
 		this.softPaused = false;
 		Pose lastPose = this.animationPlayer.getAnimation().get().getPoseByTime(this.entitypatch, 0.0F, 0.0F);
 		
@@ -54,6 +60,11 @@ public class ServerAnimator extends Animator {
 	
 	@Override
 	public void playAnimationInstantly(AssetAccessor<? extends StaticAnimation> nextAnimation) {
+		if (AnimationManager.checkNull(nextAnimation)) {
+			EpicFight.LOGGER.warn("Skipping instant playback of an empty animation ({})", nextAnimation == null ? "null" : nextAnimation.registryName());
+			return;
+		}
+		
 		this.softPaused = false;
 		
 		if (!this.animationPlayer.isEnd()) {
@@ -67,6 +78,11 @@ public class ServerAnimator extends Animator {
 	
 	@Override
 	public void reserveAnimation(AssetAccessor<? extends StaticAnimation> nextAnimation) {
+		if (AnimationManager.checkNull(nextAnimation)) {
+			EpicFight.LOGGER.warn("Skipping reservation of an empty animation ({})", nextAnimation == null ? "null" : nextAnimation.registryName());
+			return;
+		}
+		
 		this.softPaused = false;
 		this.nextAnimation = nextAnimation;
 	}

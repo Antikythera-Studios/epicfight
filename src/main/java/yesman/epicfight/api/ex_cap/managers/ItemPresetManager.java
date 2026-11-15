@@ -15,11 +15,16 @@ import yesman.epicfight.world.capabilities.item.WeaponCapability;
 import yesman.epicfight.world.capabilities.item.WeaponCapabilityPresets;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 @ApiStatus.Experimental
 public class ItemPresetManager {
     private static final Map<ResourceLocation, CapabilityItem.Builder<?>> BUILDERS = Maps.newHashMap();
+
+    public static Set<Map.Entry<ResourceLocation, CapabilityItem.Builder<?>>> getEntries() {
+        return BUILDERS.entrySet();
+    }
 
     public static CapabilityItem.Builder<?> get(ResourceLocation id) {
         return BUILDERS.get(id);

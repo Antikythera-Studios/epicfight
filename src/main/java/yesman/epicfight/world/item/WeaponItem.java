@@ -1,4 +1,5 @@
 package yesman.epicfight.world.item;
+import yesman.epicfight.EpicFight;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -17,23 +18,19 @@ public class WeaponItem extends Item {
     /**
      * Below code are copies from {@link SwordItem.class} to share the common properties of swords
      */
-    @Override
     public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
         return !player.isCreative();
     }
 
-    @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         return true;
     }
 
-    @Override
     public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
     }
 
-    @Override
-    public boolean canPerformAction(ItemStack stack, net.neoforged.neoforge.common.ItemAbility itemAbility) {
-        return net.neoforged.neoforge.common.ItemAbilities.DEFAULT_SWORD_ACTIONS.contains(itemAbility);
+    public boolean canPerformAction(ItemStack stack, yesman.epicfight.platform.neoforged.common.ItemAbility itemAbility) {
+        return yesman.epicfight.platform.neoforged.common.ItemAbilities.DEFAULT_SWORD_ACTIONS.contains(itemAbility);
     }
 }

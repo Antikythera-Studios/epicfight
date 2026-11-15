@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.screen;
+import net.minecraft.client.Minecraft;
 
 import java.util.List;
 import java.util.Locale;
@@ -51,8 +52,8 @@ public class WeaponComboScreen extends Screen {
 	public WeaponComboScreen(Screen parentScreen, CompoundTag rootTag) {
 		super(Component.translatable("datapack_edit.weapon_type.combos"));
 		
-		this.minecraft = parentScreen.getMinecraft();
-		this.font = parentScreen.getMinecraft().font;
+		this.minecraft = Minecraft.getInstance();
+		this.font = Minecraft.getInstance().font;
 		this.parentScreen = parentScreen;
 		
 		this.inputComponentsList = new InputComponentList<>(this, 0, 0, 0, 20) {
@@ -95,7 +96,7 @@ public class WeaponComboScreen extends Screen {
 		
 		this.rootTag = ParseUtil.getOrDefaultTag(rootTag, "combos", new CompoundTag());
 		
-		this.stylesGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.stylesGrid = Grid.builder(this, Minecraft.getInstance())
 								.xy1(12, 60)
 								.xy2(85, 50)
 								.horizontalSizing(HorizontalSizing.LEFT_WIDTH)
@@ -151,7 +152,7 @@ public class WeaponComboScreen extends Screen {
 								})
 								.build();
 		
-		this.comboGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.comboGrid = Grid.builder(this, Minecraft.getInstance())
 								.xy1(177, 40)
 								.xy2(14, 80)
 								.horizontalSizing(HorizontalSizing.WIDTH_RIGHT)

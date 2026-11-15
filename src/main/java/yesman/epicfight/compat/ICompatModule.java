@@ -1,40 +1,42 @@
 package yesman.epicfight.compat;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingException;
-import net.neoforged.neoforge.common.NeoForge;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.main.EpicFightSharedConstants;
 
 import java.lang.reflect.Constructor;
 
+/// Compat module interface for Fabric.
+/// On NeoForge, modules received Object instances. On Fabric, modules
+/// register their own callbacks via Fabric API in the no-arg methods.
 public interface ICompatModule {
-	static void loadCompatModule(IEventBus modEventBus, Class<? extends ICompatModule> compatModule) {
+	static void loadCompatModule(Class<? extends ICompatModule> compatModule) {
 		try {
 			Constructor<? extends ICompatModule> constructor = compatModule.getConstructor();
 			ICompatModule compatModuleInstance = constructor.newInstance();
-			compatModuleInstance.onModEventBus(modEventBus);
-			compatModuleInstance.onGameEventBus(NeoForge.EVENT_BUS);
-			
+			compatModuleInstance.onInitialize();
+			compatModuleInstance.onInitializeServer();
+
 			if (EpicFightSharedConstants.isPhysicalClient()) {
-				compatModuleInstance.onModEventBusClient(modEventBus);
-				compatModuleInstance.onGameEventBusClient(NeoForge.EVENT_BUS);
+				compatModuleInstance.onInitializeClient();
+				compatModuleInstance.onInitializeClientServer();
 			}
 
-            EpicFightMod.LOGGER.info("Loaded mod compatibility module: {}", compatModule.getSimpleName());
-		} catch (ModLoadingException e) {
-			throw e;
+            EpicFight.LOGGER.info("Loaded mod compatibility module: {}", compatModule.getSimpleName());
 		} catch (Exception e) {
-            EpicFightMod.LOGGER.error("Failed to load mod compatibility module: {}", e.getMessage());
+            EpicFight.LOGGER.error("Failed to load mod compatibility module: {}", e.getMessage());
 			e.printStackTrace();
 		}
 	}
-	
-	void onModEventBus(IEventBus eventBus);
-	
-	void onGameEventBus(IEventBus eventBus);
-	
-	void onModEventBusClient(IEventBus eventBus);
 
-	void onGameEventBusClient(IEventBus eventBus);
+	/// Common initialization — register Fabric callbacks here.
+	void onInitialize();
+
+	/// Server-side initialization.
+	void onInitializeServer();
+
+	/// Client-side initialization — register Fabric client callbacks here.
+	void onInitializeClient();
+
+	/// Client-server initialization (client-side server events).
+	void onInitializeClientServer();
 }

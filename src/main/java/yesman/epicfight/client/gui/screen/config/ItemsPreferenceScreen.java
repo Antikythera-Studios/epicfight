@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.screen.config;
+import net.minecraft.client.Minecraft;
 
 import com.google.common.collect.Sets;
 import net.minecraft.ChatFormatting;
@@ -114,7 +115,7 @@ public class ItemsPreferenceScreen extends Screen {
 		super(Component.translatable(LangKeys.GUI_TITLE_SETTINGS_CONTROL_ITEM_CATEGORY));
 		
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
+		this.minecraft = Minecraft.getInstance();
 
 		BuiltInRegistries.ITEM.forEach(item -> {
 			if (ClientConfig.combatCategorizedItems.contains(item)) {

@@ -1,4 +1,5 @@
 package yesman.epicfight.world.capabilities.entitypatch.mob;
+import yesman.epicfight.platform.fabric.event.EntityAttributeModificationEvent;
 
 import java.util.Set;
 
@@ -8,7 +9,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
+
 import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.gameasset.Animations;

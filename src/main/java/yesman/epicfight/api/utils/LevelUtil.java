@@ -189,7 +189,7 @@ public class LevelUtil {
 		for (int i = 0; i < 4; i += level.getRandom().nextInt(4)) {
 			double x = bp.getX() + (i % 2);
 			double z = bp.getZ() + 1 - (i % 2);
-            level.addParticle(new BlockParticleOption(EpicFightParticles.GROUND_FRACTURE.get(), bs).setPos(bp.above()), x, bp.getY() + 1, z, 0.0, 0.0, 0.0);
+            level.addParticle(new BlockParticleOption(EpicFightParticles.GROUND_FRACTURE.get(), bs), x, bp.getY() + 1, z, 0.0, 0.0, 0.0);
 		}
 	}
 	

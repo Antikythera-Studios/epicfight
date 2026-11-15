@@ -275,16 +275,16 @@ public class IrisComputeShaderSetup extends ComputeShaderSetup {
 		if (buffers instanceof BufferSourceWrapper bufferwrapper) {
 			if (bufferwrapper.getOriginal() instanceof OutlineBufferSource outlineBufferSource) {
 				renderType.outline().ifPresent(outlineRendertype -> {
-					this.draw(poseStack, outlineRendertype, outlineBufferSource.teamR / 255.0F,
-							outlineBufferSource.teamG / 255.0F, outlineBufferSource.teamB / 255.0F,
-							outlineBufferSource.teamA / 255.0F, overlay, packedLight, poses.length);
+					this.draw(poseStack, outlineRendertype, ((yesman.epicfight.mixin.client.OutlineBufferSourceAccessor) outlineBufferSource).epicfight$getTeamR() / 255.0F,
+							((yesman.epicfight.mixin.client.OutlineBufferSourceAccessor) outlineBufferSource).epicfight$getTeamG() / 255.0F, ((yesman.epicfight.mixin.client.OutlineBufferSourceAccessor) outlineBufferSource).epicfight$getTeamB() / 255.0F,
+							((yesman.epicfight.mixin.client.OutlineBufferSourceAccessor) outlineBufferSource).epicfight$getTeamA() / 255.0F, overlay, packedLight, poses.length);
 				});
 			}
 		} else if (buffers instanceof OutlineBufferSource outlineBufferSource) {
 			renderType.outline().ifPresent(outlineRendertype -> {
-				this.draw(poseStack, outlineRendertype, outlineBufferSource.teamR / 255.0F,
-						outlineBufferSource.teamG / 255.0F, outlineBufferSource.teamB / 255.0F,
-						outlineBufferSource.teamA / 255.0F, overlay, packedLight, poses.length);
+				this.draw(poseStack, outlineRendertype, ((yesman.epicfight.mixin.client.OutlineBufferSourceAccessor) outlineBufferSource).epicfight$getTeamR() / 255.0F,
+						((yesman.epicfight.mixin.client.OutlineBufferSourceAccessor) outlineBufferSource).epicfight$getTeamG() / 255.0F, ((yesman.epicfight.mixin.client.OutlineBufferSourceAccessor) outlineBufferSource).epicfight$getTeamB() / 255.0F,
+						((yesman.epicfight.mixin.client.OutlineBufferSourceAccessor) outlineBufferSource).epicfight$getTeamA() / 255.0F, overlay, packedLight, poses.length);
 			});
 		}
 		

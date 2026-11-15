@@ -11,7 +11,7 @@ import yesman.epicfight.api.event.IdentifierProvider;
 import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.api.utils.side.ClientOnly;
 import yesman.epicfight.client.gui.BattleModeGui;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.network.EntityPairingPacketTypes;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPEntityPairingPacket;
@@ -24,7 +24,7 @@ import yesman.epicfight.skill.SkillContainer;
 import java.util.List;
 
 public class VengeanceSkill extends PassiveSkill {
-    public static final IdentifierProvider TARGET = IdentifierProvider.constant(EpicFightMod.identifier("vengeance_target"));
+    public static final IdentifierProvider TARGET = IdentifierProvider.constant(EpicFight.identifier("vengeance_target"));
 
     private float damageBonus;
 
@@ -200,10 +200,10 @@ public class VengeanceSkill extends PassiveSkill {
 
         if (container.isActivated()) {
             float f = Math.round(this.damageBonus * 100.0F * container.getDurationRatio(1.0F));
-            guiGraphics.drawString(gui.getFont(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(f) + "%", x + 6, y + 8, 16777215, true);
+            guiGraphics.drawString(gui.getFont(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(f) + "%", (int)(x + 6), (int)(y + 8), 16777215, true);
         } else if (canResetTarget(container)) {
             int seconds = 4 - ((container.getExecutor().getOriginal().tickCount - container.getDataManager().getDataValue(EpicFightSkillDataKeys.TICK_RECORD)) - 80) / 20;
-            guiGraphics.drawString(gui.getFont(), String.valueOf(seconds), x + 6, y + 8, 16777215, true);
+            guiGraphics.drawString(gui.getFont(), String.valueOf(seconds), (int)(x + 6), (int)(y + 8), 16777215, true);
         }
     }
 

@@ -69,26 +69,26 @@ public class ItemCapabilityReloadListener extends SimpleJsonResourceReloadListen
 		for (Map.Entry<ResourceLocation, JsonElement> entry : objectIn.entrySet()) {
 			ResourceLocation rl = entry.getKey();
 			String path = rl.getPath();
-			
+
 			if (path.contains("/") && !path.contains("types") && !path.contains("item_keyword")) {
 				String[] str = path.split("/", 2);
 				ResourceLocation registryName = ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), str[1]);
-				
+
 				if (!BuiltInRegistries.ITEM.containsKey(registryName)) {
 					EpicFight.LOGGER.warn("Item Capability Exception: No item named {}", registryName);
 					continue;
 				}
-				
+
 				Item item = BuiltInRegistries.ITEM.get(registryName);
 				CompoundTag tag = null;
-				
+
 				try {
 					tag = TagParser.parseTag(entry.getValue().toString());
 				} catch (CommandSyntaxException e) {
                     warnDeserialize(registryName, e);
 					continue;
 				}
-				
+
 				try {
 					if (str[0].equals("armors")) {
 						CapabilityItem capability = deserializeArmor(item, tag);
@@ -104,7 +104,7 @@ public class ItemCapabilityReloadListener extends SimpleJsonResourceReloadListen
 				}
 			}
 		}
-		
+
 		EpicFightCapabilities.ITEM_CAPABILITY_PROVIDER.addDefaultItems();
 	}
 

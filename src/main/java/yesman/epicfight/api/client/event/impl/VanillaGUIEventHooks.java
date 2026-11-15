@@ -25,7 +25,7 @@ public final class VanillaGUIEventHooks {
         LocalPlayer localPlayer = Minecraft.getInstance().player;
 
         if (localPlayer != null && screen instanceof AbstractContainerScreen<?> abstractContainerScreen) {
-            Slot slot = abstractContainerScreen.getSlotUnderMouse();
+            Slot slot = ((yesman.epicfight.mixin.client.AbstractContainerScreenAccessor) abstractContainerScreen).epicfight$getHoveredSlot();
 
             if (slot != null) {
                 CapabilityItem cap = EpicFightCapabilities.getItemStackCapability(localPlayer.containerMenu.getCarried());
@@ -48,7 +48,7 @@ public final class VanillaGUIEventHooks {
         LocalPlayer localPlayer = Minecraft.getInstance().player;
 
         if (localPlayer != null && screen instanceof AbstractContainerScreen<?> abstractContainerScreen) {
-            Slot slot = abstractContainerScreen.getSlotUnderMouse();
+            Slot slot = ((yesman.epicfight.mixin.client.AbstractContainerScreenAccessor) abstractContainerScreen).epicfight$getHoveredSlot();
 
             if (slot != null) {
                 CapabilityItem cap = EpicFightCapabilities.getItemStackCapability(localPlayer.containerMenu.getCarried());
@@ -73,9 +73,9 @@ public final class VanillaGUIEventHooks {
         // TODO: (INPUT_SYSTEM_REFACTOR) This only disables putting the item to offhand inventory slot for key inputs (defaults to F).
         //  Explore a universal solution that also supports controllers and other input systems.
         //  https://github.com/Epic-Fight/epicfight/issues/2135
-        if (keyCode == minecraft.options.keySwapOffhand.getKey().getValue()) {
+        if (keyCode == yesman.epicfight.client.input.InputUtils.getKey(minecraft.options.keySwapOffhand).getValue()) {
             if (screen instanceof AbstractContainerScreen<?> abstractContainerScreen) {
-                Slot slot = abstractContainerScreen.getSlotUnderMouse();
+                Slot slot = ((yesman.epicfight.mixin.client.AbstractContainerScreenAccessor) abstractContainerScreen).epicfight$getHoveredSlot();
 
                 if (slot != null && slot.hasItem()) {
                     CapabilityItem itemCapability = EpicFightCapabilities.getItemStackCapability(slot.getItem());
@@ -84,7 +84,7 @@ public final class VanillaGUIEventHooks {
             }
         } else if (keyCode >= 49 && keyCode <= 57) {
             if (screen instanceof AbstractContainerScreen<?> abstractContainerScreen) {
-                Slot slot = abstractContainerScreen.getSlotUnderMouse();
+                Slot slot = ((yesman.epicfight.mixin.client.AbstractContainerScreenAccessor) abstractContainerScreen).epicfight$getHoveredSlot();
 
                 if (minecraft.player != null && slot != null && slot.getNoItemIcon() != null && slot.getNoItemIcon().equals(OFFHAND_TEXTURE)) {
                     CapabilityItem itemCapability = EpicFightCapabilities.getItemStackCapability(minecraft.player.getInventory().getItem(keyCode - 49));

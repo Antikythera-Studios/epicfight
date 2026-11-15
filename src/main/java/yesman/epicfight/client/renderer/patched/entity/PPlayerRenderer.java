@@ -12,6 +12,7 @@ import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.world.entity.EntityType;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.client.model.Meshes;
+import yesman.epicfight.client.events.engine.RenderEngine;
 import yesman.epicfight.client.mesh.HumanoidMesh;
 import yesman.epicfight.client.renderer.patched.layer.PatchedArrowLayer;
 import yesman.epicfight.client.renderer.patched.layer.PatchedBeeStingerLayer;
@@ -48,6 +49,11 @@ public class PPlayerRenderer extends PHumanoidRenderer<AbstractClientPlayer, Abs
 		mesh.rightLeg.setHidden(!model.rightLeg.visible);
 		mesh.rightPants.setHidden(!model.rightPants.visible);
 		mesh.rightSleeve.setHidden(!model.rightSleeve.visible);
+
+		if (RenderEngine.isLocalPlayerInFirstPerson(entity)) {
+			mesh.head.setHidden(true);
+			mesh.hat.setHidden(true);
+		}
 	}
 	
 	@Override

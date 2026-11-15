@@ -12,12 +12,15 @@ import net.minecraft.util.Mth;
 import yesman.epicfight.client.gui.widgets.common.AnchoredWidget;
 import yesman.epicfight.client.gui.widgets.common.ThemeApplicableWidget;
 import yesman.epicfight.client.gui.widgets.common.WidgetTheme;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public class AnchoredButton extends Button implements AnchoredWidget, ThemeApplicableWidget<AnchoredButton.ButtonTheme> {
+
+    /// NeoForge adds packedFGColor to AbstractWidget. On Fabric, we declare it here.
+    protected int packedFGColor = -1;
     protected final Function<AbstractWidget, Boolean> highlightWhen;
     protected ButtonTheme theme;
 
@@ -72,8 +75,7 @@ public class AnchoredButton extends Button implements AnchoredWidget, ThemeAppli
         this.renderString(guiGraphics, Minecraft.getInstance().font, i | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 
-    @Override
-    public int getFGColor() {
+        public int getFGColor() {
         if (this.packedFGColor != -1) {
             return this.packedFGColor;
         } else {
@@ -106,21 +108,21 @@ public class AnchoredButton extends Button implements AnchoredWidget, ThemeAppli
     }
 
     static final WidgetSprites NUMBERED_TAB_SPRITES = new WidgetSprites(
-        EpicFightMod.identifier("widget/numbered_tab_button"),
-        EpicFightMod.identifier("widget/numbered_tab_button_disabled"),
-        EpicFightMod.identifier("widget/numbered_tab_button_highlighted")
+        EpicFight.identifier("widget/numbered_tab_button"),
+        EpicFight.identifier("widget/numbered_tab_button_disabled"),
+        EpicFight.identifier("widget/numbered_tab_button_highlighted")
     );
 
     static final WidgetSprites EMOTE_WHEEL_UP_SPRITES = new WidgetSprites(
-        EpicFightMod.identifier("widget/emote_wheel_up"),
-        EpicFightMod.identifier("widget/emote_wheel_up"),
-        EpicFightMod.identifier("widget/emote_wheel_up_highlighted")
+        EpicFight.identifier("widget/emote_wheel_up"),
+        EpicFight.identifier("widget/emote_wheel_up"),
+        EpicFight.identifier("widget/emote_wheel_up_highlighted")
     );
 
     static final WidgetSprites EMOTE_WHEEL_DOWN_SPRITES = new WidgetSprites(
-        EpicFightMod.identifier("widget/emote_wheel_down"),
-        EpicFightMod.identifier("widget/emote_wheel_down"),
-        EpicFightMod.identifier("widget/emote_wheel_down_highlighted")
+        EpicFight.identifier("widget/emote_wheel_down"),
+        EpicFight.identifier("widget/emote_wheel_down"),
+        EpicFight.identifier("widget/emote_wheel_down_highlighted")
     );
 
     public enum BuiltInTheme implements ButtonTheme {

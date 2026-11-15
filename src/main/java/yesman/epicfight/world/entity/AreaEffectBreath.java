@@ -59,7 +59,7 @@ public class AreaEffectBreath extends AreaEffectCloud {
 				this.setRadius(f);
 			}
 			
-			this.victims.entrySet().removeIf((p_146784_) -> {
+			((yesman.epicfight.mixin.common.AreaEffectCloudAccessor) this).epicfight$getVictims().entrySet().removeIf((p_146784_) -> {
 				return this.tickCount >= p_146784_.getValue();
 			});
 			
@@ -77,13 +77,13 @@ public class AreaEffectBreath extends AreaEffectCloud {
 						continue;
 					}
 					
-					if (!this.victims.containsKey(livingentity) && livingentity.isAffectedByPotions()) {
+					if (!((yesman.epicfight.mixin.common.AreaEffectCloudAccessor) this).epicfight$getVictims().containsKey(livingentity) && livingentity.isAffectedByPotions()) {
 						double d8 = livingentity.getX() - this.getX();
 						double d1 = livingentity.getZ() - this.getZ();
 						double d3 = d8 * d8 + d1 * d1;
 						
 						if (d3 <= (double) (f * f)) {
-							this.victims.put(livingentity, this.tickCount + 3);
+							((yesman.epicfight.mixin.common.AreaEffectCloudAccessor) this).epicfight$getVictims().put(livingentity, this.tickCount + 3);
 							livingentity.invulnerableTime = 0;
 							
 							damageSource.setInitialPosition(this.initialFirePosition);

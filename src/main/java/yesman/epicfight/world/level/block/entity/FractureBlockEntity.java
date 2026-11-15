@@ -65,7 +65,7 @@ public class FractureBlockEntity extends BlockEntity {
     @ClientOnly
     public static void lifeTimeTick(Level level, BlockPos blockPos, BlockState blockState, FractureBlockEntity fractureBlockEntity) {
         if (fractureBlockEntity.getOriginalBlockState().shouldSpawnTerrainParticles() && fractureBlockEntity.getMaxLifeTime() - fractureBlockEntity.getLifeTime() < 10) {
-            level.addParticle(new BlockParticleOption(EpicFightParticles.GROUND_FRACTURE.get(), fractureBlockEntity.getOriginalBlockState()).setPos(blockPos), blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0.0, 0.0, 0.0);
+            level.addParticle(new BlockParticleOption(EpicFightParticles.GROUND_FRACTURE.get(), fractureBlockEntity.getOriginalBlockState()), blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0.0, 0.0, 0.0);
         }
 
         if (fractureBlockEntity.increaseAndGetLifeTime() > fractureBlockEntity.getMaxLifeTime()) {

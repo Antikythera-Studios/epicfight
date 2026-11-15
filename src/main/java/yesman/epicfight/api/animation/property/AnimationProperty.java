@@ -1,4 +1,5 @@
 package yesman.epicfight.api.animation.property;
+import yesman.epicfight.EpicFight;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import yesman.epicfight.registry.deferred_shim.DeferredHolderShim;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.LivingMotion;
 import yesman.epicfight.api.animation.Pose;
@@ -77,7 +78,7 @@ public abstract class AnimationProperty<T> {
 	}
 	
 	public T parseFrom(JsonElement e) {
-		return this.codecs.parse(JsonOps.INSTANCE, e).resultOrPartial((errm) -> EpicFightMod.LOGGER.warn("Failed to parse property " + this.name + " because of " + errm)).orElseThrow();
+		return this.codecs.parse(JsonOps.INSTANCE, e).resultOrPartial((errm) -> EpicFight.LOGGER.warn("Failed to parse property " + this.name + " because of " + errm)).orElseThrow();
 	}
 	
 	public Codec<T> getCodecs() {
@@ -332,7 +333,7 @@ public abstract class AnimationProperty<T> {
 		public static final AttackPhaseProperty<StunType> STUN_TYPE = new AttackPhaseProperty<StunType> ();
 		public static final AttackPhaseProperty<SoundEvent> SWING_SOUND = new AttackPhaseProperty<SoundEvent> ();
 		public static final AttackPhaseProperty<SoundEvent> HIT_SOUND = new AttackPhaseProperty<SoundEvent> ();
-		public static final AttackPhaseProperty<DeferredHolder<ParticleType<?>, HitParticleType>> PARTICLE = new AttackPhaseProperty<> ();
+		public static final AttackPhaseProperty<DeferredHolderShim<ParticleType<?>, HitParticleType>> PARTICLE = new AttackPhaseProperty<> ();
 		public static final AttackPhaseProperty<Priority> HIT_PRIORITY = new AttackPhaseProperty<Priority> ();
 		public static final AttackPhaseProperty<Set<TagKey<DamageType>>> SOURCE_TAG = new AttackPhaseProperty<Set<TagKey<DamageType>>> ();
 		public static final AttackPhaseProperty<Function<LivingEntityPatch<?>, Vec3>> SOURCE_LOCATION_PROVIDER = new AttackPhaseProperty<Function<LivingEntityPatch<?>, Vec3>> ();

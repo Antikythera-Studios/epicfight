@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+
 
 public class VanillaFakeBlockRenderer implements FakeBlockRenderer {
 	private static final Direction[] DIRECTIONS = Direction.values();
@@ -55,7 +55,7 @@ public class VanillaFakeBlockRenderer implements FakeBlockRenderer {
 		BlockPos.MutableBlockPos mutablepos = bp.mutable();
 		
 		for (Direction d : DIRECTIONS) {
-			List<BakedQuad> culledFaces = model.getQuads(bs, d, randomsource, ModelData.EMPTY, null);
+			List<BakedQuad> culledFaces = model.getQuads(bs, d, randomsource);
 			mutablepos.setWithOffset(bp, d);
 			
 			if (Block.shouldRenderFace(bs, level, bp, d, mutablepos)) {
@@ -63,7 +63,7 @@ public class VanillaFakeBlockRenderer implements FakeBlockRenderer {
 			}
 		}
 		
-		this.renderPreviewBlocks(poseStack2, buffer, level, model.getQuads(bs, null, randomsource, ModelData.EMPTY, null), r, g, b, a);
+		this.renderPreviewBlocks(poseStack2, buffer, level, model.getQuads(bs, null, randomsource), r, g, b, a);
 		
 		poseStack2.popPose();
 		

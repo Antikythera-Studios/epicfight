@@ -2,21 +2,21 @@ package yesman.epicfight.skill;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 
 import static yesman.epicfight.generated.LangKeys.*;
 
 public enum SkillCategories implements SkillCategory {
     // TODO: BASIC_ATTACK -> COMBO_ATTACKS
 	BASIC_ATTACK(false, false, false, SKILL_CATEGORY_COMBO_ATTACKS),
-	DODGE(true, true, true, SKILL_CATEGORY_DODGE, EpicFightMod.identifier("skillbook_dodge")),
-	PASSIVE(true, true, true, SKILL_CATEGORY_PASSIVE, EpicFightMod.identifier("skillbook_passive")),
+	DODGE(true, true, true, SKILL_CATEGORY_DODGE, EpicFight.identifier("skillbook_dodge")),
+	PASSIVE(true, true, true, SKILL_CATEGORY_PASSIVE, EpicFight.identifier("skillbook_passive")),
 	WEAPON_PASSIVE(false, false, false, SKILL_CATEGORY_WEAPON_PASSIVE),
 	WEAPON_INNATE(false, true, false, SKILL_CATEGORY_WEAPON_INNATE),
-	GUARD(true, true, true, SKILL_CATEGORY_GUARD, EpicFightMod.identifier("skillbook_guard")),
+	GUARD(true, true, true, SKILL_CATEGORY_GUARD, EpicFight.identifier("skillbook_guard")),
 	KNOCKDOWN_WAKEUP(false, false, false, SKILL_CATEGORY_KNOCKDOWN_WAKEUP),
-	MOVER(true, true, true, SKILL_CATEGORY_MOVER, EpicFightMod.identifier("skillbook_mover")),
-	IDENTITY(true, true, true, SKILL_CATEGORY_IDENTITY, EpicFightMod.identifier("skillbook_identity")),
+	MOVER(true, true, true, SKILL_CATEGORY_MOVER, EpicFight.identifier("skillbook_mover")),
+	IDENTITY(true, true, true, SKILL_CATEGORY_IDENTITY, EpicFight.identifier("skillbook_identity")),
 	EMPTY(false, false, false, SKILL_CATEGORY_EMPTY);
 
 	final boolean shouldSave;

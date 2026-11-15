@@ -213,7 +213,7 @@ public class ColorDeterminator extends AbstractSliderButton implements AnchoredW
                 }
             },
             (ColorDeterminator widget, GuiGraphics guiGraphics, Font font) -> {
-                int j = widget.getFGColor();
+                int j = 0xFFFFFFFF;
                 guiGraphics.drawCenteredString(widget.font, widget.getMessage(), widget.getX() + widget.width / 2, widget.getY() + (widget.height - 8) / 2, j | Mth.ceil(widget.alpha * 255.0F) << 24);
             }
         ),

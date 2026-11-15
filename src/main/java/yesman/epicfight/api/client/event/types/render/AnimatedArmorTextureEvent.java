@@ -1,4 +1,5 @@
 package yesman.epicfight.api.client.event.types.render;
+import yesman.epicfight.EpicFight;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +29,7 @@ public class AnimatedArmorTextureEvent extends Event {
 	
 	public void setResultLocation(ResourceLocation resultLocation) {
 		if (this.resultLocation != null) {
-			EpicFightMod.LOGGER.debug("AnimatedArmorTextureEvent: You've overriden the existing texutre location " + this.resultLocation);
+			EpicFight.LOGGER.debug("AnimatedArmorTextureEvent: You've overriden the existing texutre location " + this.resultLocation);
 		}
 		
 		this.resultLocation = resultLocation;

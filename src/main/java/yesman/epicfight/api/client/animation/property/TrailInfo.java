@@ -18,7 +18,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec3;
 import yesman.epicfight.api.utils.ParseUtil;
 import yesman.epicfight.api.utils.math.Vec3f;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.registry.entries.EpicFightParticles;
 
 public record TrailInfo(
@@ -40,8 +40,8 @@ public record TrailInfo(
 	, ResourceLocation texturePath
 	, InteractionHand hand
 ) {
-    public static final ResourceLocation GENERIC_TRAIL_TEXTURE = EpicFightMod.identifier("textures/particle/swing_trail.png");
-    public static final ResourceLocation SWORDMASTER_SWING_TRAIL_TEX = EpicFightMod.identifier("textures/particle/swordmaster_trail.png");
+    public static final ResourceLocation GENERIC_TRAIL_TEXTURE = EpicFight.identifier("textures/particle/swing_trail.png");
+    public static final ResourceLocation SWORDMASTER_SWING_TRAIL_TEX = EpicFight.identifier("textures/particle/swordmaster_trail.png");
 	
 	public static final TrailInfo PREVIEWER_DEFAULT_TRAIL = TrailInfo.builder()
 			.startPos(new Vec3(0.0D, 0.0D, 0.0D))

@@ -1,4 +1,5 @@
 package yesman.epicfight.client.renderer;
+import yesman.epicfight.EpicFight;
 
 import java.io.IOException;
 
@@ -8,13 +9,12 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RegisterShadersEvent;
-import yesman.epicfight.main.EpicFightMod;
+import net.fabricmc.api.EnvType;
 
-@EventBusSubscriber(modid = EpicFightMod.MODID, value = Dist.CLIENT)
+
+
+
+
 public class EpicFightShaders {
 	public static ShaderInstance positionColorNormalShader;
 	
@@ -23,9 +23,9 @@ public class EpicFightShaders {
 		return positionColorNormalShader;
 	}
 	
-	@SubscribeEvent
-	public static void registerShadersEvent(RegisterShadersEvent event) throws IOException {
-		event.registerShader(new ShaderInstance(event.getResourceProvider(), EpicFightMod.identifier("solid_model"), DefaultVertexFormat.POSITION_COLOR_NORMAL), reloadedShader -> {
+	
+	public static void epicfight$registerShaders(yesman.epicfight.platform.neoforged.client.event.RegisterShadersEvent event) throws IOException {
+		event.registerShader(new ShaderInstance(event.getResourceProvider(), EpicFight.identifier("solid_model").toString(), DefaultVertexFormat.POSITION_COLOR_NORMAL), reloadedShader -> {
 			positionColorNormalShader = reloadedShader;
 		});
 	}

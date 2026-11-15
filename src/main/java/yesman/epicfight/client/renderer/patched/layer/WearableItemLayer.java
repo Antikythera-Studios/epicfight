@@ -1,4 +1,7 @@
 package yesman.epicfight.client.renderer.patched.layer;
+import yesman.epicfight.platform.neoforged.event.EventHooks;
+import yesman.epicfight.platform.neoforged.client.ClientHooks;
+import yesman.epicfight.platform.neoforged.client.extensions.common.IClientItemExtensions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +38,8 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.armortrim.ArmorTrim;
-import net.neoforged.neoforge.client.ClientHooks;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+
+
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.asset.JsonAssetLoader;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
@@ -149,7 +152,7 @@ public class WearableItemLayer<E extends LivingEntity, T extends LivingEntityPat
 				}
 				
 				if (armorModel instanceof HumanoidModel humanoidModel) {
-					boolean shouldSit = livingentity.isPassenger() && (livingentity.getVehicle() != null && livingentity.getVehicle().shouldRiderSit());
+					boolean shouldSit = livingentity.isPassenger(); // NeoForge's Entity.shouldRiderSit() defaults to true in vanilla
 					float f8 = 0.0F;
 					float f5 = 0.0F;
 					

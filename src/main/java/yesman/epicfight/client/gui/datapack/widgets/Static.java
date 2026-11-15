@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.widgets;
+import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nullable;
 
@@ -9,8 +10,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+
 
 /**
  * We're refactoring UI codes, use {@link yesman.epicfight.client.gui.widgets.Static} the advanced one
@@ -34,7 +35,7 @@ public class Static extends AbstractWidget implements ResizableComponent {
 		super(x1, y1, x2, y2, message);
 		
 		this.owner = owner;
-		this.font = this.owner.getMinecraft().font;
+		this.font = Minecraft.getInstance().font;
 		this.x1 = x1;
 		this.x2 = x2;
 		this.y1 = y1;

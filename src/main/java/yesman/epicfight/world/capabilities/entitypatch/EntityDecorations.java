@@ -10,7 +10,7 @@ import yesman.epicfight.api.event.IdentifierProvider;
 import yesman.epicfight.api.utils.math.Vec2i;
 import yesman.epicfight.api.utils.side.ClientOnly;
 import yesman.epicfight.client.renderer.EpicFightRenderTypes;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 
 import java.util.HashMap;
@@ -188,7 +188,7 @@ public final class EntityDecorations {
 
     @ClientOnly
     public interface DecorationOverlay {
-        ResourceLocation GENERIC = EpicFightMod.identifier("textures/common/white.png");
+        ResourceLocation GENERIC = EpicFight.identifier("textures/common/white.png");
         Vector4f NO_COLOR = new Vector4f(1.0F);
 
         default Vector4f color(float partialTick) {

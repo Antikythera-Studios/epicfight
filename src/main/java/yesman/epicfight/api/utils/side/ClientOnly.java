@@ -12,8 +12,8 @@ import java.lang.annotation.Target;
 /// in a dedicated server, to avoid a indirect referring to the types that only
 /// exist on the client side.
 ///
-/// For example, neoforge marks all client side classes with
-/// [net.neoforged.api.distmarker.OnlyIn] annotation, which leads to a crash
+/// For example, Fabric marks client-side classes with the
+/// [net.fabricmc.api.Environment] annotation, which leads to a crash
 /// in a dedicated server when class loader tries to reference client only fields
 /// or methods.
 ///

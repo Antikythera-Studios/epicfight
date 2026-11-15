@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.screen;
+import net.minecraft.client.Minecraft;
 
 import java.util.List;
 import java.util.Locale;
@@ -50,7 +51,7 @@ public class AttackAnimationPropertyScreen extends Screen {
 		super(Component.translatable("datapack_edit.import_animation.client_data"));
 		
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
+		this.minecraft = Minecraft.getInstance();
 		this.font = this.minecraft.font;
 		
 		this.animation = animation;
@@ -74,7 +75,7 @@ public class AttackAnimationPropertyScreen extends Screen {
 		
 		ScreenRectangle screenRect = this.getRectangle();
 		
-		this.trailGrid = Grid.builder(parentScreen, parentScreen.getMinecraft())
+		this.trailGrid = Grid.builder(parentScreen, Minecraft.getInstance())
 								.xy1(15, 48)
 								.xy2(100, 50)
 								.verticalSizing(VerticalSizing.TOP_BOTTOM)

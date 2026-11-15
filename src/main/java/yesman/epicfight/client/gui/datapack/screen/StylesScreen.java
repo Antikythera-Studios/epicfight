@@ -1,4 +1,5 @@
 package yesman.epicfight.client.gui.datapack.screen;
+import net.minecraft.client.Minecraft;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +55,11 @@ public class StylesScreen extends Screen {
 		super(Component.translatable("datapack_edit.weapon_type.styles"));
 		
 		this.parentScreen = parentScreen;
-		this.minecraft = parentScreen.getMinecraft();
-		this.font = parentScreen.getMinecraft().font;
+		this.minecraft = Minecraft.getInstance();
+		this.font = Minecraft.getInstance().font;
 		this.rootTag = rootTag;
 		
-		this.stylesGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.stylesGrid = Grid.builder(this, Minecraft.getInstance())
 								.xy1(12, 60)
 								.xy2(160, 76)
 								.horizontalSizing(HorizontalSizing.LEFT_WIDTH)
@@ -108,9 +109,9 @@ public class StylesScreen extends Screen {
 		this.defaultStyle = new ComboBox<>(parentScreen, this.font, 55, 116, 15, 53, HorizontalSizing.LEFT_WIDTH, VerticalSizing.HEIGHT_BOTTOM, 8, Component.translatable("datapack_edit.weapon_type.styles.default"),
 											new ArrayList<>(ParseUtil.remove(Style.ENUM_MANAGER.universalValues(), CapabilityItem.Styles.COMMON)), ParseUtil::snakeToSpacedCamel, null);
 		
-		this.font = parentScreen.getMinecraft().font;
+		this.font = Minecraft.getInstance().font;
 		
-		this.conditionGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.conditionGrid = Grid.builder(this, Minecraft.getInstance())
 									.xy1(187, 60)
 									.xy2(15, 50)
 									.horizontalSizing(HorizontalSizing.LEFT_RIGHT)
@@ -185,7 +186,7 @@ public class StylesScreen extends Screen {
 									})
 									.build();
 		
-		this.parameterGrid = Grid.builder(this, parentScreen.getMinecraft())
+		this.parameterGrid = Grid.builder(this, Minecraft.getInstance())
 									.xy1(187, 135)
 									.xy2(15, 52)
 									.horizontalSizing(HorizontalSizing.LEFT_RIGHT)
