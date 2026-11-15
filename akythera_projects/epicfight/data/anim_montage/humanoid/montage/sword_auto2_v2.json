@@ -2,10 +2,11 @@
   "animations": [
     "epicfight:humanoid/montage/sword_auto2_v2"
   ],
-  "fade_in_time": 0.1,
+  "fade_in_time": 0.12,
   "fade_out_time": 0.25,
   "loops": false,
   "root_motion": true,
+  "ik_type": "akythera:none",
   "preview_entity_type": "minecraft:player",
   "notify_tracks": {
     "tracks": [
@@ -40,13 +41,68 @@
               "rotation": "locked"
             },
             "from": 0.213,
-            "to": 0.333
-          },
+            "to": 0.4445
+          }
+        ]
+      },
+      {
+        "name": "Hurt",
+        "notify_states": [
           {
             "notify_state": {
-              "type": "akythera:cancel_on_move"
+              "socket": "armature/right_hand_socket",
+              "ignore_invulnerable_time": true,
+              "type": "akythera:living_hurt"
             },
-            "from": 0.333,
+            "from": 0.147,
+            "to": 0.333
+          }
+        ]
+      },
+      {
+        "name": "Aim",
+        "notify_states": [
+          {
+            "notify_state": {
+              "bone": "body",
+              "weight": 0.25,
+              "max_pitch": 20.0,
+              "blend_time": 0.2,
+              "type": "akythera:aim"
+            },
+            "from": 0.0,
+            "to": 0.4445
+          }
+        ]
+      },
+      {
+        "name": "Aim Chest",
+        "notify_states": [
+          {
+            "notify_state": {
+              "bone": "body_bend",
+              "weight": 0.35,
+              "max_pitch": 30.0,
+              "blend_time": 0.2,
+              "type": "akythera:aim"
+            },
+            "from": 0.0,
+            "to": 0.4445
+          }
+        ]
+      },
+      {
+        "name": "Aim Head",
+        "notify_states": [
+          {
+            "notify_state": {
+              "bone": "head",
+              "weight": 0.15,
+              "max_pitch": 15.0,
+              "blend_time": 0.2,
+              "type": "akythera:aim"
+            },
+            "from": 0.0,
             "to": 0.4445
           }
         ]

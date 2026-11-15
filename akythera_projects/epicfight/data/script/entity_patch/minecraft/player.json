@@ -411,6 +411,194 @@
           },
           "type": "akythera:transform_socket"
         },
+        "left_fist": {
+          "bone_name": "left_hand_itemholder",
+          "transform": {
+            "location": [
+              0.0,
+              -0.15,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": {
+            "collider": {
+              "transform": {
+                "location": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "rotation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "sca": [
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "radius": 0.45,
+              "shape": "akythera:sphere",
+              "type": "akythera:collider"
+            }
+          },
+          "type": "akythera:transform_socket"
+        },
+        "right_fist": {
+          "bone_name": "right_hand_itemholder",
+          "transform": {
+            "location": [
+              0.0,
+              -0.15,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": {
+            "collider": {
+              "transform": {
+                "location": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "rotation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "sca": [
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "radius": 0.45,
+              "shape": "akythera:sphere",
+              "type": "akythera:collider"
+            }
+          },
+          "type": "akythera:transform_socket"
+        },
+        "left_foot": {
+          "bone_name": "left_leg_bend",
+          "transform": {
+            "location": [
+              0.0,
+              0.4,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": {
+            "collider": {
+              "transform": {
+                "location": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "rotation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "sca": [
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "radius": 0.5,
+              "shape": "akythera:sphere",
+              "type": "akythera:collider"
+            }
+          },
+          "type": "akythera:transform_socket"
+        },
+        "right_foot": {
+          "bone_name": "right_leg_bend",
+          "transform": {
+            "location": [
+              0.0,
+              0.4,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": {
+            "collider": {
+              "transform": {
+                "location": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "rotation": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "sca": [
+                  1.0,
+                  1.0,
+                  1.0
+                ]
+              },
+              "radius": 0.5,
+              "shape": "akythera:sphere",
+              "type": "akythera:collider"
+            }
+          },
+          "type": "akythera:transform_socket"
+        },
         "body_bend_socket": {
           "bone_name": "body_bend",
           "transform": {
@@ -481,6 +669,9 @@
     },
     "movement": {
       "body_rotation": "face_view_while_moving",
+      "omnidirectional_sprint": true,
+      "jump_requires_press": true,
+      "surface_float": 0.6,
       "type": "akythera:entity_movement"
     },
     "ability_system": {
@@ -488,6 +679,34 @@
         {
           "ability": "epicfight:player/combo_attack",
           "slot": "epicfight:combo_attack"
+        },
+        {
+          "ability": "epicfight:player/fist_stance",
+          "slot": "epicfight:fist_stance"
+        },
+        {
+          "ability": "epicfight:player/fist_combo",
+          "slot": "epicfight:fist_attack"
+        },
+        {
+          "ability": "epicfight:player/fist_air_attack",
+          "slot": "epicfight:fist_air_attack"
+        },
+        {
+          "ability": "epicfight:player/fist_dash_attack",
+          "slot": "epicfight:fist_dash_attack"
+        },
+        {
+          "ability": "epicfight:player/fist_guard",
+          "slot": "epicfight:fist_guard"
+        },
+        {
+          "ability": "epicfight:player/fist_guard_hit",
+          "slot": "epicfight:fist_guard_hit"
+        },
+        {
+          "ability": "epicfight:player/fist_guard_break",
+          "slot": "epicfight:fist_guard_break"
         }
       ],
       "type": "akythera:ability_system"
@@ -723,6 +942,290 @@
             "value": "epicfight:combo_attack"
           }
         ]
+      },
+      {
+        "id": 24,
+        "x": 955,
+        "y": 720,
+        "function": "minecraft:living_entity_patch_get_stance",
+        "kind": "pure_function"
+      },
+      {
+        "id": 25,
+        "x": 1105,
+        "y": 720,
+        "function": "akythera:is_null",
+        "kind": "pure_function"
+      },
+      {
+        "id": 26,
+        "x": 1255,
+        "y": 720,
+        "kind": "not",
+        "pin_literals": [
+          {
+            "pin": 0,
+            "type": "minecraft:boolean",
+            "value": false
+          }
+        ]
+      },
+      {
+        "id": 27,
+        "x": 1255,
+        "y": 610,
+        "function": "akythera:suppress_input_key",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:input_action",
+            "value": "epicfight:combo_attack"
+          },
+          {
+            "pin": 2,
+            "type": "minecraft:boolean",
+            "value": false
+          }
+        ]
+      },
+      {
+        "id": 28,
+        "x": 655,
+        "y": 1000,
+        "path": "ability_system",
+        "kind": "component_getter"
+      },
+      {
+        "id": 29,
+        "x": 355,
+        "y": 900,
+        "function": "akythera:bind_action",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:input_action",
+            "value": "epicfight:fist_stance"
+          }
+        ]
+      },
+      {
+        "id": 30,
+        "x": 655,
+        "y": 940,
+        "function": "akythera:ability_system_component_request_activation",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:fist_stance"
+          }
+        ]
+      },
+      {
+        "id": 31,
+        "x": 505,
+        "y": 900,
+        "function": "akythera:bind_action",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:input_action",
+            "value": "epicfight:fist_attack"
+          }
+        ]
+      },
+      {
+        "id": 32,
+        "x": 805,
+        "y": 940,
+        "function": "akythera:ability_system_component_request_activation",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:fist_attack"
+          }
+        ]
+      },
+      {
+        "id": 33,
+        "x": 955,
+        "y": 940,
+        "function": "akythera:ability_system_component_request_activation",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:fist_air_attack"
+          }
+        ]
+      },
+      {
+        "id": 34,
+        "x": 1105,
+        "y": 940,
+        "function": "akythera:ability_system_component_request_activation",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:fist_dash_attack"
+          }
+        ]
+      },
+      {
+        "id": 35,
+        "x": 355,
+        "y": 1100,
+        "function": "akythera:unbind_action",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:input_action",
+            "value": "epicfight:fist_stance"
+          }
+        ]
+      },
+      {
+        "id": 36,
+        "x": 505,
+        "y": 1100,
+        "function": "akythera:unbind_action",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:input_action",
+            "value": "epicfight:fist_attack"
+          }
+        ]
+      },
+      {
+        "id": 37,
+        "x": 1255,
+        "y": 900,
+        "function": "akythera:bind_action",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:input_action",
+            "value": "epicfight:fist_guard"
+          }
+        ]
+      },
+      {
+        "id": 38,
+        "x": 1405,
+        "y": 1000,
+        "path": "ability_system",
+        "kind": "component_getter"
+      },
+      {
+        "id": 39,
+        "x": 1555,
+        "y": 900,
+        "function": "akythera:ability_system_component_request_activation",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:fist_guard"
+          }
+        ]
+      },
+      {
+        "id": 40,
+        "x": 1555,
+        "y": 980,
+        "function": "akythera:ability_system_component_request_end",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:fist_guard"
+          }
+        ]
+      },
+      {
+        "id": 41,
+        "x": 1555,
+        "y": 1040,
+        "function": "akythera:ability_system_component_request_end",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:fist_guard"
+          }
+        ]
+      },
+      {
+        "id": 42,
+        "x": 655,
+        "y": 1100,
+        "function": "akythera:unbind_action",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:input_action",
+            "value": "epicfight:fist_guard"
+          }
+        ]
+      },
+      {
+        "id": 43,
+        "x": 1405,
+        "y": 860,
+        "function": "akythera:add_hud",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:widget_blueprint",
+            "value": "epicfight:stamina_hud"
+          }
+        ]
+      },
+      {
+        "id": 44,
+        "x": 1405,
+        "y": 720,
+        "function": "minecraft:living_entity_patch_has_ability_tag",
+        "kind": "pure_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:ability_tag",
+            "value": "epicfight:fist_stance"
+          }
+        ]
+      },
+      {
+        "id": 45,
+        "x": 1555,
+        "y": 610,
+        "function": "akythera:suppress_input_key",
+        "kind": "flow_function",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:input_action",
+            "value": "epicfight:fist_attack"
+          }
+        ]
       }
     ],
     "wires": [
@@ -845,6 +1348,168 @@
         "from_pin": 0,
         "to": 23,
         "to_pin": 0
+      },
+      {
+        "from": 24,
+        "from_pin": 0,
+        "to": 25,
+        "to_pin": 0
+      },
+      {
+        "from": 25,
+        "from_pin": 0,
+        "to": 26,
+        "to_pin": 0
+      },
+      {
+        "from": 17,
+        "from_pin": 0,
+        "to": 27,
+        "to_pin": 0
+      },
+      {
+        "from": 26,
+        "from_pin": 0,
+        "to": 27,
+        "to_pin": 2
+      },
+      {
+        "from": 19,
+        "from_pin": 0,
+        "to": 29,
+        "to_pin": 0
+      },
+      {
+        "from": 29,
+        "from_pin": 2,
+        "to": 30,
+        "to_pin": 0
+      },
+      {
+        "from": 28,
+        "from_pin": 0,
+        "to": 30,
+        "to_pin": 1
+      },
+      {
+        "from": 29,
+        "from_pin": 0,
+        "to": 31,
+        "to_pin": 0
+      },
+      {
+        "from": 31,
+        "from_pin": 2,
+        "to": 32,
+        "to_pin": 0
+      },
+      {
+        "from": 28,
+        "from_pin": 0,
+        "to": 32,
+        "to_pin": 1
+      },
+      {
+        "from": 32,
+        "from_pin": 0,
+        "to": 33,
+        "to_pin": 0
+      },
+      {
+        "from": 28,
+        "from_pin": 0,
+        "to": 33,
+        "to_pin": 1
+      },
+      {
+        "from": 33,
+        "from_pin": 0,
+        "to": 34,
+        "to_pin": 0
+      },
+      {
+        "from": 28,
+        "from_pin": 0,
+        "to": 34,
+        "to_pin": 1
+      },
+      {
+        "from": 23,
+        "from_pin": 0,
+        "to": 35,
+        "to_pin": 0
+      },
+      {
+        "from": 35,
+        "from_pin": 0,
+        "to": 36,
+        "to_pin": 0
+      },
+      {
+        "from": 34,
+        "from_pin": 0,
+        "to": 37,
+        "to_pin": 0
+      },
+      {
+        "from": 37,
+        "from_pin": 2,
+        "to": 39,
+        "to_pin": 0
+      },
+      {
+        "from": 38,
+        "from_pin": 0,
+        "to": 39,
+        "to_pin": 1
+      },
+      {
+        "from": 37,
+        "from_pin": 3,
+        "to": 40,
+        "to_pin": 0
+      },
+      {
+        "from": 38,
+        "from_pin": 0,
+        "to": 40,
+        "to_pin": 1
+      },
+      {
+        "from": 37,
+        "from_pin": 4,
+        "to": 41,
+        "to_pin": 0
+      },
+      {
+        "from": 38,
+        "from_pin": 0,
+        "to": 41,
+        "to_pin": 1
+      },
+      {
+        "from": 36,
+        "from_pin": 0,
+        "to": 42,
+        "to_pin": 0
+      },
+      {
+        "from": 37,
+        "from_pin": 0,
+        "to": 43,
+        "to_pin": 0
+      },
+      {
+        "from": 27,
+        "from_pin": 0,
+        "to": 45,
+        "to_pin": 0
+      },
+      {
+        "from": 44,
+        "from_pin": 0,
+        "to": 45,
+        "to_pin": 2
       }
     ]
   },

@@ -1,0 +1,2 @@
+<#-- epicfight:stamina_ratio (entityPatch) -> float --><#t>
+(${params[0]} instanceof com.yesman.akythera.api.world.patch.entity.LivingEntityPatch<?> staminaOwner ? guivnf.epicfight.world.ability.EpicFightAbilityResources.STAMINA.read(staminaOwner) / guivnf.epicfight.world.ability.EpicFightAbilityResources.STAMINA.max() : 0.0F)<#t>

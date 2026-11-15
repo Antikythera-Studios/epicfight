@@ -1,0 +1,52 @@
+{
+  "fade_in_time": 0.25,
+  "fade_out_time": 0.0,
+  "smooth_x": 0.0,
+  "smooth_y": 6.0,
+  "weight_speed": 3.0,
+  "min_x": -20.0,
+  "min_y": 0.0,
+  "max_x": 4.0,
+  "max_y": 1.0,
+  "loops": true,
+  "nodes": [
+    {
+      "x": -20.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/water_angel_loop_down",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 4.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/water_angel_loop",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -20.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/water_angel_loop_down",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 4.0,
+      "y": 1.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/water_angel_loop",
+        "type": "sequence"
+      }
+    }
+  ],
+  "preview_entity_type": "minecraft:player",
+  "vertical_division": 1,
+  "axis_names": {
+    "x": "Vertical Speed",
+    "y": "Unused"
+  }
+}

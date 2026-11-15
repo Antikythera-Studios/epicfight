@@ -1,8 +1,9 @@
 {
   "fade_in_time": 0.25,
   "fade_out_time": 0.0,
-  "smooth_x": 400.0,
+  "smooth_x": 0.0,
   "smooth_y": 6.0,
+  "weight_speed": 5.0,
   "min_x": -180.0,
   "min_y": 0.0,
   "max_x": 180.0,
@@ -83,7 +84,7 @@
     },
     {
       "x": -180.0,
-      "y": 0.2732,
+      "y": 0.27,
       "animation": {
         "sequence": "epicfight:humanoid/locomotion/common/walk_backward",
         "type": "sequence"
@@ -91,7 +92,7 @@
     },
     {
       "x": -135.0,
-      "y": 0.2818,
+      "y": 0.27,
       "animation": {
         "sequence": "epicfight:humanoid/locomotion/common/walk_backward_left",
         "type": "sequence"
@@ -99,7 +100,7 @@
     },
     {
       "x": -90.0,
-      "y": 0.2428,
+      "y": 0.27,
       "animation": {
         "sequence": "epicfight:humanoid/locomotion/common/walk_left",
         "type": "sequence"
@@ -107,7 +108,7 @@
     },
     {
       "x": -45.0,
-      "y": 0.2896,
+      "y": 0.27,
       "animation": {
         "sequence": "epicfight:humanoid/locomotion/common/walk_forward_left",
         "type": "sequence"
@@ -115,7 +116,7 @@
     },
     {
       "x": 0.0,
-      "y": 0.2732,
+      "y": 0.27,
       "animation": {
         "sequence": "epicfight:humanoid/locomotion/common/walk_forward",
         "type": "sequence"
@@ -123,7 +124,7 @@
     },
     {
       "x": 45.0,
-      "y": 0.2468,
+      "y": 0.27,
       "animation": {
         "sequence": "epicfight:humanoid/locomotion/common/walk_forward_right",
         "type": "sequence"
@@ -131,7 +132,7 @@
     },
     {
       "x": 90.0,
-      "y": 0.2645,
+      "y": 0.27,
       "animation": {
         "sequence": "epicfight:humanoid/locomotion/common/walk_right",
         "type": "sequence"
@@ -139,7 +140,7 @@
     },
     {
       "x": 135.0,
-      "y": 0.2856,
+      "y": 0.27,
       "animation": {
         "sequence": "epicfight:humanoid/locomotion/common/walk_backward_right",
         "type": "sequence"
@@ -147,7 +148,79 @@
     },
     {
       "x": 180.0,
-      "y": 0.2732,
+      "y": 0.27,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -180.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -135.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -90.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -45.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_forward_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 0.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_forward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 45.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_forward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 90.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 135.0,
+      "y": 0.8634,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/walk_backward_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 180.0,
+      "y": 0.8634,
       "animation": {
         "sequence": "epicfight:humanoid/locomotion/common/walk_backward",
         "type": "sequence"
@@ -157,7 +230,7 @@
       "x": -180.0,
       "y": 1.0,
       "animation": {
-        "sequence": "epicfight:humanoid/locomotion/common/walk_backward",
+        "sequence": "epicfight:humanoid/locomotion/common/run_backward",
         "type": "sequence"
       }
     },
@@ -165,7 +238,7 @@
       "x": -135.0,
       "y": 1.0,
       "animation": {
-        "sequence": "epicfight:humanoid/locomotion/common/walk_backward_left",
+        "sequence": "epicfight:humanoid/locomotion/common/run_backward_left",
         "type": "sequence"
       }
     },
@@ -173,7 +246,7 @@
       "x": -90.0,
       "y": 1.0,
       "animation": {
-        "sequence": "epicfight:humanoid/locomotion/common/walk_left",
+        "sequence": "epicfight:humanoid/locomotion/common/run_left",
         "type": "sequence"
       }
     },
@@ -181,7 +254,7 @@
       "x": -45.0,
       "y": 1.0,
       "animation": {
-        "sequence": "epicfight:humanoid/locomotion/common/walk_forward_left",
+        "sequence": "epicfight:humanoid/locomotion/common/run_forward_left",
         "type": "sequence"
       }
     },
@@ -189,7 +262,7 @@
       "x": 0.0,
       "y": 1.0,
       "animation": {
-        "sequence": "epicfight:humanoid/locomotion/common/walk_forward",
+        "sequence": "epicfight:humanoid/locomotion/common/run_forward",
         "type": "sequence"
       }
     },
@@ -197,7 +270,7 @@
       "x": 45.0,
       "y": 1.0,
       "animation": {
-        "sequence": "epicfight:humanoid/locomotion/common/walk_forward_right",
+        "sequence": "epicfight:humanoid/locomotion/common/run_forward_right",
         "type": "sequence"
       }
     },
@@ -205,7 +278,7 @@
       "x": 90.0,
       "y": 1.0,
       "animation": {
-        "sequence": "epicfight:humanoid/locomotion/common/walk_right",
+        "sequence": "epicfight:humanoid/locomotion/common/run_right",
         "type": "sequence"
       }
     },
@@ -213,7 +286,7 @@
       "x": 135.0,
       "y": 1.0,
       "animation": {
-        "sequence": "epicfight:humanoid/locomotion/common/walk_backward_right",
+        "sequence": "epicfight:humanoid/locomotion/common/run_backward_right",
         "type": "sequence"
       }
     },
@@ -221,7 +294,7 @@
       "x": 180.0,
       "y": 1.0,
       "animation": {
-        "sequence": "epicfight:humanoid/locomotion/common/walk_backward",
+        "sequence": "epicfight:humanoid/locomotion/common/run_backward",
         "type": "sequence"
       }
     }

@@ -1,0 +1,16 @@
+{
+  "animation_path": "epicfight:humanoid/locomotion/jump_walk_left",
+  "fade_in_time": 0.05,
+  "fade_out_time": 0.05,
+  "loops": false,
+  "root_motion": false,
+  "ik_type": "akythera:none",
+  "preview_entity_type": "minecraft:player",
+  "notify_tracks": {
+    "tracks": [
+      {
+        "name": "Track1"
+      }
+    ]
+  }
+}

@@ -1,8 +1,9 @@
 {
   "fade_in_time": 0.25,
   "fade_out_time": 0.0,
-  "smooth_x": 400.0,
+  "smooth_x": 0.0,
   "smooth_y": 6.0,
+  "weight_speed": 5.0,
   "min_x": -180.0,
   "min_y": 0.0,
   "max_x": 180.0,

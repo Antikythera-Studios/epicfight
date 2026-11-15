@@ -51,19 +51,37 @@ package guivnf.epicfight.akythera.datablocks;
 import com.yesman.akythera.core.animation.FSMAnimationState;
 
 public enum EpicfightFSMAnimationState implements FSMAnimationState {
+    CRAWL("crawl"),
     CROUCH("crouch"),
     CROUCH_WALK("crouch_walk"),
+    DIVE("dive"),
+    DIVE_IN("dive_in"),
+    DIVE_LOOP("dive_loop"),
+    DIVE_START("dive_start"),
+    DIVE_STREAM("dive_stream"),
     FALL("fall"),
     FLY("fly"),
+    GO_UNDER("go_under"),
     IDLE("idle"),
     IN_WATER("in_water"),
     JUMP("jump"),
     LAND("land"),
+    LAND_HEAVY("land_heavy"),
+    LEAP("leap"),
+    LEAP_IN("leap_in"),
+    LEAP_LOOP("leap_loop"),
+    LEAP_START("leap_start"),
     MOVE("move"),
     ON_AIR("on_air"),
     ON_GROUND("on_ground"),
     SPRINT("sprint"),
-    SWIM("swim");
+    SURFACE("surface"),
+    SWIM("swim"),
+    SWIM_DOWN("swim_down"),
+    FIST_IDLE("fist_idle"),
+    FIST_MOVE("fist_move"),
+    SWIM_UP("swim_up"),
+    TREAD("tread");
 
     final int id;
 

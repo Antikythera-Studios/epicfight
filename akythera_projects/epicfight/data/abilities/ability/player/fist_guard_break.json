@@ -1,0 +1,178 @@
+{
+  "parent": "akythera:systematic_ability_ctor",
+  "event_graph": {
+    "nodes": [
+      {
+        "id": 0,
+        "x": -420,
+        "y": 0,
+        "method": "onActivated",
+        "kind": "method_entry"
+      },
+      {
+        "id": 1,
+        "x": -200,
+        "y": 100,
+        "function": "akythera:play_montage_task_ctor",
+        "pin_literals": [
+          {
+            "pin": 0,
+            "type": "akythera:anim_montage",
+            "registry_key": true,
+            "value": "epicfight:humanoid/montage/fist_guard_break"
+          },
+          {
+            "pin": 1,
+            "type": "minecraft:string",
+            "value": ""
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 2,
+        "x": 0,
+        "y": 0,
+        "function": "akythera:ability_system_component_activate_task",
+        "kind": "flow_function"
+      },
+      {
+        "id": 3,
+        "x": 240,
+        "y": 60,
+        "function": "akythera:ability_system_component_end_ability",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:fist_guard_break"
+          }
+        ],
+        "kind": "flow_function"
+      },
+      {
+        "id": 4,
+        "x": 240,
+        "y": 140,
+        "function": "akythera:ability_system_component_end_ability",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:fist_guard_break"
+          }
+        ],
+        "kind": "flow_function"
+      }
+    ],
+    "wires": [
+      {
+        "from": 0,
+        "from_pin": 0,
+        "to": 2,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 1,
+        "to": 2,
+        "to_pin": 1
+      },
+      {
+        "from": 0,
+        "from_pin": 2,
+        "to": 2,
+        "to_pin": 2
+      },
+      {
+        "from": 1,
+        "from_pin": 0,
+        "to": 2,
+        "to_pin": 3
+      },
+      {
+        "from": 2,
+        "from_pin": 1,
+        "to": 3,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 1,
+        "to": 3,
+        "to_pin": 1
+      },
+      {
+        "from": 2,
+        "from_pin": 2,
+        "to": 4,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 1,
+        "to": 4,
+        "to_pin": 1
+      }
+    ]
+  },
+  "overrides": {
+    "canRecast": {
+      "nodes": [
+        {
+          "id": 0,
+          "x": 50,
+          "y": 60,
+          "method": "canRecast",
+          "kind": "method_entry"
+        },
+        {
+          "id": 1,
+          "x": 250,
+          "y": 60,
+          "pin_literals": [
+            {
+              "pin": 1,
+              "type": "minecraft:boolean",
+              "value": false
+            }
+          ],
+          "kind": "return"
+        }
+      ],
+      "wires": [
+        {
+          "from": 0,
+          "from_pin": 0,
+          "to": 1,
+          "to_pin": 0
+        }
+      ]
+    }
+  },
+  "functions": [],
+  "properties": {
+    "instantiation_scope": "server_only",
+    "triggers": [
+      {
+        "tag": "epicfight:event/guard_break",
+        "source": "event"
+      }
+    ],
+    "tags": {
+      "id_tags": [
+        "epicfight:guard_broken"
+      ],
+      "cancel_abilities_with_tag": [
+        "epicfight:guarding"
+      ],
+      "block_abilities_with_tag": [
+        "epicfight:fist_attack"
+      ],
+      "owner_acquired_tags": [
+        "epicfight:guard_broken"
+      ]
+    }
+  },
+  "variables": []
+}

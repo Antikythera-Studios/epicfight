@@ -1,0 +1,5 @@
+{
+  "key_mapping": "key.use",
+  "triggering_type": "hold",
+  "hold_start_ticks": 5
+}

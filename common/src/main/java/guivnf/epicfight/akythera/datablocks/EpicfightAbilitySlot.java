@@ -52,7 +52,14 @@ import com.yesman.akythera.api.world.ability.AbilitySlot;
 import com.yesman.akythera.api.world.ability.AbilitySlotGroup;
 
 public enum EpicfightAbilitySlot implements AbilitySlot {
-    COMBO_ATTACK("combo_attack", EpicfightAbilitySlotGroup.COMBAT);
+    COMBO_ATTACK("combo_attack", EpicfightAbilitySlotGroup.COMBAT),
+    FIST_STANCE("fist_stance", EpicfightAbilitySlotGroup.COMBAT),
+    FIST_ATTACK("fist_attack", EpicfightAbilitySlotGroup.COMBAT),
+    FIST_AIR_ATTACK("fist_air_attack", EpicfightAbilitySlotGroup.COMBAT),
+    FIST_DASH_ATTACK("fist_dash_attack", EpicfightAbilitySlotGroup.COMBAT),
+    FIST_GUARD("fist_guard", EpicfightAbilitySlotGroup.COMBAT),
+    FIST_GUARD_HIT("fist_guard_hit", EpicfightAbilitySlotGroup.COMBAT),
+    FIST_GUARD_BREAK("fist_guard_break", EpicfightAbilitySlotGroup.COMBAT);
 
     final int id;
     final AbilitySlotGroup group;

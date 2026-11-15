@@ -1,0 +1,113 @@
+{
+  "animations": [
+    "epicfight:humanoid/montage/fist_auto2"
+  ],
+  "fade_in_time": 0.12,
+  "fade_out_time": 0.25,
+  "loops": false,
+  "root_motion": true,
+  "ik_type": "akythera:none",
+  "preview_entity_type": "minecraft:player",
+  "notify_tracks": {
+    "tracks": [
+      {
+        "name": "Track1",
+        "notifies": [
+          {
+            "notify": {
+              "sound": {
+                "sound_id": "epicfight:whoosh"
+              },
+              "type": "akythera:play_sound"
+            },
+            "time": 0.35
+          }
+        ]
+      },
+      {
+        "name": "Locks",
+        "notify_states": [
+          {
+            "notify_state": {
+              "type": "akythera:lock_movement",
+              "rotation": "face_view"
+            },
+            "from": 0.0,
+            "to": 0.333
+          },
+          {
+            "notify_state": {
+              "type": "akythera:lock_movement",
+              "rotation": "locked"
+            },
+            "from": 0.333,
+            "to": 0.9
+          }
+        ]
+      },
+      {
+        "name": "Hurt",
+        "notify_states": [
+          {
+            "notify_state": {
+              "socket": "armature/right_fist",
+              "ignore_invulnerable_time": true,
+              "type": "akythera:living_hurt"
+            },
+            "from": 0.33,
+            "to": 0.53
+          }
+        ]
+      },
+      {
+        "name": "Aim",
+        "notify_states": [
+          {
+            "notify_state": {
+              "bone": "body",
+              "weight": 0.25,
+              "max_pitch": 20.0,
+              "blend_time": 0.2,
+              "type": "akythera:aim"
+            },
+            "from": 0.0,
+            "to": 0.9
+          }
+        ]
+      },
+      {
+        "name": "Aim Chest",
+        "notify_states": [
+          {
+            "notify_state": {
+              "bone": "body_bend",
+              "weight": 0.35,
+              "max_pitch": 30.0,
+              "blend_time": 0.2,
+              "type": "akythera:aim"
+            },
+            "from": 0.0,
+            "to": 0.9
+          }
+        ]
+      },
+      {
+        "name": "Aim Head",
+        "notify_states": [
+          {
+            "notify_state": {
+              "bone": "head",
+              "weight": 0.15,
+              "max_pitch": 15.0,
+              "blend_time": 0.2,
+              "type": "akythera:aim"
+            },
+            "from": 0.0,
+            "to": 0.9
+          }
+        ]
+      }
+    ]
+  },
+  "play_rate": 1.2
+}

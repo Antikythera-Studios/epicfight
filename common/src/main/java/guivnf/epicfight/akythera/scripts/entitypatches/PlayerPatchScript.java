@@ -21,12 +21,15 @@ import com.yesman.akythera.api.component.TransformInheritPolicy;
 import com.yesman.akythera.api.component.impl.EquipmentSlotBinderBlueprint;
 import com.yesman.akythera.api.data.modularize.node.PureNode;
 import com.yesman.akythera.api.world.ability.AbilitySystemComponent;
+import com.yesman.akythera.api.world.ability.AbilityTag;
 import com.yesman.akythera.api.world.patch.entity.EntityPatch;
+import com.yesman.akythera.api.world.patch.entity.LivingEntityPatch;
 import com.yesman.akythera.api.world.patch.entity.PlayerPatch;
 import com.yesman.akythera.api.world.patch.entity.component.EntityMovementComponent;
 import com.yesman.akythera.client.api.component.impl.MeshComponentBlueprint;
 import com.yesman.akythera.client.api.component.impl.SkinnedArmorRendererBlueprint;
 import com.yesman.akythera.client.api.data.modularize.AkytheraClientScriptFunctions;
+import com.yesman.akythera.client.api.gui.BlueprintWidgets;
 import com.yesman.akythera.client.api.mesh.MeshManager;
 import com.yesman.akythera.client.core.asset.mesh.SkeletalMesh;
 import com.yesman.akythera.client.input.InputManager;
@@ -38,11 +41,15 @@ import com.yesman.akythera.core.blueprint.ComponentBlueprint;
 import com.yesman.akythera.core.blueprint.EntityMovementComponentBlueprint;
 import com.yesman.akythera.core.blueprint.RootMotionComponentBlueprint;
 import com.yesman.akythera.core.blueprint.script.EntityPatchScript;
+import com.yesman.akythera.core.blueprint.widget.WidgetBlueprint;
+import com.yesman.akythera.core.blueprint.widget.WidgetUsage;
 import com.yesman.akythera.core.math.Transform;
+import com.yesman.akythera.core.math.physics.collider.SphereCollider;
 import com.yesman.akythera.core.registry.AkytheraRegistries;
 import com.yesman.akythera.core.util.StaticRegistryAccess;
 import guivnf.epicfight.akythera.datablocks.EpicfightAbilitySlot;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -76,12 +83,19 @@ public final class PlayerPatchScript implements EntityPatchScript {
     public void onPossessed() {
         EntityPatchScript.super.onPossessed();
         if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:combo_attack"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().bindAction(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:combo_attack"))).value(), null, () -> { ((AbilitySystemComponent) (this.owner == null || "ability_system" == null ? null : this.owner.getComponentAt("ability_system"))).requestActivation(EpicfightAbilitySlot.COMBO_ATTACK); }, null, null);
+        if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_stance"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().bindAction(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_stance"))).value(), null, () -> { ((AbilitySystemComponent) (this.owner == null || "ability_system" == null ? null : this.owner.getComponentAt("ability_system"))).requestActivation(EpicfightAbilitySlot.FIST_STANCE); }, null, null);
+        if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_attack"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().bindAction(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_attack"))).value(), null, () -> { ((AbilitySystemComponent) (this.owner == null || "ability_system" == null ? null : this.owner.getComponentAt("ability_system"))).requestActivation(EpicfightAbilitySlot.FIST_ATTACK); ((AbilitySystemComponent) (this.owner == null || "ability_system" == null ? null : this.owner.getComponentAt("ability_system"))).requestActivation(EpicfightAbilitySlot.FIST_AIR_ATTACK); ((AbilitySystemComponent) (this.owner == null || "ability_system" == null ? null : this.owner.getComponentAt("ability_system"))).requestActivation(EpicfightAbilitySlot.FIST_DASH_ATTACK); }, null, null);
+        if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_guard"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().bindAction(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_guard"))).value(), null, () -> { ((AbilitySystemComponent) (this.owner == null || "ability_system" == null ? null : this.owner.getComponentAt("ability_system"))).requestActivation(EpicfightAbilitySlot.FIST_GUARD); }, () -> { ((AbilitySystemComponent) (this.owner == null || "ability_system" == null ? null : this.owner.getComponentAt("ability_system"))).requestEnd(EpicfightAbilitySlot.FIST_GUARD); }, () -> { ((AbilitySystemComponent) (this.owner == null || "ability_system" == null ? null : this.owner.getComponentAt("ability_system"))).requestEnd(EpicfightAbilitySlot.FIST_GUARD); });
+        if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.WIDGET_KEY, Identifier.parse("epicfight:stamina_hud"))).value() != null && StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.WIDGET_KEY, Identifier.parse("epicfight:stamina_hud"))).value().usage() == WidgetUsage.HUD && Minecraft.getInstance().isSameThread()) BlueprintWidgets.open((Holder.Reference<WidgetBlueprint>) StaticRegistryAccess.getRegistryAccess().lookupOrThrow(AkytheraRegistries.DataPack.WIDGET_KEY).wrapAsHolder(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.WIDGET_KEY, Identifier.parse("epicfight:stamina_hud"))).value()));
     }
 
     @Override
     public void onUnpossessed() {
         EntityPatchScript.super.onUnpossessed();
         if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:combo_attack"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().unbindAction(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:combo_attack"))).value());
+        if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_stance"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().unbindAction(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_stance"))).value());
+        if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_attack"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().unbindAction(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_attack"))).value());
+        if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_guard"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().unbindAction(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_guard"))).value());
     }
 
     @Override
@@ -90,6 +104,8 @@ public final class PlayerPatchScript implements EntityPatchScript {
             var cse_12_0 = ((((PlayerPatch) this.owner).getPlayerSkin() == null ? PlayerModelType.WIDE : ((PlayerPatch) this.owner).getPlayerSkin().model()) == PlayerModelType.SLIM);
             if ((this.owner == null || "armature/main_mesh" == null ? null : this.owner.getComponentAt("armature/main_mesh")) != null) (this.owner == null || "armature/main_mesh" == null ? null : this.owner.getComponentAt("armature/main_mesh")).setEnabled(Boolean.TRUE.equals(!(cse_12_0)));
             if ((this.owner == null || "armature/slim_mesh" == null ? null : this.owner.getComponentAt("armature/slim_mesh")) != null) (this.owner == null || "armature/slim_mesh" == null ? null : this.owner.getComponentAt("armature/slim_mesh")).setEnabled(Boolean.TRUE.equals(cse_12_0));
+            if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:combo_attack"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().suppressInputKey(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:combo_attack"))).value(), !(((LivingEntityPatch<?>) this.owner).getStance() == null));
+            if (StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_attack"))).value() != null && Minecraft.getInstance().isSameThread()) InputManager.getInstance().suppressInputKey(StaticRegistryAccess.getRegistryAccess().getOrThrow(ResourceKey.create(AkytheraRegistries.DataPack.INPUT_ACTION_KEY, Identifier.parse("epicfight:fist_attack"))).value(), ((LivingEntityPatch<?>) this.owner).hasAbilityTag(AbilityTag.ENUM_MANAGER.getOrThrow(Identifier.parse("epicfight:fist_stance"))));
         }
     }
 
@@ -124,6 +140,18 @@ public final class PlayerPatchScript implements EntityPatchScript {
     .put("right_hand_socket", new TransformSocket(new Transform(new Vec3(2.892508312539157E-10, 0.013201830954008148, -0.14794967411235663), new Quaterniond(-0.6155962991833089, 7.391416356615752E-9, -5.439789745245038E-10, 0.7880616704496001), new Vec3(1, 1, 1)), TransformInheritPolicy.LOC_ROT_SCA, "right_hand_itemholder", ImmutableMap.<String, ComponentBlueprint<?, ?>>builder()
     .put("right_hand_item_renderer", new EquipmentSlotBinderBlueprint(EquipmentSlot.MAINHAND, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false, true))
 .build(), true))
+    .put("left_fist", new TransformSocket(new Transform(new Vec3(0, -0.15, 0), new Quaterniond(0, 0, 0, 1), new Vec3(1, 1, 1)), TransformInheritPolicy.LOC_ROT_SCA, "left_hand_itemholder", ImmutableMap.<String, ComponentBlueprint<?, ?>>builder()
+    .put("collider", new SphereCollider(new Transform(new Vec3(0, 0, 0), new Quaterniond(0, 0, 0, 1), new Vec3(1, 1, 1)), TransformInheritPolicy.LOC_ROT_SCA, 0.45, true))
+.build(), true))
+    .put("right_fist", new TransformSocket(new Transform(new Vec3(0, -0.15, 0), new Quaterniond(0, 0, 0, 1), new Vec3(1, 1, 1)), TransformInheritPolicy.LOC_ROT_SCA, "right_hand_itemholder", ImmutableMap.<String, ComponentBlueprint<?, ?>>builder()
+    .put("collider", new SphereCollider(new Transform(new Vec3(0, 0, 0), new Quaterniond(0, 0, 0, 1), new Vec3(1, 1, 1)), TransformInheritPolicy.LOC_ROT_SCA, 0.45, true))
+.build(), true))
+    .put("left_foot", new TransformSocket(new Transform(new Vec3(0, 0.4, 0), new Quaterniond(0, 0, 0, 1), new Vec3(1, 1, 1)), TransformInheritPolicy.LOC_ROT_SCA, "left_leg_bend", ImmutableMap.<String, ComponentBlueprint<?, ?>>builder()
+    .put("collider", new SphereCollider(new Transform(new Vec3(0, 0, 0), new Quaterniond(0, 0, 0, 1), new Vec3(1, 1, 1)), TransformInheritPolicy.LOC_ROT_SCA, 0.5, true))
+.build(), true))
+    .put("right_foot", new TransformSocket(new Transform(new Vec3(0, 0.4, 0), new Quaterniond(0, 0, 0, 1), new Vec3(1, 1, 1)), TransformInheritPolicy.LOC_ROT_SCA, "right_leg_bend", ImmutableMap.<String, ComponentBlueprint<?, ?>>builder()
+    .put("collider", new SphereCollider(new Transform(new Vec3(0, 0, 0), new Quaterniond(0, 0, 0, 1), new Vec3(1, 1, 1)), TransformInheritPolicy.LOC_ROT_SCA, 0.5, true))
+.build(), true))
     .put("body_bend_socket", new TransformSocket(new Transform(new Vec3(0, 0, 0), new Quaterniond(0, 0, 0, 1), new Vec3(1, 1, 1)), TransformInheritPolicy.LOC_ROT_SCA, "body_bend", ImmutableMap.<String, ComponentBlueprint<?, ?>>builder()
     .put("elytra_renderer", new EquipmentSlotBinderBlueprint(EquipmentSlot.CHEST, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, true, true))
 .build(), true))
@@ -132,11 +160,39 @@ public final class PlayerPatchScript implements EntityPatchScript {
 .build(), true))
     .put("root_motion", new RootMotionComponentBlueprint(true))
 .build(), true))
-            .put("movement", new EntityMovementComponentBlueprint(EntityMovementComponent.BodyRotation.FACE_VIEW_WHILE_MOVING, true))
+            .put("movement", new EntityMovementComponentBlueprint(EntityMovementComponent.BodyRotation.FACE_VIEW_WHILE_MOVING, true, true, true, 0.6F, true))
             .put("ability_system", new AbilitySystemComponentBlueprint(Map.ofEntries(
                         Map.entry(
                             EpicfightAbilitySlot.COMBO_ATTACK,
                             ResourceKey.create(AkytheraRegistries.DataPack.ABILITY_KEY, Identifier.parse("epicfight:player/combo_attack"))
+                        ),
+                        Map.entry(
+                            EpicfightAbilitySlot.FIST_STANCE,
+                            ResourceKey.create(AkytheraRegistries.DataPack.ABILITY_KEY, Identifier.parse("epicfight:player/fist_stance"))
+                        ),
+                        Map.entry(
+                            EpicfightAbilitySlot.FIST_ATTACK,
+                            ResourceKey.create(AkytheraRegistries.DataPack.ABILITY_KEY, Identifier.parse("epicfight:player/fist_combo"))
+                        ),
+                        Map.entry(
+                            EpicfightAbilitySlot.FIST_AIR_ATTACK,
+                            ResourceKey.create(AkytheraRegistries.DataPack.ABILITY_KEY, Identifier.parse("epicfight:player/fist_air_attack"))
+                        ),
+                        Map.entry(
+                            EpicfightAbilitySlot.FIST_DASH_ATTACK,
+                            ResourceKey.create(AkytheraRegistries.DataPack.ABILITY_KEY, Identifier.parse("epicfight:player/fist_dash_attack"))
+                        ),
+                        Map.entry(
+                            EpicfightAbilitySlot.FIST_GUARD,
+                            ResourceKey.create(AkytheraRegistries.DataPack.ABILITY_KEY, Identifier.parse("epicfight:player/fist_guard"))
+                        ),
+                        Map.entry(
+                            EpicfightAbilitySlot.FIST_GUARD_HIT,
+                            ResourceKey.create(AkytheraRegistries.DataPack.ABILITY_KEY, Identifier.parse("epicfight:player/fist_guard_hit"))
+                        ),
+                        Map.entry(
+                            EpicfightAbilitySlot.FIST_GUARD_BREAK,
+                            ResourceKey.create(AkytheraRegistries.DataPack.ABILITY_KEY, Identifier.parse("epicfight:player/fist_guard_break"))
                         )
 ), true))
         .build();

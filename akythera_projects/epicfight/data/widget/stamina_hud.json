@@ -1,0 +1,321 @@
+{
+  "parent": "akythera:hud_ctor",
+  "components": {
+    "stamina": {
+      "layout": {
+        "x1": 129,
+        "x2": 60,
+        "y1": 9,
+        "y2": 4,
+        "horizontal_anchor": "center_width",
+        "vertical_anchor": "bottom_height"
+      },
+      "lerp_time": 0.25,
+      "flash_time": 0.15,
+      "filled_image": {
+        "color": [
+          235,
+          200,
+          60,
+          255
+        ]
+      },
+      "empty_image": {
+        "color": [
+          30,
+          30,
+          30,
+          200
+        ]
+      },
+      "lerp_image": {
+        "color": [
+          200,
+          70,
+          50,
+          255
+        ]
+      },
+      "graphs": {
+        "progression": {
+          "nodes": [
+            {
+              "id": 0,
+              "x": 60,
+              "y": 60,
+              "method": "progression",
+              "kind": "method_entry"
+            },
+            {
+              "id": 1,
+              "x": 60,
+              "y": 180,
+              "kind": "self"
+            },
+            {
+              "id": 2,
+              "x": 200,
+              "y": 180,
+              "function": "akythera:widget_owner",
+              "kind": "pure_function"
+            },
+            {
+              "id": 3,
+              "x": 380,
+              "y": 60,
+              "type": "akythera:living_entity_patch",
+              "kind": "cast"
+            },
+            {
+              "id": 4,
+              "x": 560,
+              "y": 180,
+              "function": "epicfight:stamina_ratio",
+              "kind": "pure_function"
+            },
+            {
+              "id": 5,
+              "x": 760,
+              "y": 60,
+              "kind": "return"
+            },
+            {
+              "id": 6,
+              "x": 760,
+              "y": 260,
+              "pin_literals": [
+                {
+                  "pin": 1,
+                  "type": "minecraft:float",
+                  "value": 1.0
+                }
+              ],
+              "kind": "return"
+            }
+          ],
+          "wires": [
+            {
+              "from": 1,
+              "from_pin": 0,
+              "to": 2,
+              "to_pin": 0
+            },
+            {
+              "from": 0,
+              "from_pin": 0,
+              "to": 3,
+              "to_pin": 0
+            },
+            {
+              "from": 2,
+              "from_pin": 0,
+              "to": 3,
+              "to_pin": 1
+            },
+            {
+              "from": 3,
+              "from_pin": 2,
+              "to": 4,
+              "to_pin": 0
+            },
+            {
+              "from": 3,
+              "from_pin": 0,
+              "to": 5,
+              "to_pin": 0
+            },
+            {
+              "from": 4,
+              "from_pin": 0,
+              "to": 5,
+              "to_pin": 1
+            },
+            {
+              "from": 3,
+              "from_pin": 1,
+              "to": 6,
+              "to_pin": 0
+            }
+          ]
+        }
+      },
+      "type": "akythera:progression_bar"
+    }
+  },
+  "event_graph": {
+    "nodes": [
+      {
+        "id": 0,
+        "x": 60,
+        "y": 400,
+        "method": "onAdded",
+        "kind": "method_entry"
+      },
+      {
+        "id": 1,
+        "x": 60,
+        "y": 530,
+        "method": "onRemoved",
+        "kind": "method_entry"
+      },
+      {
+        "id": 2,
+        "x": 60,
+        "y": 60,
+        "method": "onUpdated",
+        "kind": "method_entry"
+      },
+      {
+        "id": 3,
+        "x": 60,
+        "y": 180,
+        "kind": "self"
+      },
+      {
+        "id": 4,
+        "x": 200,
+        "y": 180,
+        "function": "akythera:widget_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 5,
+        "x": 380,
+        "y": 60,
+        "type": "akythera:living_entity_patch",
+        "kind": "cast"
+      },
+      {
+        "id": 6,
+        "x": 560,
+        "y": 180,
+        "function": "epicfight:stamina_ratio",
+        "kind": "pure_function"
+      },
+      {
+        "id": 7,
+        "x": 740,
+        "y": 180,
+        "op": "LESS",
+        "kind": "comparator"
+      },
+      {
+        "id": 8,
+        "x": 600,
+        "y": 240,
+        "literal_type": "minecraft:float",
+        "literal_value": "1.0",
+        "kind": "literal"
+      },
+      {
+        "id": 9,
+        "x": 600,
+        "y": 300,
+        "function": "minecraft:living_entity_patch_has_ability_tag",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:ability_tag",
+            "value": "epicfight:fist_stance"
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 10,
+        "x": 900,
+        "y": 220,
+        "op": "OR",
+        "kind": "logical_operation"
+      },
+      {
+        "id": 11,
+        "x": 900,
+        "y": 140,
+        "path": "stamina",
+        "kind": "component_getter"
+      },
+      {
+        "id": 12,
+        "x": 1060,
+        "y": 60,
+        "function": "akythera:set_component_enabled",
+        "kind": "flow_function"
+      }
+    ],
+    "wires": [
+      {
+        "from": 3,
+        "from_pin": 0,
+        "to": 4,
+        "to_pin": 0
+      },
+      {
+        "from": 2,
+        "from_pin": 0,
+        "to": 5,
+        "to_pin": 0
+      },
+      {
+        "from": 4,
+        "from_pin": 0,
+        "to": 5,
+        "to_pin": 1
+      },
+      {
+        "from": 5,
+        "from_pin": 2,
+        "to": 6,
+        "to_pin": 0
+      },
+      {
+        "from": 6,
+        "from_pin": 0,
+        "to": 7,
+        "to_pin": 0
+      },
+      {
+        "from": 8,
+        "from_pin": 0,
+        "to": 7,
+        "to_pin": 1
+      },
+      {
+        "from": 5,
+        "from_pin": 2,
+        "to": 9,
+        "to_pin": 0
+      },
+      {
+        "from": 9,
+        "from_pin": 0,
+        "to": 10,
+        "to_pin": 0
+      },
+      {
+        "from": 7,
+        "from_pin": 0,
+        "to": 10,
+        "to_pin": 1
+      },
+      {
+        "from": 5,
+        "from_pin": 0,
+        "to": 12,
+        "to_pin": 0
+      },
+      {
+        "from": 11,
+        "from_pin": 0,
+        "to": 12,
+        "to_pin": 1
+      },
+      {
+        "from": 10,
+        "from_pin": 0,
+        "to": 12,
+        "to_pin": 2
+      }
+    ]
+  }
+}

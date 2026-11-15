@@ -20,6 +20,8 @@ import guivnf.epicfight.akythera.datablocks.EpicfightAnimationInterfaceKey;
 import guivnf.epicfight.akythera.datablocks.EpicfightFSMAnimationState;
 import guivnf.epicfight.akythera.registries.EpicFightScriptFunctions;
 import guivnf.epicfight.akythera.registries.EpicFightScriptTypes;
+import guivnf.epicfight.world.ability.EpicFightAbilityResources;
+import guivnf.epicfight.world.ability.Guard;
 import guivnf.epicfight.world.item.datablock.EpicFightWeaponCategory;
 import guivnf.epicfight.world.item.datablock.EpicFightWeaponStance;
 import guivnf.epicfight.world.item.datablock.WeaponCategory;
@@ -36,6 +38,8 @@ public final class EpicFight {
 
     public static void onModConstructed() {
         EnumerableDataBlockSync.addSyncedDataBlock(WeaponCategory.ENUM_MANAGER);
+        EpicFightAbilityResources.register();
+        Guard.registerEvents();
     }
 
     public static void registerObjects() {

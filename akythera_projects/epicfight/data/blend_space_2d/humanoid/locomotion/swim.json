@@ -1,0 +1,103 @@
+{
+  "fade_in_time": 0.25,
+  "fade_out_time": 0.0,
+  "smooth_x": 0.0,
+  "smooth_y": 6.0,
+  "weight_speed": 5.0,
+  "min_x": -180.0,
+  "min_y": 0.0,
+  "max_x": 180.0,
+  "max_y": 0.39,
+  "loops": true,
+  "nodes": [
+    {
+      "x": -180.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/idle_water",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -90.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/idle_water",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 0.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/idle_water",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 90.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/idle_water",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 180.0,
+      "y": 0.0,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/idle_water",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -180.0,
+      "y": 0.39,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/swim_move_backward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": -90.0,
+      "y": 0.39,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/swim_move_left",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 0.0,
+      "y": 0.39,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/swim_move_forward",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 90.0,
+      "y": 0.39,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/swim_move_right",
+        "type": "sequence"
+      }
+    },
+    {
+      "x": 180.0,
+      "y": 0.39,
+      "animation": {
+        "sequence": "epicfight:humanoid/locomotion/common/swim_move_backward",
+        "type": "sequence"
+      }
+    }
+  ],
+  "preview_entity_type": "minecraft:player",
+  "vertical_division": 2,
+  "axis_names": {
+    "x": "Direction",
+    "y": "Speed"
+  },
+  "axis_wraps": {
+    "x": true
+  }
+}

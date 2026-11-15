@@ -276,5 +276,68 @@
         }
       }
     ]
+  },
+  "ik_chains": [
+    {
+      "tip_bone": "right_leg_bend",
+      "chain_length": 2,
+      "solver": {
+        "type": "akythera:two_bone"
+      },
+      "stepping": {
+        "distance_threshold": 0.12,
+        "angular_threshold": 20.0,
+        "step_height": 0.08,
+        "ray_max_distance": 0.3,
+        "step_time": 0.25,
+        "step_cooldown": 0.0,
+        "prediction": 0.2,
+        "reset_time": 0.5,
+        "reset_distance": 0.05,
+        "reset_angle": 8.0,
+        "reset_step_time": 0.25,
+        "hold_facing": true,
+        "turn_lead": "right",
+        "gait_group": "a"
+      }
+    },
+    {
+      "tip_bone": "left_leg_bend",
+      "chain_length": 2,
+      "solver": {
+        "type": "akythera:two_bone"
+      },
+      "stepping": {
+        "distance_threshold": 0.12,
+        "angular_threshold": 20.0,
+        "step_height": 0.08,
+        "ray_max_distance": 0.3,
+        "step_time": 0.25,
+        "step_cooldown": 0.0,
+        "prediction": 0.2,
+        "reset_time": 0.5,
+        "reset_distance": 0.05,
+        "reset_angle": 8.0,
+        "reset_step_time": 0.25,
+        "hold_facing": true,
+        "turn_lead": "left",
+        "gait_group": "b"
+      }
+    }
+  ],
+  "root_fitting": {
+    "enabled": true,
+    "max_drop": 0.15,
+    "max_pitch": 0.0,
+    "max_roll": 0.0
+  },
+  "body_turn": {
+    "enabled": true,
+    "turn_time": 0.15,
+    "max_turn_speed": 400.0,
+    "max_step_turn_speed": 180.0,
+    "steady_bones": [
+      "head"
+    ]
   }
 }

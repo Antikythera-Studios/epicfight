@@ -1,14 +1,28 @@
 {
   "animation_path": "epicfight:humanoid/locomotion/land",
-  "fade_in_time": 0.1,
-  "fade_out_time": 0.1,
+  "fade_in_time": 0.05,
+  "fade_out_time": 0.05,
   "loops": false,
   "root_motion": false,
+  "ik_type": "akythera:none",
   "preview_entity_type": "minecraft:player",
   "notify_tracks": {
     "tracks": [
       {
         "name": "Track1"
+      },
+      {
+        "name": "Locks",
+        "notify_states": [
+          {
+            "notify_state": {
+              "type": "akythera:block_jump",
+              "min_fall_height": 0.5
+            },
+            "from": 0.0,
+            "to": 0.09
+          }
+        ]
       }
     ]
   }

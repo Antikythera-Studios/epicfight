@@ -2,11 +2,13 @@ package guivnf.epicfight.akythera.registries;
 
 import com.yesman.akythera.api.data.modularize.ScriptFunction;
 import com.yesman.akythera.api.world.patch.entity.EntityPatch;
+import com.yesman.akythera.api.world.patch.entity.LivingEntityPatch;
 import com.yesman.akythera.core.reflection.FunctionSignature;
 import com.yesman.akythera.core.reflection.ScriptModularizeHelper;
 import com.yesman.akythera.core.util.helper.MobUtils;
 import com.yesman.akythera.platform.ModPlatformProvider;
 import guivnf.epicfight.client.akythera.EpicFightClientScriptFunctions;
+import guivnf.epicfight.world.ability.EpicFightAbilityResources;
 import guivnf.epicfight.world.entity.ai.ResponsiveBodyRotationControl;
 import guivnf.epicfight.world.entity.ai.SmoothMoveControl;
 import net.minecraft.world.entity.Mob;
@@ -43,6 +45,20 @@ public final class EpicFightScriptFunctions {
                 "Head Eat Position Scale",
                 "Sheep",
                 "How far the sheep's head is lowered to eat grass, from 0 to 1",
+                true,
+                ScriptFunction.Usage.SCRIPT
+            )
+        );
+
+        registry.accept("stamina_ratio", () ->
+            ScriptModularizeHelper.makeCustomScript(
+                (Function<EntityPatch<?>, Float>) entityPatch -> entityPatch instanceof LivingEntityPatch<?> living
+                    ? EpicFightAbilityResources.STAMINA.read(living) / EpicFightAbilityResources.STAMINA.max()
+                    : 0.0F,
+                FunctionSignature.create(Float.class, List.of("entityPatch"), EntityPatch.class),
+                "Stamina Ratio",
+                "Ability",
+                "The share of its stamina the entity holds, from 0 to 1. 0 for an entity without an ability system",
                 true,
                 ScriptFunction.Usage.SCRIPT
             )

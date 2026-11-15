@@ -1,0 +1,150 @@
+{
+  "parent": "akythera:systematic_ability_ctor",
+  "event_graph": {
+    "nodes": [
+      {
+        "id": 0,
+        "x": -420,
+        "y": 0,
+        "method": "onAbilityTick",
+        "kind": "method_entry"
+      },
+      {
+        "id": 1,
+        "x": -420,
+        "y": 100,
+        "function": "akythera:ability_system_component_get_owner",
+        "kind": "pure_function"
+      },
+      {
+        "id": 2,
+        "x": -260,
+        "y": 100,
+        "function": "minecraft:living_entity_patch_has_ability_tag",
+        "pin_literals": [
+          {
+            "pin": 1,
+            "type": "akythera:ability_tag",
+            "value": "epicfight:fist_stance"
+          }
+        ],
+        "kind": "pure_function"
+      },
+      {
+        "id": 3,
+        "x": -100,
+        "y": 0,
+        "kind": "branch"
+      },
+      {
+        "id": 4,
+        "x": 80,
+        "y": 60,
+        "function": "akythera:ability_system_component_end_ability",
+        "pin_literals": [
+          {
+            "pin": 2,
+            "type": "akythera:ability_slot",
+            "value": "epicfight:fist_guard"
+          }
+        ],
+        "kind": "flow_function"
+      }
+    ],
+    "wires": [
+      {
+        "from": 0,
+        "from_pin": 1,
+        "to": 1,
+        "to_pin": 0
+      },
+      {
+        "from": 1,
+        "from_pin": 0,
+        "to": 2,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 0,
+        "to": 3,
+        "to_pin": 0
+      },
+      {
+        "from": 2,
+        "from_pin": 0,
+        "to": 3,
+        "to_pin": 1
+      },
+      {
+        "from": 3,
+        "from_pin": 1,
+        "to": 4,
+        "to_pin": 0
+      },
+      {
+        "from": 0,
+        "from_pin": 1,
+        "to": 4,
+        "to_pin": 1
+      }
+    ]
+  },
+  "overrides": {
+    "canRecast": {
+      "nodes": [
+        {
+          "id": 0,
+          "x": 50,
+          "y": 60,
+          "method": "canRecast",
+          "kind": "method_entry"
+        },
+        {
+          "id": 1,
+          "x": 250,
+          "y": 60,
+          "pin_literals": [
+            {
+              "pin": 1,
+              "type": "minecraft:boolean",
+              "value": false
+            }
+          ],
+          "kind": "return"
+        }
+      ],
+      "wires": [
+        {
+          "from": 0,
+          "from_pin": 0,
+          "to": 1,
+          "to_pin": 0
+        }
+      ]
+    }
+  },
+  "functions": [],
+  "properties": {
+    "instantiation_scope": "local_and_server",
+    "tags": {
+      "id_tags": [
+        "epicfight:guarding"
+      ],
+      "block_abilities_with_tag": [
+        "epicfight:fist_attack"
+      ],
+      "owner_acquired_tags": [
+        "epicfight:guarding"
+      ],
+      "activation_required_tags": [
+        "epicfight:fist_stance"
+      ],
+      "activation_blocked_tags": [
+        "epicfight:fist_attack",
+        "epicfight:guard_broken"
+      ]
+    }
+  },
+  "variables": []
+}
