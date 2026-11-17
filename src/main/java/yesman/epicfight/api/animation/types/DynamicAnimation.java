@@ -40,8 +40,27 @@ public abstract class DynamicAnimation {
         return this.getAnimationClip().getPoseInTime(time);
     }
 
+    /** Writes the raw (unmodified) clip pose at {@code time} into {@code pose}. */
+    public final Pose getRawPose(float time, Pose pose) {
+        return this.getAnimationClip().getPoseInTime(time, pose);
+    }
+
     public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
         Pose pose = this.getRawPose(time);
+        this.modifyPose(this, pose, entitypatch, time, partialTicks);
+
+        return pose;
+    }
+
+    /**
+     * Writes the pose at {@code time} into {@code pose}, reusing the joint transforms already
+     * stored in it. The default implementation mirrors {@link #getPoseByTime}; subclasses may
+     * override it to route their internal pose evaluations into {@code pose} as well. This must
+     * NOT delegate to the three-argument form: subclasses such as {@link LinkAnimation} route
+     * that form back into this one, which recurses forever.
+     */
+    public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks, Pose pose) {
+        this.getRawPose(time, pose);
         this.modifyPose(this, pose, entitypatch, time, partialTicks);
 
         return pose;

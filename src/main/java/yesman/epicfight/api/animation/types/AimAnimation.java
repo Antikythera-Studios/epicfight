@@ -93,29 +93,39 @@ public class AimAnimation extends StaticAnimation {
 		this.lying.loadAnimation();
 	}
 	
+	private final ThreadLocal<Pose> poseScratch = ThreadLocal.withInitial(Pose::new);
+
 	@Override
 	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
+		return this.getPoseByTime(entitypatch, time, partialTicks, new Pose());
+	}
+
+	@Override
+	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks, Pose pose) {
 		if (!entitypatch.isFirstPerson()) {
 			LivingMotion livingMotion = entitypatch.getCurrentLivingMotion();
-			
+
 			if (livingMotion == LivingMotions.SWIM || livingMotion == LivingMotions.FLY || livingMotion == LivingMotions.CREATIVE_FLY) {
-				Pose pose = this.lying.getPoseByTime(entitypatch, time, partialTicks);
+				pose.loadDeep(this.lying.getPoseByTime(entitypatch, time, partialTicks));
 				this.modifyPose(this, pose, entitypatch, time, partialTicks);
-				
+
 				return pose;
 			} else {
 				float pitch = entitypatch.getOriginal().getViewXRot(partialTicks);
 				StaticAnimation interpolateAnimation;
 				interpolateAnimation = (pitch > 0) ? this.lookDown : this.lookUp;
-				Pose pose1 = super.getPoseByTime(entitypatch, time, partialTicks);	
-				Pose pose2 = interpolateAnimation.getPoseByTime(entitypatch, time, partialTicks);
-				Pose interpolatedPose = Pose.interpolatePose(pose1, pose2, (Math.abs(pitch) / 90.0F));
-				
-				return interpolatedPose;
+				// Same as DynamicAnimation#getPoseByTime(3-arg) but writing into {@code pose};
+				// calling super's 4-arg here would delegate back to our 3-arg and recurse.
+				this.getRawPose(time, pose);
+				this.modifyPose(this, pose, entitypatch, time, partialTicks);
+				Pose pose2 = this.poseScratch.get();
+				pose2.loadDeep(interpolateAnimation.getPoseByTime(entitypatch, time, partialTicks));
+
+				return Pose.interpolatePose(pose, pose2, (Math.abs(pitch) / 90.0F), pose);
 			}
 		}
-		
-		return this.lookForward.getPoseByTime(entitypatch, time, partialTicks);
+
+		return pose.loadDeep(this.lookForward.getPoseByTime(entitypatch, time, partialTicks));
 	}
 	
 	@Override

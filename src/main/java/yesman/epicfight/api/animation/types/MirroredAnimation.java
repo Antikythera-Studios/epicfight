@@ -62,9 +62,17 @@ public class MirroredAnimation extends StaticAnimation {
         return this.source.get().getAnimationClip();
     }
 
+    private final ThreadLocal<Pose> sourceScratch = ThreadLocal.withInitial(Pose::new);
+
     @Override
     public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
         return PoseMirror.mirrorPose(this.source.get().getPoseByTime(entitypatch, time, partialTicks), true);
+    }
+
+    @Override
+    public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks, Pose pose) {
+        this.sourceScratch.get().loadDeep(this.source.get().getPoseByTime(entitypatch, time, partialTicks));
+        return PoseMirror.mirrorPose(this.sourceScratch.get(), pose, true);
     }
 
     /** Joints in the mirrored pose are keyed under their reflected name ({@code Arm_R} ↔

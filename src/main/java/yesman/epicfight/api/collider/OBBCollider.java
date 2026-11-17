@@ -26,6 +26,7 @@ public class OBBCollider extends Collider {
 	protected Vec3[] rotatedVertices;
 	protected Vec3[] rotatedNormals;
 	protected Vec3f scale;
+	private OBBCollider queryCollider;
 	
 	/**
 	 * 
@@ -105,12 +106,18 @@ public class OBBCollider extends Collider {
 		super(null, null);
 		this.modelVertices = null;
 		this.modelNormals = null;
+		this.rotatedVertices = new Vec3[4];
+		this.rotatedNormals = new Vec3[3];
+		this.setFromAABB(aabb);
+	}
+	
+	/** Re-derives this collider's world-space data from {@code aabb}, reusing the vertex/normal
+	 *  arrays so repeated {@link #isCollide(Entity)} queries stay cheap. */
+	private OBBCollider setFromAABB(AABB aabb) {
 		double xSize = (aabb.maxX - aabb.minX) / 2;
 		double ySize = (aabb.maxY - aabb.minY) / 2;
 		double zSize = (aabb.maxZ - aabb.minZ) / 2;
 		this.worldCenter = new Vec3(-((float)aabb.minX + xSize), (float)aabb.minY + ySize, -((float)aabb.minZ + zSize));
-		this.rotatedVertices = new Vec3[4];
-		this.rotatedNormals = new Vec3[3];
 		this.rotatedVertices[0] = new Vec3(-xSize, ySize, -zSize);
 		this.rotatedVertices[1] = new Vec3(-xSize, ySize, zSize);
 		this.rotatedVertices[2] = new Vec3(xSize, ySize, zSize);
@@ -118,6 +125,7 @@ public class OBBCollider extends Collider {
 		this.rotatedNormals[0] = new Vec3(1, 0, 0);
 		this.rotatedNormals[1] = new Vec3(0, 1, 0);
 		this.rotatedNormals[2] = new Vec3(0, 0, 1);
+		return this;
 	}
 	
 	/**
@@ -125,7 +133,7 @@ public class OBBCollider extends Collider {
 	 **/
 	@Override
 	public void transform(OpenMatrix4f modelMatrix) {
-		OpenMatrix4f noTranslation = modelMatrix.removeTranslation();
+		OpenMatrix4f noTranslation = OpenMatrix4f.removeTranslation(modelMatrix, Armature.evalScratch()[0]);
 		
 		for (int i = 0; i < this.modelVertices.length; i++) {
 			this.rotatedVertices[i] = OpenMatrix4f.transform(noTranslation, this.modelVertices[i]);
@@ -135,7 +143,11 @@ public class OBBCollider extends Collider {
 			this.rotatedNormals[i] = OpenMatrix4f.transform(noTranslation, this.modelNormals[i]);
 		}
 		
-		this.scale = noTranslation.toScaleVector();
+		if (this.scale == null) {
+			this.scale = new Vec3f();
+		}
+		
+		noTranslation.toScaleVector(this.scale);
 		
 		super.transform(modelMatrix);
 	}
@@ -190,8 +202,11 @@ public class OBBCollider extends Collider {
 	
 	@Override
 	public boolean isCollide(Entity entity) {
-		OBBCollider obb = new OBBCollider(entity.getBoundingBox());
-		return isCollide(obb);
+		if (this.queryCollider == null) {
+			this.queryCollider = new OBBCollider(new AABB(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D));
+		}
+		
+		return this.isCollide(this.queryCollider.setFromAABB(entity.getBoundingBox()));
 	}
 	
 	@Override

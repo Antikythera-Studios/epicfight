@@ -34,12 +34,19 @@ public class LayerOffAnimation extends DynamicAnimation implements AnimationAcce
 		}
 	}
 	
+	private final ThreadLocal<Pose> lowerPoseScratch = ThreadLocal.withInitial(Pose::new);
+
 	@Override
 	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
-		Pose lowerLayerPose = entitypatch.getClientAnimator().getComposedLayerPoseBelow(this.layerPriority, partialTicks);
-		Pose interpolatedPose = Pose.interpolatePose(this.lastPose, lowerLayerPose, time / this.getTotalTime());
+		return this.getPoseByTime(entitypatch, time, partialTicks, new Pose());
+	}
+
+	@Override
+	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks, Pose pose) {
+		entitypatch.getClientAnimator().getComposedLayerPoseBelow(this.layerPriority, partialTicks, this.lowerPoseScratch.get());
+		Pose interpolatedPose = Pose.interpolatePose(this.lastPose, this.lowerPoseScratch.get(), time / this.getTotalTime(), pose);
 		interpolatedPose.disableJoint((joint) -> !this.lastPose.hasTransform(joint.getKey()));
-		
+
 		return interpolatedPose;
 	}
 	

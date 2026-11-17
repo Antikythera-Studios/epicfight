@@ -65,6 +65,7 @@ import yesman.epicfight.world.capabilities.provider.CommonEntityPatchProvider;
 public class EpicFightFabricClient implements ClientModInitializer {
 
     private static boolean computeShaderChecked = false;
+    private static boolean terrainFractureWarmed = false;
 
     @Override
     public void onInitializeClient() {
@@ -181,6 +182,17 @@ public class EpicFightFabricClient implements ClientModInitializer {
                     }
                 } catch (Throwable e) {
                     EpicFight.LOGGER.warn("First-tick client setup failed", e);
+                }
+            }
+
+            // Warm the terrain-fracture path once a world is loaded so the
+            // first real ground slam doesn't hitch on class loading/JIT.
+            if (!terrainFractureWarmed && client.level != null && client.player != null) {
+                terrainFractureWarmed = true;
+                try {
+                    yesman.epicfight.client.ClientWarmup.warmTerrainFracture(client);
+                } catch (Throwable e) {
+                    EpicFight.LOGGER.warn("Terrain fracture warmup failed", e);
                 }
             }
         });

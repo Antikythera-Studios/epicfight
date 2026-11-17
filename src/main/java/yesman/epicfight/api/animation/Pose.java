@@ -1,8 +1,6 @@
 package yesman.epicfight.api.animation;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
 
 import com.google.common.base.Predicate;
@@ -12,18 +10,32 @@ public class Pose {
 	public static final Pose EMPTY_POSE = new Pose();
 	
 	public static Pose interpolatePose(Pose pose1, Pose pose2, float pregression) {
-		Pose pose = new Pose();
-		
-		Set<String> mergedSet = new HashSet<>(pose1.jointTransformData.keySet());
-		mergedSet.addAll(pose2.jointTransformData.keySet());
-		
-		for (String jointName : mergedSet) {
-			pose.putJointData(jointName, JointTransform.interpolate(pose1.orElseEmpty(jointName), pose2.orElseEmpty(jointName), pregression));
-		}
-		
-		return pose;
+		return interpolatePose(pose1, pose2, pregression, new Pose());
 	}
-	
+
+	/**
+	 * Interpolates {@code pose1} and {@code pose2} into {@code dest}, reusing the joint
+	 * transforms already stored in {@code dest} so repeated calls stay allocation-free.
+	 * Joints present in {@code dest} but absent from both inputs are dropped.
+	 */
+	public static Pose interpolatePose(Pose pose1, Pose pose2, float pregression, Pose dest) {
+		dest.jointTransformData.keySet().removeIf(name -> !pose1.hasTransform(name) && !pose2.hasTransform(name));
+
+		JointTransform empty = JointTransform.empty();
+
+		for (Map.Entry<String, JointTransform> entry : pose1.jointTransformData.entrySet()) {
+			JointTransform.interpolate(entry.getValue(), pose2.orElse(entry.getKey(), empty), pregression, dest.getOrCreateJointTransform(entry.getKey()));
+		}
+
+		for (Map.Entry<String, JointTransform> entry : pose2.jointTransformData.entrySet()) {
+			if (!pose1.hasTransform(entry.getKey())) {
+				JointTransform.interpolate(empty, entry.getValue(), pregression, dest.getOrCreateJointTransform(entry.getKey()));
+			}
+		}
+
+		return dest;
+	}
+
 	protected final Map<String, JointTransform> jointTransformData;
 	
 	public Pose() {
@@ -37,6 +49,27 @@ public class Pose {
 	public void putJointData(String name, JointTransform transform) {
 		this.jointTransformData.put(name, transform);
 	}
+
+	/** Returns the stored transform for {@code name}, creating and storing an empty one if absent.
+	 *  Lets dest-posed evaluations reuse {@link JointTransform} instances across frames. */
+	public JointTransform getOrCreateJointTransform(String name) {
+		return this.jointTransformData.computeIfAbsent(name, key -> JointTransform.empty());
+	}
+
+	/**
+	 * OVERWRITE-deep load: every joint from {@code src} is copied into this pose's own
+	 * {@link JointTransform} objects (created when missing), so the result shares no
+	 * transform instances with {@code src}. Joints absent from {@code src} keep their data.
+	 */
+	public Pose loadDeep(Pose src) {
+		src.forEachEnabledTransforms((name, transform) -> this.getOrCreateJointTransform(name).copyFromDeep(transform));
+		return this;
+	}
+
+	/** Deep copy: a new pose whose joint transforms share no instances with this pose. */
+	public Pose copy() {
+		return new Pose().loadDeep(this);
+	}
 	
 	public Map<String, JointTransform> getJointTransformData() {
 		return this.jointTransformData;
@@ -44,6 +77,12 @@ public class Pose {
 	
 	public void disableJoint(Predicate<? super Map.Entry<String, JointTransform>> predicate) {
 		this.jointTransformData.entrySet().removeIf(predicate);
+	}
+
+	/** Drops every joint not listed in {@code names}; pooled poses are trimmed to the
+	 *  active joint set before being refilled so stale transforms never leak through. */
+	public void retainJoints(java.util.Set<String> names) {
+		this.jointTransformData.keySet().retainAll(names);
 	}
 	
 	public void disableAllJoints() {

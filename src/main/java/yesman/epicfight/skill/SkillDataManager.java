@@ -1,5 +1,6 @@
 package yesman.epicfight.skill;
 
+import yesman.epicfight.EpicFight;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,6 +12,7 @@ import yesman.epicfight.network.client.CPHandleSkillData;
 import yesman.epicfight.network.server.SPHandleSkillData;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -18,6 +20,7 @@ import java.util.function.Function;
 
 public class SkillDataManager {
 	private final Map<Holder<SkillDataKey<?>>, Object> data = new HashMap<> ();
+	private final Set<Holder<SkillDataKey<?>>> autoRegisteredKeys = new HashSet<> ();
 	private final SkillContainer container;
 
 	public SkillDataManager(SkillContainer container) {
@@ -41,11 +44,37 @@ public class SkillDataManager {
 
 	public void registerData(Holder<SkillDataKey<?>> key) {
 		key = normalizeKey(key);
-		if (this.hasData(key)) {
-			throw new IllegalStateException(key + " is already registered!");
+
+		if (!this.hasData(key)) {
+			this.data.put(key, key.value().defaultValue());
+		}
+	}
+
+	/// Addon data keys can go unregistered on a container whose skill class is
+	/// outside the key's referencingSkillClasses (see [SkillDataKeyCallbacks]),
+	/// and remote-player containers never receive non-synced keys. Rather than
+	/// letting boxed-type callers NPE on a null return, register the key on
+	/// first touch with the same default [registerData] would have seeded.
+	private void warnAutoRegister(Holder<SkillDataKey<?>> key) {
+		if (this.autoRegisteredKeys.add(key)) {
+			String name = key.unwrapKey().map(k -> k.location().toString()).orElseGet(key::toString);
+			EpicFight.LOGGER.warn("[EpicFight] Unregistered skill data key {} accessed on slot {} — auto-registering with its default value", name, this.container.getSlot());
+		}
+	}
+
+	private Object autoRegister(Holder<SkillDataKey<?>> key) {
+		try {
+			SkillDataKey<?> dataKey = key.value();
+
+			if (dataKey != null) {
+				this.data.put(key, dataKey.defaultValue());
+			}
+		} catch (RuntimeException ignored) {
+			// Unbound holder — nothing to seed; callers get null as before
 		}
 
-		this.data.put(key, key.value().defaultValue());
+		this.warnAutoRegister(key);
+		return this.data.get(key);
 	}
 
 	public void transferDataTo(SkillDataManager dest) {
@@ -67,7 +96,7 @@ public class SkillDataManager {
 	public void setDataRawtype(Holder<SkillDataKey<?>> key, Object data) {
 		key = normalizeKey(key);
 		if (!this.data.containsKey(key)) {
-			throw new IllegalStateException(key + " is unregistered.");
+			this.warnAutoRegister(key);
 		}
 
 		this.data.put(key, data);
@@ -133,7 +162,7 @@ public class SkillDataManager {
 	@SuppressWarnings("unchecked")
 	public <T> T getDataValue(DeferredHolderShim<SkillDataKey<?>, ? extends SkillDataKey<T>> key) {
 		Holder<SkillDataKey<?>> normalized = normalizeKey(key);
-		return this.hasData(normalized) ? (T)this.data.get(normalized) : null;
+		return this.hasData(normalized) ? (T)this.data.get(normalized) : (T)this.autoRegister(normalized);
 	}
 
 	@SuppressWarnings("unchecked")

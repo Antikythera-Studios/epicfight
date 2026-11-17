@@ -69,18 +69,23 @@ public class HitAnimation extends MainFrameAnimation {
 		for (String jointName : joint1) {
 			if (data1.containsKey(jointName) && data2.containsKey(jointName)) {
 				Keyframe[] keyframes = new Keyframe[4];
-				keyframes[0] = new Keyframe(0, data1.get(jointName));
-				keyframes[1] = new Keyframe(this.transitionTime, data2.get(jointName));
-				keyframes[2] = new Keyframe(this.transitionTime + 0.033F, data3.get(jointName));
-				keyframes[3] = new Keyframe(transitionTimeModifier + this.transitionTime, data3.get(jointName));
+				keyframes[0] = new Keyframe(0, data1.get(jointName).copy());
+				keyframes[1] = new Keyframe(this.transitionTime, data2.get(jointName).copy());
+				keyframes[2] = new Keyframe(this.transitionTime + 0.033F, data3.get(jointName).copy());
+				keyframes[3] = new Keyframe(transitionTimeModifier + this.transitionTime, data3.get(jointName).copy());
 				TransformSheet sheet = new TransformSheet(keyframes);
 				dest.getAnimationClip().addJointTransform(jointName, sheet);
 			}
 		}
 	}
-	
+
 	@Override
 	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
 		return super.getPoseByTime(entitypatch, this.getTotalTime() - 0.000001F, 0.0F);
+	}
+
+	@Override
+	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks, Pose pose) {
+		return super.getPoseByTime(entitypatch, this.getTotalTime() - 0.000001F, 0.0F, pose);
 	}
 }

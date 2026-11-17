@@ -79,10 +79,17 @@ public class LinkAnimation extends DynamicAnimation implements AnimationAccessor
 		return (T)this.toAnimation.get().getModifiedLinkState(stateFactor, state, entitypatch, time);
 	}
 	
+	private final ThreadLocal<Pose> nextPoseScratch = ThreadLocal.withInitial(Pose::new);
+
 	@Override
 	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
-		Pose nextStartingPose = this.toAnimation.get().getPoseByTime(entitypatch, this.nextStartTime, partialTicks);
-		
+		return this.getPoseByTime(entitypatch, time, partialTicks, new Pose());
+	}
+
+	@Override
+	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks, Pose pose) {
+		Pose nextStartingPose = this.nextPoseScratch.get().loadDeep(this.toAnimation.get().getPoseByTime(entitypatch, this.nextStartTime, partialTicks));
+
 		/**
 		 * Update dest pose
 		 */
@@ -92,11 +99,16 @@ public class LinkAnimation extends DynamicAnimation implements AnimationAccessor
 				JointTransform jt = keyframe[keyframe.length - 1].transform();
 				JointTransform newJt = nextStartingPose.getJointTransformData().get(entry.getKey());
 				newJt.translation().set(jt.translation());
-				jt.copyFrom(newJt);
+				jt.copyFromDeep(newJt);
 			}
 		}
-		
-		return super.getPoseByTime(entitypatch, time, partialTicks);
+
+		// Compute the base pose directly: delegating to super.getPoseByTime(4-arg) routes back
+		// into this.getPoseByTime(3-arg) and recurses forever.
+		this.getRawPose(time, pose);
+		this.modifyPose(this, pose, entitypatch, time, partialTicks);
+
+		return pose;
 	}
 	
 	@Override

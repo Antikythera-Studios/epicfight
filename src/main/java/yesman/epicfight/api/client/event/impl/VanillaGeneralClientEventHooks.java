@@ -105,6 +105,7 @@ public final class VanillaGeneralClientEventHooks {
         WeaponTypeReloadListener.clear();
         RenderEngine.getInstance().clear();
         FractureBlockState.reset();
+        yesman.epicfight.client.renderer.blockentity.FractureBlockRenderer.clearMeshCache();
     }
 
     private VanillaGeneralClientEventHooks() {

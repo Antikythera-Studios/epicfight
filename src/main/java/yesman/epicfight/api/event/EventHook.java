@@ -54,6 +54,24 @@ public class EventHook<T extends Event> {
             throw new IllegalArgumentException("EventHook instance must be a subtype of LivingEntityPatchEvent to be posted with EntityEventListener");
         }
 
+        if (!eventListener.hasListenersFor(this)) {
+            // Common case: no entity listeners - global subscribers are already
+            // stored ordered by priority descending, so iterate them directly.
+            for (var subscriber : subscribers.values()) {
+                for (var listener : subscriber) {
+                    if (listener.subscriptionType() instanceof DefaultEventSubscription<T> passiveSubscription) {
+                        try {
+                            passiveSubscription.fire(event);
+                        } catch (Throwable t) {
+                            org.slf4j.LoggerFactory.getLogger(EventHook.class).warn(
+                                    "Event listener {} threw during postWithListener of {}: {}", listener.identifier(), event.getClass().getSimpleName(), t.toString());
+                        }
+                    }
+                }
+            }
+            return event;
+        }
+
         List<EventListener<T>> buffer = Lists.newArrayList();
         this.subscribers.values().forEach(buffer::addAll);
         Stream.concat(buffer.stream(), eventListener.getListenersFor(this))

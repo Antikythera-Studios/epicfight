@@ -18,9 +18,10 @@ import org.lwjgl.system.MemoryUtil;
 import yesman.epicfight.api.animation.JointTransform;
 
 public class OpenMatrix4f {
-	private static final FloatBuffer MATRIX_TRANSFORMER = ByteBuffer.allocateDirect(16 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-	private static final Vec3f VECTOR_STORAGE = new Vec3f();
-	private static final Vec4f VEC4_STORAGE = new Vec4f();
+	private static final ThreadLocal<FloatBuffer> MATRIX_TRANSFORMER = ThreadLocal.withInitial(() -> ByteBuffer.allocateDirect(16 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer());
+	private static final ThreadLocal<Vec3f> VECTOR_STORAGE = ThreadLocal.withInitial(Vec3f::new);
+	private static final ThreadLocal<Vec4f> VEC4_STORAGE = ThreadLocal.withInitial(Vec4f::new);
+	private static final ThreadLocal<OpenMatrix4f> MATRIX_STORAGE = ThreadLocal.withInitial(OpenMatrix4f::new);
 	
 	public static final OpenMatrix4f IDENTITY = new OpenMatrix4f();
 	
@@ -412,13 +413,13 @@ public class OpenMatrix4f {
 			dest = new Vec3f();
 		}
 		
-		VEC4_STORAGE.set(src.x, src.y, src.z, 1.0F);
-		
-		Vec4f result = transform(matrix, VEC4_STORAGE, null);
-		dest.x = result.x;
-		dest.y = result.y;
-		dest.z = result.z;
-		
+		Vec4f vec4 = VEC4_STORAGE.get();
+		vec4.set(src.x, src.y, src.z, 1.0F);
+		transform(matrix, vec4, vec4);
+		dest.x = vec4.x;
+		dest.y = vec4.y;
+		dest.z = vec4.z;
+
 		return dest;
 	}
 	
@@ -539,14 +540,19 @@ public class OpenMatrix4f {
 			
 			return dest; 
 		} else {
-			dest.setIdentity();
+			if (dest == null) {
+				dest = new OpenMatrix4f();
+			} else {
+				dest.setIdentity();
+			}
+			
 			return dest;
 		}
 	}
 	
 	public OpenMatrix4f translate(float x, float y, float z) {
-		VECTOR_STORAGE.set(x, y, z);
-		return translate(VECTOR_STORAGE, this);
+		VECTOR_STORAGE.get().set(x, y, z);
+		return translate(VECTOR_STORAGE.get(), this);
 	}
 	
 	public OpenMatrix4f translate(Vec3f vec) {
@@ -721,77 +727,76 @@ public class OpenMatrix4f {
 		return toQuaternion(matrix, new Quaternionf());
 	}
 	
-	private static final OpenMatrix4f MATRIX_STORAGE = new OpenMatrix4f();
-	
 	public static Quaternionf toQuaternion(OpenMatrix4f matrix, Quaternionf dest) {
 		if (dest == null) {
 			dest = new Quaternionf();
 		}
-		
-		OpenMatrix4f.load(matrix, MATRIX_STORAGE);
-		
+
+		OpenMatrix4f storage = MATRIX_STORAGE.get();
+		OpenMatrix4f.load(matrix, storage);
+
 		float w, x, y, z;
-		MATRIX_STORAGE.transpose();
-		
-        float lenX = MATRIX_STORAGE.m00 * MATRIX_STORAGE.m00 + MATRIX_STORAGE.m01 * MATRIX_STORAGE.m01 + MATRIX_STORAGE.m02 * MATRIX_STORAGE.m02;
-        float lenY = MATRIX_STORAGE.m10 * MATRIX_STORAGE.m10 + MATRIX_STORAGE.m11 * MATRIX_STORAGE.m11 + MATRIX_STORAGE.m12 * MATRIX_STORAGE.m12;
-        float lenZ = MATRIX_STORAGE.m20 * MATRIX_STORAGE.m20 + MATRIX_STORAGE.m21 * MATRIX_STORAGE.m21 + MATRIX_STORAGE.m22 * MATRIX_STORAGE.m22;
-        
+		storage.transpose();
+
+        float lenX = storage.m00 * storage.m00 + storage.m01 * storage.m01 + storage.m02 * storage.m02;
+        float lenY = storage.m10 * storage.m10 + storage.m11 * storage.m11 + storage.m12 * storage.m12;
+        float lenZ = storage.m20 * storage.m20 + storage.m21 * storage.m21 + storage.m22 * storage.m22;
+
         if (lenX == 0.0F || lenY == 0.0F || lenZ == 0.0F) {
-        	return new Quaternionf(0.0F, 0.0F, 0.0F, 1.0F);
+        	return dest.set(0.0F, 0.0F, 0.0F, 1.0F);
         }
-        
+
         lenX = Math.invsqrt(lenX);
         lenY = Math.invsqrt(lenY);
         lenZ = Math.invsqrt(lenZ);
-        
-        MATRIX_STORAGE.m00 *= lenX; MATRIX_STORAGE.m01 *= lenX; MATRIX_STORAGE.m02 *= lenX;
-        MATRIX_STORAGE.m10 *= lenY; MATRIX_STORAGE.m11 *= lenY; MATRIX_STORAGE.m12 *= lenY;
-        MATRIX_STORAGE.m20 *= lenZ; MATRIX_STORAGE.m21 *= lenZ; MATRIX_STORAGE.m22 *= lenZ;
-		
+
+        storage.m00 *= lenX; storage.m01 *= lenX; storage.m02 *= lenX;
+        storage.m10 *= lenY; storage.m11 *= lenY; storage.m12 *= lenY;
+        storage.m20 *= lenZ; storage.m21 *= lenZ; storage.m22 *= lenZ;
+
 		float t;
-        float tr = MATRIX_STORAGE.m00 + MATRIX_STORAGE.m11 + MATRIX_STORAGE.m22;
-        
+        float tr = storage.m00 + storage.m11 + storage.m22;
+
         if (tr >= 0.0F) {
             t = (float)Math.sqrt(tr + 1.0F);
             w = t * 0.5F;
             t = 0.5F / t;
-            x = (MATRIX_STORAGE.m12 - MATRIX_STORAGE.m21) * t;
-            y = (MATRIX_STORAGE.m20 - MATRIX_STORAGE.m02) * t;
-            z = (MATRIX_STORAGE.m01 - MATRIX_STORAGE.m10) * t;
+            x = (storage.m12 - storage.m21) * t;
+            y = (storage.m20 - storage.m02) * t;
+            z = (storage.m01 - storage.m10) * t;
         } else {
-            if (MATRIX_STORAGE.m00 >= MATRIX_STORAGE.m11 && MATRIX_STORAGE.m00 >= MATRIX_STORAGE.m22) {
-                t = (float)Math.sqrt(MATRIX_STORAGE.m00 - (MATRIX_STORAGE.m11 + MATRIX_STORAGE.m22) + 1.0);
+            if (storage.m00 >= storage.m11 && storage.m00 >= storage.m22) {
+                t = (float)Math.sqrt(storage.m00 - (storage.m11 + storage.m22) + 1.0);
                 x = t * 0.5F;
                 t = 0.5F / t;
-                y = (MATRIX_STORAGE.m10 + MATRIX_STORAGE.m01) * t;
-                z = (MATRIX_STORAGE.m02 + MATRIX_STORAGE.m20) * t;
-                w = (MATRIX_STORAGE.m12 - MATRIX_STORAGE.m21) * t;
-            } else if (MATRIX_STORAGE.m11 > MATRIX_STORAGE.m22) {
-                t = (float)Math.sqrt(MATRIX_STORAGE.m11 - (MATRIX_STORAGE.m22 + MATRIX_STORAGE.m00) + 1.0F);
+                y = (storage.m10 + storage.m01) * t;
+                z = (storage.m02 + storage.m20) * t;
+                w = (storage.m12 - storage.m21) * t;
+            } else if (storage.m11 > storage.m22) {
+                t = (float)Math.sqrt(storage.m11 - (storage.m22 + storage.m00) + 1.0F);
                 y = t * 0.5F;
                 t = 0.5F / t;
-                z = (MATRIX_STORAGE.m21 + MATRIX_STORAGE.m12) * t;
-                x = (MATRIX_STORAGE.m10 + MATRIX_STORAGE.m01) * t;
-                w = (MATRIX_STORAGE.m20 - MATRIX_STORAGE.m02) * t;
+                z = (storage.m21 + storage.m12) * t;
+                x = (storage.m10 + storage.m01) * t;
+                w = (storage.m20 - storage.m02) * t;
             } else {
-                t = (float)Math.sqrt(MATRIX_STORAGE.m22 - (MATRIX_STORAGE.m00 + MATRIX_STORAGE.m11) + 1.0F);
+                t = (float)Math.sqrt(storage.m22 - (storage.m00 + storage.m11) + 1.0F);
                 z = t * 0.5F;
                 t = 0.5F / t;
-                x = (MATRIX_STORAGE.m02 + MATRIX_STORAGE.m20) * t;
-                y = (MATRIX_STORAGE.m21 + MATRIX_STORAGE.m12) * t;
-                w = (MATRIX_STORAGE.m01 - MATRIX_STORAGE.m10) * t;
+                x = (storage.m02 + storage.m20) * t;
+                y = (storage.m21 + storage.m12) * t;
+                w = (storage.m01 - storage.m10) * t;
             }
         }
-        
+
         dest.x = x;
 		dest.y = y;
 		dest.z = z;
 		dest.w = w;
-        
+
         return dest;
 	}
-	
+
 	public static OpenMatrix4f fromQuaternion(Quaternionf quaternion) {
 		return fromQuaternion(quaternion, null);
 	}
@@ -830,8 +835,8 @@ public class OpenMatrix4f {
 	}
 	
 	public OpenMatrix4f scale(float x, float y, float z) {
-		VECTOR_STORAGE.set(x, y, z);
-		return this.scale(VECTOR_STORAGE);
+		VECTOR_STORAGE.get().set(x, y, z);
+		return this.scale(VECTOR_STORAGE.get());
 	}
 	
 	public OpenMatrix4f scale(Vec3f vec) {
@@ -870,14 +875,15 @@ public class OpenMatrix4f {
 			dest = new Vec3f();
 		}
 		
-		VECTOR_STORAGE.set(this.m00, this.m01, this.m02);
-		dest.x = VECTOR_STORAGE.length();
-		
-		VECTOR_STORAGE.set(this.m10, this.m11, this.m12);
-		dest.y = VECTOR_STORAGE.length();
-		
-		VECTOR_STORAGE.set(this.m20, this.m21, this.m22);
-		dest.z = VECTOR_STORAGE.length();
+		Vec3f storage = VECTOR_STORAGE.get();
+		storage.set(this.m00, this.m01, this.m02);
+		dest.x = storage.length();
+
+		storage.set(this.m10, this.m11, this.m12);
+		dest.y = storage.length();
+
+		storage.set(this.m20, this.m21, this.m22);
+		dest.z = storage.length();
 		
 		return dest;
 	}
@@ -912,14 +918,15 @@ public class OpenMatrix4f {
 			throw new UnsupportedOperationException("Can't modify immutable matrix");
 		}
 		
-		VECTOR_STORAGE.set(src.m00, src.m01, src.m02);
-		float xScale = VECTOR_STORAGE.length();
-		
-		VECTOR_STORAGE.set(src.m10, src.m11, src.m12);
-		float yScale = VECTOR_STORAGE.length();
-		
-		VECTOR_STORAGE.set(src.m20, src.m21, src.m22);
-		float zScale = VECTOR_STORAGE.length();
+		Vec3f storage = VECTOR_STORAGE.get();
+		storage.set(src.m00, src.m01, src.m02);
+		float xScale = storage.length();
+
+		storage.set(src.m10, src.m11, src.m12);
+		float yScale = storage.length();
+
+		storage.set(src.m20, src.m21, src.m22);
+		float zScale = storage.length();
 		
 		dest.load(src);
 		dest.scale(1.0F / xScale, 1.0F / yScale, 1.0F / zScale);
@@ -946,18 +953,20 @@ public class OpenMatrix4f {
 			dest = new Matrix4f();
 		}
 		
-		MATRIX_TRANSFORMER.position(0);
-		src.store(MATRIX_TRANSFORMER);
-		MATRIX_TRANSFORMER.position(0);
-		
-		return dest.set(MATRIX_TRANSFORMER);
+		FloatBuffer transformer = MATRIX_TRANSFORMER.get();
+		transformer.position(0);
+		src.store(transformer);
+		transformer.position(0);
+
+		return dest.set(transformer);
 	}
 	
 	public static OpenMatrix4f importFromMojangMatrix(Matrix4f src) {
-		MATRIX_TRANSFORMER.position(0);
-		src.get(MATRIX_TRANSFORMER);
-		
-		return OpenMatrix4f.load(null, MATRIX_TRANSFORMER);
+		FloatBuffer transformer = MATRIX_TRANSFORMER.get();
+		transformer.position(0);
+		src.get(transformer);
+
+		return OpenMatrix4f.load(null, transformer);
 	}
 	
 	public static OpenMatrix4f[] allocateMatrixArray(int size) {

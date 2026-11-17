@@ -54,6 +54,12 @@ public class ReversedAnimation extends StaticAnimation {
     }
 
     @Override
+    public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks, Pose pose) {
+        float reversedTime = Math.max(0.0F, this.getTotalTime() - time);
+        return pose.loadDeep(this.source.get().getPoseByTime(entitypatch, reversedTime, partialTicks));
+    }
+
+    @Override
     public Optional<JointMaskEntry> getJointMaskEntry(LivingEntityPatch<?> entitypatch, boolean useCurrentMotion) {
         // Prefer this wrapper's own data file (so an unequip variant can opt into a different
         // mask / priority than its forward counterpart). Fall back to the source's mask when

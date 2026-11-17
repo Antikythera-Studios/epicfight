@@ -66,19 +66,27 @@ public class ConcurrentLinkAnimation extends DynamicAnimation implements Animati
 		return this.nextAnimation.get().getState(stateFactor, entitypatch, 0.0F);
 	}
 	
+	private final ThreadLocal<Pose> currentPoseScratch = ThreadLocal.withInitial(Pose::new);
+	private final ThreadLocal<Pose> nextPoseScratch = ThreadLocal.withInitial(Pose::new);
+
 	@Override
 	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
+		return this.getPoseByTime(entitypatch, time, partialTicks, new Pose());
+	}
+
+	@Override
+	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks, Pose pose) {
 		float elapsed = time + this.startsAt;
 		float currentElapsed = cycleTime(elapsed, this.currentAnimation.get().getTotalTime());
 		float nextElapsed = cycleTime(elapsed, this.nextAnimation.get().getTotalTime());
-		Pose currentAnimPose = this.currentAnimation.get().getPoseByTime(entitypatch, currentElapsed, 1.0F);
-		Pose nextAnimPose = this.nextAnimation.get().getPoseByTime(entitypatch, nextElapsed, 1.0F);
+		this.currentPoseScratch.get().loadDeep(this.currentAnimation.get().getPoseByTime(entitypatch, currentElapsed, 1.0F));
+		this.nextPoseScratch.get().loadDeep(this.nextAnimation.get().getPoseByTime(entitypatch, nextElapsed, 1.0F));
 		float interpolate = Float.isFinite(time) && Float.isFinite(this.getTotalTime()) && this.getTotalTime() > 0.0F
 			? Mth.clamp(time / this.getTotalTime(), 0.0F, 1.0F) : 1.0F;
-		
-		Pose interpolatedPose = Pose.interpolatePose(currentAnimPose, nextAnimPose, interpolate);
+
+		Pose interpolatedPose = Pose.interpolatePose(this.currentPoseScratch.get(), this.nextPoseScratch.get(), interpolate, pose);
 		JointMaskEntry maskEntry = this.nextAnimation.get().getJointMaskEntry(entitypatch, true).orElse(null);
-		
+
 		if (maskEntry != null && entitypatch.isLogicalClient()) {
 			interpolatedPose.disableJoint((entry) ->
 				maskEntry.isMasked(
@@ -86,7 +94,7 @@ public class ConcurrentLinkAnimation extends DynamicAnimation implements Animati
 				, entry.getKey()
 			));
 		}
-		
+
 		return interpolatedPose;
 	}
 	

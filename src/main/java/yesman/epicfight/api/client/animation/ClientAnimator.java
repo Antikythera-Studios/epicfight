@@ -20,6 +20,7 @@ import yesman.epicfight.api.client.animation.property.ClientAnimationProperties;
 import yesman.epicfight.api.client.animation.property.JointMask.BindModifier;
 import yesman.epicfight.api.client.animation.property.JointMask.JointMaskSet;
 import yesman.epicfight.api.client.animation.property.JointMaskEntry;
+import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.datastructure.ParameterizedHashMap;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.network.common.AbstractAnimatorControl;
@@ -42,6 +43,49 @@ public class ClientAnimator extends Animator {
 	private LivingMotion currentMotion;
 	private LivingMotion currentCompositeMotion;
 	private boolean hardPaused;
+
+	/**
+	 * Pose-evaluation pooling. {@link #poseCache} memoizes composed poses keyed by
+	 * (partialTick, useCurrentMotion/kind) and is invalidated whenever
+	 * {@link #poseStateFingerprint()} changes (i.e. once per animator tick plus any
+	 * mid-tick state flip). Evicted poses go to {@link #poseFreeList} and are refilled
+	 * in place, so their {@link JointTransform} objects keep being reused.
+	 * {@link #evalPosePool} holds short-lived poses used only inside a single
+	 * evaluation (per-layer poses, mirror intermediates).
+	 */
+	private final Deque<Pose> evalPosePool = new ArrayDeque<>(8);
+	private final Deque<Pose> poseFreeList = new ArrayDeque<>(8);
+	private final Map<Long, Pose> poseCache = new HashMap<>();
+	private int poseFingerprint;
+	/**
+	 * Per-evaluation scratch, pooled in a deque rather than stored in fields: pose
+	 * evaluation is reentrant ({@code LayerOffAnimation#getPoseByTime} calls
+	 * {@link #getComposedLayerPoseBelow} while an outer evaluation is still
+	 * gathering layer poses), so each evaluation acquires its own context.
+	 */
+	private final Deque<EvalScratch> evalScratchPool = new ArrayDeque<>(4);
+
+	private static final class EvalScratch {
+		final Map<Layer.Priority, Pair<AssetAccessor<? extends DynamicAnimation>, Pose>> layerPoses = new LinkedHashMap<>();
+		final Set<String> jointUnion = new HashSet<>();
+		final List<BindLayerEntry> bindLayerEntries = new ArrayList<>(8);
+		int bindLayerCount;
+	}
+
+	private static final class BindLayerEntry {
+		Layer.Priority priority;
+		AssetAccessor<? extends DynamicAnimation> animation;
+		JointMaskEntry jointMaskEntry;
+		LivingMotion livingMotion;
+		JointMaskSet maskSet;
+	}
+
+	/** Debug switches: -Depicfight.poseCache=true re-enables {@link #poseCache} (off by
+	 *  default while the idle-regression is being isolated),
+	 *  -Depicfight.animDebug=true prints base-layer/animator state once per second. */
+	private static final boolean POSE_CACHE = Boolean.getBoolean("epicfight.poseCache");
+	private static final boolean ANIM_DEBUG = Boolean.getBoolean("epicfight.animDebug");
+	private int animDebugTicks;
 	
 	public ClientAnimator(LivingEntityPatch<?> entitypatch) {
 		this(entitypatch, Layer.BaseLayer::new);
@@ -268,6 +312,21 @@ public class ClientAnimator extends Animator {
 		
 		this.currentMotion = this.entitypatch.currentLivingMotion;
 		this.currentCompositeMotion = this.entitypatch.currentCompositeMotion;
+
+		if (ANIM_DEBUG && ++this.animDebugTicks % 20 == 0) {
+			AnimationPlayer p = this.baseLayer.animationPlayer;
+			Pose sample = this.baseLayer.getEnabledPose(this.entitypatch, true, 1.0F);
+			EpicFight.LOGGER.info(
+				"[ANIMDBG] entity={} lm={}/{} cm={}/{} baseAnim={} elapsed={}/{} end={} paused={} next={} living={} compLiving={} basePoseJoints={}",
+				this.entitypatch.getOriginal() != null ? this.entitypatch.getOriginal().getName().getString() : "null",
+				this.entitypatch.currentLivingMotion, this.currentMotion,
+				this.entitypatch.currentCompositeMotion, this.currentCompositeMotion,
+				p.getAnimation(), p.getElapsedTime(), p.getAnimation().get().getTotalTime(), p.isEnd(),
+				this.baseLayer.paused, this.baseLayer.nextAnimation,
+				this.livingAnimations.size(), this.compositeLivingAnimations.size(),
+				sample.getJointTransformData().size()
+			);
+		}
 	}
 	
 	@Override
@@ -364,90 +423,311 @@ public class ClientAnimator extends Animator {
 	
 	@Override
 	public Pose getPose(float partialTicks) {
+		if (!POSE_CACHE) {
+			float mirrorBlend = this.entitypatch.getMirrorBlend(partialTicks);
+			Pose composedPose = this.buildComposedPose(partialTicks, true);
+
+			if (mirrorBlend <= 0.0F) {
+				return composedPose;
+			}
+
+			Pose mirrored = this.acquireEvalPose();
+			PoseMirror.mirrorPose(composedPose, mirrored, false);
+			Pose result = new Pose();
+			Pose.interpolatePose(composedPose, mirrored, mirrorBlend, result);
+			this.releaseEvalPose(mirrored);
+
+			return result;
+		}
+
+		this.ensurePoseCacheFresh();
+		long key = ((long)Float.floatToRawIntBits(partialTicks) << 2) | 2L;
+		Pose cached = this.poseCache.get(key);
+
+		if (cached != null) {
+			return cached;
+		}
+
 		float mirrorBlend = this.entitypatch.getMirrorBlend(partialTicks);
 		Pose composedPose = this.getPose(partialTicks, true);
+		Pose result = composedPose;
 
-		if (mirrorBlend <= 0.0F) {
-			return composedPose;
+		if (mirrorBlend > 0.0F) {
+			Pose mirrored = this.acquireEvalPose();
+			PoseMirror.mirrorPose(composedPose, mirrored, false);
+			result = this.poseFreeList.poll();
+
+			if (result == null) {
+				result = new Pose();
+			}
+
+			Pose.interpolatePose(composedPose, mirrored, mirrorBlend, result);
+			this.releaseEvalPose(mirrored);
 		}
-		Pose mirrored = yesman.epicfight.api.animation.PoseMirror.mirrorPose(composedPose);
-		if (mirrorBlend >= 1.0F) {
-			return mirrored;
-		}
-		return Pose.interpolatePose(composedPose, mirrored, mirrorBlend);
+
+		this.poseCache.put(key, result);
+		return result;
 	}
 
 	public Pose getPose(float partialTicks, boolean useCurrentMotion) {
-		Pose composedPose = new Pose();
-		Pose baseLayerPose = this.baseLayer.getEnabledPose(this.entitypatch, useCurrentMotion, partialTicks);
-
-		Map<Layer.Priority, Pair<AssetAccessor<? extends DynamicAnimation>, Pose>> layerPoses = Maps.newLinkedHashMap();
-		composedPose.load(baseLayerPose, Pose.LoadOperation.OVERWRITE);
-
-		for (Layer.Priority priority : this.baseLayer.baseLayerPriority.highers()) {
-			Layer compositeLayer = this.baseLayer.compositeLayers.get(priority);
-
-			if (!compositeLayer.isDisabled() && !compositeLayer.animationPlayer.isEmpty()) {
-				Pose layerPose = compositeLayer.getEnabledPose(this.entitypatch, useCurrentMotion, partialTicks);
-				layerPoses.put(priority, Pair.of(compositeLayer.animationPlayer.getAnimation(), layerPose));
-				composedPose.load(layerPose, Pose.LoadOperation.OVERWRITE);
-			}
+		if (!POSE_CACHE) {
+			return this.buildComposedPose(partialTicks, useCurrentMotion);
 		}
 
-		Joint rootJoint = this.entitypatch.getArmature().rootJoint;
-		this.applyBindModifier(baseLayerPose, composedPose, rootJoint, layerPoses, useCurrentMotion);
+		this.ensurePoseCacheFresh();
+		long key = ((long)Float.floatToRawIntBits(partialTicks) << 2) | (useCurrentMotion ? 1L : 0L);
+		Pose cached = this.poseCache.get(key);
 
+		if (cached != null) {
+			return cached;
+		}
+
+		Pose composedPose = this.buildComposedPose(partialTicks, useCurrentMotion);
+		this.poseCache.put(key, composedPose);
+
+		return composedPose;
+	}
+	
+	/**
+	 * Invalidates {@link #poseCache} when animator/entity state moved on since the
+	 * last evaluation; evicted poses are recycled into {@link #poseFreeList}.
+	 */
+	private void ensurePoseCacheFresh() {
+		int fingerprint = this.poseStateFingerprint();
+		
+		if (fingerprint != this.poseFingerprint) {
+			this.poseFingerprint = fingerprint;
+			
+			for (Pose pose : this.poseCache.values()) {
+				if (this.poseFreeList.size() < 8 && !this.poseFreeList.contains(pose)) {
+					this.poseFreeList.push(pose);
+				}
+			}
+			
+			this.poseCache.clear();
+		}
+	}
+	
+	/**
+	 * A cheap fingerprint of every input that can change the composed pose between
+	 * two evaluations at the same partial tick: playing animations and their clocks
+	 * on every layer, layer/motion state, and the entity rotations that feed
+	 * pose-tick modifiers (head/body tracking, attack pitch, mirror blend).
+	 */
+	private int poseStateFingerprint() {
+		// Entityless patches (ModelPreviewer's FakeEntityPatch) have no original —
+		// skip the entity-derived inputs; the layer fingerprints below still
+		// produce a valid cache key for the preview animator.
+		net.minecraft.world.entity.LivingEntity entity = this.entitypatch.getOriginal();
+		int h = entity == null ? 0 :
+				Float.floatToRawIntBits(entity.yHeadRot)
+				+ 31 * Float.floatToRawIntBits(entity.yHeadRotO)
+				+ 31 * Float.floatToRawIntBits(entity.yBodyRot)
+				+ 31 * Float.floatToRawIntBits(entity.yBodyRotO)
+				+ 31 * Float.floatToRawIntBits(entity.getXRot())
+				+ 31 * Float.floatToRawIntBits(entity.xRotO);
+		h = 31 * h + Float.floatToRawIntBits(this.entitypatch.getAttackDirectionPitch(1.0F));
+		h = 31 * h + Float.floatToRawIntBits(this.entitypatch.getMirrorBlend(1.0F));
+
+		if (entity != null) {
+			h = 31 * h + (entity.isUsingItem() ? 1 : 0) + (entity.isSprinting() ? 2 : 0)
+					+ (entity.isCrouching() ? 4 : 0) + (entity.isPassenger() ? 8 : 0);
+			h = 31 * h + System.identityHashCode(entity.getMainHandItem().getItem());
+			h = 31 * h + System.identityHashCode(entity.getOffhandItem().getItem());
+		}
+		h = 31 * h + this.entitypatch.currentLivingMotion.hashCode();
+		h = 31 * h + this.entitypatch.currentCompositeMotion.hashCode();
+		h = 31 * h + this.layerFingerprint(this.baseLayer);
+		
+		for (Layer layer : this.baseLayer.compositeLayers.values()) {
+			h = 31 * h + this.layerFingerprint(layer);
+		}
+		
+		return h;
+	}
+	
+	private int layerFingerprint(Layer layer) {
+		AnimationPlayer player = layer.animationPlayer;
+		int h = System.identityHashCode(player.getAnimation());
+		h = 31 * h + Float.floatToRawIntBits(player.getElapsedTime());
+		h = 31 * h + Float.floatToRawIntBits(player.getPrevElapsedTime());
+		h = 31 * h + (player.isEnd() ? 1 : 0);
+		h = 31 * h + (player.isReversed() ? 2 : 0);
+		h = 31 * h + (layer.paused ? 4 : 0);
+		h = 31 * h + (layer.isDisabled() ? 8 : 0);
+		h = 31 * h + System.identityHashCode(layer.nextAnimation);
+		h = 31 * h + Float.floatToRawIntBits(player.getAnimation().get().getTotalTime());
+		
+		return h;
+	}
+	
+	private Pose acquireEvalPose() {
+		Pose pose = this.evalPosePool.poll();
+		return pose == null ? new Pose() : pose;
+	}
+	
+	private void releaseEvalPose(Pose pose) {
+		if (this.evalPosePool.size() < 8) {
+			this.evalPosePool.push(pose);
+		}
+	}
+	
+	/** Collects the per-layer poses for one evaluation into {@link #layerPosesScratch}
+	 *  (values are pooled poses that must be released by the caller afterwards). */
+	private void gatherLayerPoses(boolean useCurrentMotion, float partialTicks, Layer.Priority[] priorities, boolean skipEmpty, EvalScratch scratch) {
+		for (Layer.Priority priority : priorities) {
+			Layer compositeLayer = this.baseLayer.compositeLayers.get(priority);
+			
+			if (!compositeLayer.isDisabled() && (!skipEmpty || !compositeLayer.animationPlayer.isEmpty())) {
+				Pose layerPose = this.acquireEvalPose();
+				compositeLayer.getEnabledPose(this.entitypatch, useCurrentMotion, partialTicks, layerPose);
+				scratch.layerPoses.put(priority, Pair.of(compositeLayer.animationPlayer.getAnimation(), layerPose));
+			}
+		}
+	}
+
+	private EvalScratch acquireEvalScratch() {
+		EvalScratch scratch = this.evalScratchPool.poll();
+		return scratch == null ? new EvalScratch() : scratch;
+	}
+
+	private void releaseEvalScratch(EvalScratch scratch) {
+		if (this.evalScratchPool.size() < 4) {
+			this.evalScratchPool.push(scratch);
+		}
+	}
+	
+	private Pose buildComposedPose(float partialTicks, boolean useCurrentMotion) {
+		EvalScratch scratch = this.acquireEvalScratch();
+		Pose baseLayerPose = this.acquireEvalPose();
+		Pose composedPose = this.poseFreeList.poll();
+		
+		if (composedPose == null) {
+			composedPose = new Pose();
+		}
+		
+		scratch.layerPoses.clear();
+		scratch.jointUnion.clear();
+		this.baseLayer.getEnabledPose(this.entitypatch, useCurrentMotion, partialTicks, baseLayerPose);
+		scratch.jointUnion.addAll(baseLayerPose.getJointTransformData().keySet());
+		this.gatherLayerPoses(useCurrentMotion, partialTicks, this.baseLayer.baseLayerPriority.highers(), true, scratch);
+		
+		for (Pair<AssetAccessor<? extends DynamicAnimation>, Pose> pair : scratch.layerPoses.values()) {
+			scratch.jointUnion.addAll(pair.getSecond().getJointTransformData().keySet());
+		}
+		
+		composedPose.retainJoints(scratch.jointUnion);
+		composedPose.loadDeep(baseLayerPose);
+		
+		for (Pair<AssetAccessor<? extends DynamicAnimation>, Pose> pair : scratch.layerPoses.values()) {
+			composedPose.loadDeep(pair.getSecond());
+		}
+		
+		this.applyBindModifier(baseLayerPose, composedPose, this.entitypatch.getArmature().getJointsInDFSOrder(), scratch.layerPoses, useCurrentMotion);
+		
+		this.releaseEvalPose(baseLayerPose);
+		
+		for (Pair<AssetAccessor<? extends DynamicAnimation>, Pose> pair : scratch.layerPoses.values()) {
+			this.releaseEvalPose(pair.getSecond());
+		}
+		
+		this.releaseEvalScratch(scratch);
 		return composedPose;
 	}
 	
 	public Pose getComposedLayerPoseBelow(Layer.Priority priorityLimit, float partialTicks) {
-		Pose composedPose = this.baseLayer.getEnabledPose(this.entitypatch, true, partialTicks);
-		Pose baseLayerPose = this.baseLayer.getEnabledPose(this.entitypatch, true, partialTicks);
-		Map<Layer.Priority, Pair<AssetAccessor<? extends DynamicAnimation>, Pose>> layerPoses = Maps.newLinkedHashMap();
+		return this.getComposedLayerPoseBelow(priorityLimit, partialTicks, new Pose());
+	}
+	
+	/** {@link #getComposedLayerPoseBelow(Layer.Priority, float)} writing into {@code dest}. */
+	public Pose getComposedLayerPoseBelow(Layer.Priority priorityLimit, float partialTicks, Pose dest) {
+		EvalScratch scratch = this.acquireEvalScratch();
+		Pose baseLayerPose = this.acquireEvalPose();
 		
-		for (Layer.Priority priority : priorityLimit.lowers()) {
-			Layer compositeLayer = this.baseLayer.compositeLayers.get(priority);
-			
-			if (!compositeLayer.isDisabled()) {
-				Pose layerPose = compositeLayer.getEnabledPose(this.entitypatch, true, partialTicks);
-				layerPoses.put(priority, Pair.of(compositeLayer.animationPlayer.getAnimation(), layerPose));
-				composedPose.load(layerPose, Pose.LoadOperation.OVERWRITE);
-			}
+		scratch.layerPoses.clear();
+		scratch.jointUnion.clear();
+		this.baseLayer.getEnabledPose(this.entitypatch, true, partialTicks, baseLayerPose);
+		scratch.jointUnion.addAll(baseLayerPose.getJointTransformData().keySet());
+		this.gatherLayerPoses(true, partialTicks, priorityLimit.lowers(), false, scratch);
+		
+		for (Pair<AssetAccessor<? extends DynamicAnimation>, Pose> pair : scratch.layerPoses.values()) {
+			scratch.jointUnion.addAll(pair.getSecond().getJointTransformData().keySet());
 		}
 		
-		if (!layerPoses.isEmpty()) {
-			this.applyBindModifier(baseLayerPose, composedPose, this.entitypatch.getArmature().rootJoint, layerPoses, true);
+		dest.retainJoints(scratch.jointUnion);
+		dest.loadDeep(baseLayerPose);
+		
+		for (Pair<AssetAccessor<? extends DynamicAnimation>, Pose> pair : scratch.layerPoses.values()) {
+			dest.loadDeep(pair.getSecond());
 		}
 		
-		return composedPose;
+		if (!scratch.layerPoses.isEmpty()) {
+			this.applyBindModifier(baseLayerPose, dest, this.entitypatch.getArmature().getJointsInDFSOrder(), scratch.layerPoses, true);
+		}
+		
+		this.releaseEvalPose(baseLayerPose);
+		
+		for (Pair<AssetAccessor<? extends DynamicAnimation>, Pose> pair : scratch.layerPoses.values()) {
+			this.releaseEvalPose(pair.getSecond());
+		}
+		
+		this.releaseEvalScratch(scratch);
+		return dest;
 	}
 	
 	public void applyBindModifier(Pose basePose, Pose result, Joint joint, Map<Layer.Priority, Pair<AssetAccessor<? extends DynamicAnimation>, Pose>> poses, boolean useCurrentMotion) {
-		List<Priority> list = Lists.newArrayList(poses.keySet());
-		Collections.reverse(list);
+		this.applyBindModifier(basePose, result, this.entitypatch.getArmature().getJointsInDFSOrder(), poses, useCurrentMotion);
+	}
+	
+	/**
+	 * Depth-first walk over the armature's fixed joint order (computed once by
+	 * {@link Armature#getJointsInDFSOrder()}), applying each joint's bind modifier
+	 * from the highest-priority masked layer that provides one. Mask entry, living
+	 * motion and mask set are joint-independent, so they are resolved once per
+	 * layer instead of once per joint.
+	 */
+	public void applyBindModifier(Pose basePose, Pose result, List<Joint> joints, Map<Layer.Priority, Pair<AssetAccessor<? extends DynamicAnimation>, Pose>> poses, boolean useCurrentMotion) {
+		EvalScratch scratch = this.acquireEvalScratch();
+		scratch.bindLayerCount = 0;
 		
-		for (Layer.Priority priority : list) {
-			AssetAccessor<? extends DynamicAnimation> nowPlaying = poses.get(priority).getFirst();
+		for (Map.Entry<Layer.Priority, Pair<AssetAccessor<? extends DynamicAnimation>, Pose>> entry : poses.entrySet()) {
+			AssetAccessor<? extends DynamicAnimation> nowPlaying = entry.getValue().getFirst();
 			JointMaskEntry jointMaskEntry = nowPlaying.get().getJointMaskEntry(this.entitypatch, useCurrentMotion).orElse(null);
 			
 			if (jointMaskEntry != null) {
-				LivingMotion livingMotion = this.getCompositeLayer(priority).getLivingMotion(this.entitypatch, useCurrentMotion);
+				BindLayerEntry bindLayer = this.bindLayerEntry(scratch, scratch.bindLayerCount++);
+				bindLayer.priority = entry.getKey();
+				bindLayer.animation = nowPlaying;
+				bindLayer.jointMaskEntry = jointMaskEntry;
+				bindLayer.livingMotion = this.getCompositeLayer(bindLayer.priority).getLivingMotion(this.entitypatch, useCurrentMotion);
+				bindLayer.maskSet = jointMaskEntry.getMask(bindLayer.livingMotion);
+			}
+		}
+		
+		for (Joint joint : joints) {
+			for (int i = scratch.bindLayerCount - 1; i >= 0; i--) {
+				BindLayerEntry bindLayer = scratch.bindLayerEntries.get(i);
 				
-				if (nowPlaying.get().hasTransformFor(joint.getName()) && !jointMaskEntry.isMasked(livingMotion, joint.getName())) {
-					JointMaskSet jointmaskset = jointMaskEntry.getMask(livingMotion);
-					BindModifier bindModifier = jointmaskset.getBindModifier(joint.getName());
+				if (bindLayer.animation.get().hasTransformFor(joint.getName()) && !bindLayer.jointMaskEntry.isMasked(bindLayer.livingMotion, joint.getName())) {
+					BindModifier bindModifier = bindLayer.maskSet.getBindModifier(joint.getName());
 					
 					if (bindModifier != null) {
-						bindModifier.modify(this.entitypatch, basePose, result, livingMotion, jointMaskEntry, priority, joint, poses);
+						bindModifier.modify(this.entitypatch, basePose, result, bindLayer.livingMotion, bindLayer.jointMaskEntry, bindLayer.priority, joint, poses);
 						break;
 					}
 				}
 			}
 		}
 		
-		for (Joint subJoints : joint.getSubJoints()) {
-			this.applyBindModifier(basePose, result, subJoints, poses, useCurrentMotion);
+		this.releaseEvalScratch(scratch);
+	}
+	
+	private BindLayerEntry bindLayerEntry(EvalScratch scratch, int index) {
+		while (scratch.bindLayerEntries.size() <= index) {
+			scratch.bindLayerEntries.add(new BindLayerEntry());
 		}
+		
+		return scratch.bindLayerEntries.get(index);
 	}
 	
 	public boolean compareMotion(LivingMotion motion) {
@@ -624,12 +904,12 @@ public class ClientAnimator extends Animator {
 			}
 
 			if (!layer.isOff()) {
-				stateMap.putAll(layer.animationPlayer.getAnimation().get().getStatesMap(this.entitypatch, layer.animationPlayer.getElapsedTime()));
+				stateMap.putAll(layer.animationPlayer.getStatesMap(this.entitypatch));
 			}
 
 			// put base layer states
 			if (layer.priority == this.baseLayer.baseLayerPriority) {
-				stateMap.putAll(this.baseLayer.animationPlayer.getAnimation().get().getStatesMap(this.entitypatch, this.baseLayer.animationPlayer.getElapsedTime()));
+				stateMap.putAll(this.baseLayer.animationPlayer.getStatesMap(this.entitypatch));
 			}
 		}
 

@@ -6,8 +6,11 @@ import yesman.epicfight.api.animation.property.AnimationProperty.PlaybackSpeedMo
 import yesman.epicfight.api.animation.property.AnimationProperty.PlaybackTimeModifier;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
+import yesman.epicfight.api.animation.types.EntityState.StateFactor;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
+import yesman.epicfight.api.utils.datastructure.ParameterizedHashMap;
+import yesman.epicfight.api.utils.datastructure.ParameterizedMap;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.main.EpicFightSharedConstants;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -19,7 +22,12 @@ public class AnimationPlayer {
 	protected boolean doNotResetTime;
 	protected boolean reversed;
 	protected AssetAccessor<? extends DynamicAnimation> play;
-	
+
+	private final ParameterizedHashMap<StateFactor<?>> statesMap = new ParameterizedHashMap<>();
+	private AssetAccessor<? extends DynamicAnimation> statesMapAnimation;
+	private float statesMapElapsed = Float.NaN;
+	private float statesMapPrevElapsed = Float.NaN;
+
 	public AnimationPlayer() {
 		this.setPlayAnimation(Animations.EMPTY_ANIMATION);
 	}
@@ -97,6 +105,30 @@ public class AnimationPlayer {
 	
 	public Pose getCurrentPose(LivingEntityPatch<?> entitypatch, float partialTicks) {
 		return this.play.get().getPoseByTime(entitypatch, this.prevElapsedTime + (this.elapsedTime - this.prevElapsedTime) * partialTicks, partialTicks);
+	}
+
+	/** {@link #getCurrentPose(LivingEntityPatch, float)} writing into {@code pose},
+	 *  reusing its stored joint transforms. Routes through the three-argument form so
+	 *  animations that override only that overload keep their override. */
+	public Pose getCurrentPose(LivingEntityPatch<?> entitypatch, float partialTicks, Pose pose) {
+		return pose.loadDeep(this.play.get().getPoseByTime(entitypatch, this.prevElapsedTime + (this.elapsedTime - this.prevElapsedTime) * partialTicks, partialTicks));
+	}
+	
+	/**
+	 * {@code getAnimation().get().getStatesMap(entitypatch, getElapsedTime())} cached per
+	 * player clock: the spectrum map is rebuilt only when the playing animation or the
+	 * elapsed clocks change. The returned map is owned by this player — do not mutate it.
+	 */
+	public ParameterizedMap<StateFactor<?>> getStatesMap(LivingEntityPatch<?> entitypatch) {
+		if (this.play != this.statesMapAnimation || this.elapsedTime != this.statesMapElapsed || this.prevElapsedTime != this.statesMapPrevElapsed) {
+			this.statesMapAnimation = this.play;
+			this.statesMapElapsed = this.elapsedTime;
+			this.statesMapPrevElapsed = this.prevElapsedTime;
+			this.statesMap.clear();
+			this.statesMap.putAll(this.play.get().getStatesMap(entitypatch, this.elapsedTime));
+		}
+		
+		return this.statesMap;
 	}
 	
 	public float getElapsedTime() {

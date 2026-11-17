@@ -23,14 +23,29 @@ import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.main.EpicFightSharedConstants;
 
 public class Armature {
+	/**
+	 * Per-thread scratch matrices shared by the pose/matrix evaluation entry points.
+	 * Slot layout: [0..2] temporary matrices for {@link JointTransform#getAnimationBoundMatrix},
+	 * [3] identity/parent seed, [4,5] alternating buffers for bound-transform walks,
+	 * [6,7] spare caller-space temps (never touched by the internal eval paths — safe
+	 * to use as {@code dest} for {@link #getBoundTransformFor(Pose, Joint, OpenMatrix4f)}).
+	 * Armatures may be shared between render and tick threads, so the arena is thread-local.
+	 */
+	private static final ThreadLocal<OpenMatrix4f[]> EVAL_SCRATCH = ThreadLocal.withInitial(() -> OpenMatrix4f.allocateMatrixArray(8));
+
+	public static OpenMatrix4f[] evalScratch() {
+		return EVAL_SCRATCH.get();
+	}
+
 	private final String name;
 	private final Int2ObjectMap<Joint> jointById;
 	private final Map<String, Joint> jointByName;
 	private final Map<String, Joint.HierarchicalJointAccessor> pathIndexMap;
 	private final int jointCount;
 	private final OpenMatrix4f[] poseMatrices;
+	private java.util.List<Joint> jointsInDFSOrder;
 	public final Joint rootJoint;
-	
+
 	public Armature(String name, int jointNumber, Joint rootJoint, Map<String, Joint> jointMap) {
 		this.name = name;
 		this.jointCount = jointNumber;
@@ -38,11 +53,11 @@ public class Armature {
 		this.jointByName = jointMap;
 		this.jointById = new Int2ObjectOpenHashMap<>();
 		this.pathIndexMap = new HashMap<> ();
-		
+
 		this.jointByName.values().forEach((joint) -> {
 			this.jointById.put(joint.getId(), joint);
 		});
-		
+
 		this.poseMatrices = OpenMatrix4f.allocateMatrixArray(this.jointCount);
 	}
 	
@@ -59,39 +74,50 @@ public class Armature {
 	}
 	
 	public void setPose(Pose pose) {
-		this.getPoseTransform(this.rootJoint, new OpenMatrix4f(), pose, this.poseMatrices, false);
+		OpenMatrix4f[] scratch = EVAL_SCRATCH.get();
+		this.getPoseTransform(this.rootJoint, scratch[3].setIdentity(), pose, this.poseMatrices, false);
 	}
-	
+
 	public void bakeOriginMatrices() {
 		this.rootJoint.initOriginTransform(new OpenMatrix4f());
 	}
-	
+
 	public OpenMatrix4f[] getPoseMatrices() {
 		return this.poseMatrices;
 	}
-	
+
 	/**
 	 * @param applyOriginTransform if you need a final pose of the animations, give it false.
 	 */
 	public OpenMatrix4f[] getPoseAsTransformMatrix(Pose pose, boolean applyOriginTransform) {
-		OpenMatrix4f[] jointMatrices = new OpenMatrix4f[this.jointCount];
-		this.getPoseTransform(this.rootJoint, new OpenMatrix4f(), pose, jointMatrices, applyOriginTransform);
+		return this.getPoseAsTransformMatrix(pose, applyOriginTransform, OpenMatrix4f.allocateMatrixArray(this.jointCount));
+	}
+
+	/**
+	 * {@link #getPoseAsTransformMatrix(Pose, boolean)} writing into the elements of
+	 * {@code jointMatrices} (must be a fully-allocated array, e.g. from
+	 * {@link OpenMatrix4f#allocateMatrixArray}).
+	 */
+	public OpenMatrix4f[] getPoseAsTransformMatrix(Pose pose, boolean applyOriginTransform, OpenMatrix4f[] jointMatrices) {
+		OpenMatrix4f[] scratch = EVAL_SCRATCH.get();
+		this.getPoseTransform(this.rootJoint, scratch[3].setIdentity(), pose, jointMatrices, applyOriginTransform);
 		return jointMatrices;
 	}
-	
+
 	private void getPoseTransform(Joint joint, OpenMatrix4f parentTransform, Pose pose, OpenMatrix4f[] jointMatrices, boolean applyOriginTransform) {
-		OpenMatrix4f result = pose.orElseEmpty(joint.getName()).getAnimationBoundMatrix(joint, parentTransform);
-		jointMatrices[joint.getId()] = result;
-		
+		OpenMatrix4f[] scratch = EVAL_SCRATCH.get();
+		OpenMatrix4f result = jointMatrices[joint.getId()];
+		pose.orElseEmpty(joint.getName()).getAnimationBoundMatrix(joint, parentTransform, result, scratch[0], scratch[1], scratch[2]);
+
 		for (Joint joints : joint.getSubJoints()) {
 			this.getPoseTransform(joints, result, pose, jointMatrices, applyOriginTransform);
 		}
-		
+
 		if (applyOriginTransform) {
 			result.mulBack(joint.getToOrigin());
 		}
 	}
-	
+
 	/**
 	 * Inapposite past perfect
 	 */
@@ -99,20 +125,59 @@ public class Armature {
 	public OpenMatrix4f getBindedTransformFor(Pose pose, Joint joint) {
 		return this.getBoundTransformByJointIndex(pose, this.searchPathIndex(joint.getName()).createAccessTicket(this.rootJoint));
 	}
-	
+
 	public OpenMatrix4f getBoundTransformFor(Pose pose, Joint joint) {
 		return this.getBoundTransformByJointIndex(pose, this.searchPathIndex(joint.getName()).createAccessTicket(this.rootJoint));
 	}
-	
-	public OpenMatrix4f getBoundTransformByJointIndex(Pose pose, Joint.AccessTicket pathIndices) {
-		return this.getBoundJointTransformRecursively(pose, this.rootJoint, new OpenMatrix4f(), pathIndices);
+
+	/** {@link #getBoundTransformFor(Pose, Joint)} writing into {@code dest}. */
+	public OpenMatrix4f getBoundTransformFor(Pose pose, Joint joint, OpenMatrix4f dest) {
+		return this.getBoundTransformByJointIndex(pose, this.searchPathIndex(joint.getName()).createAccessTicket(this.rootJoint), dest);
 	}
-	
-	private OpenMatrix4f getBoundJointTransformRecursively(Pose pose, Joint joint, OpenMatrix4f parentTransform, Joint.AccessTicket pathIndices) {
-		JointTransform jt = pose.orElseEmpty(joint.getName());
-		OpenMatrix4f result = jt.getAnimationBoundMatrix(joint, parentTransform);
-		
-		return pathIndices.hasNext() ? this.getBoundJointTransformRecursively(pose, pathIndices.next(), result, pathIndices) : result;
+
+	public OpenMatrix4f getBoundTransformByJointIndex(Pose pose, Joint.AccessTicket pathIndices) {
+		return this.getBoundTransformByJointIndex(pose, pathIndices, new OpenMatrix4f());
+	}
+
+	public OpenMatrix4f getBoundTransformByJointIndex(Pose pose, Joint.AccessTicket pathIndices, OpenMatrix4f dest) {
+		OpenMatrix4f[] scratch = EVAL_SCRATCH.get();
+		OpenMatrix4f current = scratch[4];
+		OpenMatrix4f next = scratch[5];
+		Joint joint = this.rootJoint;
+
+		pose.orElseEmpty(joint.getName()).getAnimationBoundMatrix(joint, scratch[3].setIdentity(), current, scratch[0], scratch[1], scratch[2]);
+
+		while (pathIndices.hasNext()) {
+			joint = pathIndices.next();
+			pose.orElseEmpty(joint.getName()).getAnimationBoundMatrix(joint, current, next, scratch[0], scratch[1], scratch[2]);
+			OpenMatrix4f swap = current;
+			current = next;
+			next = swap;
+		}
+
+		return dest.load(current);
+	}
+
+	/**
+	 * Joints in pre-order depth-first order; fixed at armature construction, so it is
+	 * computed once and reused (e.g. by {@code ClientAnimator#applyBindModifier}).
+	 */
+	public java.util.List<Joint> getJointsInDFSOrder() {
+		if (this.jointsInDFSOrder == null) {
+			java.util.List<Joint> joints = new java.util.ArrayList<>(this.jointCount);
+			this.gatherDFS(this.rootJoint, joints);
+			this.jointsInDFSOrder = java.util.Collections.unmodifiableList(joints);
+		}
+
+		return this.jointsInDFSOrder;
+	}
+
+	private void gatherDFS(Joint joint, java.util.List<Joint> out) {
+		out.add(joint);
+
+		for (Joint sub : joint.getSubJoints()) {
+			this.gatherDFS(sub, out);
+		}
 	}
 	
 	public boolean hasJoint(String name) {

@@ -51,8 +51,8 @@ public class ClientConfig {
 
     // Graphics
     public static final BooleanValue BLOOD_EFFECTS = BUILDER.define("ingame.blood_effects", () -> true);
-    public static final BooleanValue ACTIVATE_COMPUTE_SHADER = BUILDER.define("ingame.use_compute_shader", () -> false);
-    public static final BooleanValue ACTIVATE_PERSISTENT_BUFFER = BUILDER.define("ingame.use_persistent_buffer", () -> false);
+    public static final BooleanValue ACTIVATE_COMPUTE_SHADER = BUILDER.define("ingame.use_compute_shader", () -> true);
+    public static final BooleanValue ACTIVATE_PERSISTENT_BUFFER = BUILDER.define("ingame.use_persistent_buffer", () -> true);
     public static final BooleanValue GROUND_SLAMS = BUILDER.define("ingame.ground_slams", () -> true);
 
     // Model
@@ -141,8 +141,8 @@ public class ClientConfig {
 
     // Graphic Config values
     public static boolean bloodEffects = true;
-    public static boolean activateComputeShader = false;
-    public static boolean activatePersistentBuffer = false;
+    public static boolean activateComputeShader = true;
+    public static boolean activatePersistentBuffer = true;
     public static boolean groundSlams = true;
 
     // Model Config values
