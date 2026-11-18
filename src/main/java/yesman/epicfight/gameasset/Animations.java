@@ -113,6 +113,26 @@ public class Animations {
     public static AnimationAccessor<StaticAnimation> BIPED_FLYING;
     public static AnimationAccessor<StaticAnimation> BIPED_CREATIVE_IDLE;
     public static AnimationAccessor<SelectiveAnimation> BIPED_CREATIVE_FLYING;
+
+    /**
+     * Creative-flight forward/backward selection driven by the player's
+     * forward input impulse ({@code PlayerPatch.dz} < 0 = holding S) instead
+     * of view-vs-velocity dot product. At modded flight speeds a camera turn
+     * leaves real velocity trailing the view for ~0.5s, so {@code dot < 0}
+     * reads a false "backward" mid-turn and restarts the sub animation
+     * (visible flicker). dz is populated for the local player by
+     * {@code MixinLocalPlayer} ({@code zza}) and for remote players by
+     * {@code CPUpdatePlayerInput}. Non-player patches fall back to the raw
+     * dot selector.
+     */
+    public static final java.util.function.Function<LivingEntityPatch<?>, Integer> CREATIVE_FLY_DIRECTION_SELECTOR = (entitypatch) -> {
+        if (entitypatch instanceof PlayerPatch playerPatch) {
+            return playerPatch.dz < -0.01D ? 1 : 0;
+        }
+        Vec3 view = entitypatch.getOriginal().getViewVector(1.0F);
+        Vec3 move = entitypatch.getOriginal().getDeltaMovement();
+        return view.dot(move) < 0.0D ? 1 : 0;
+    };
     public static AnimationAccessor<StaticAnimation> BIPED_MOUNT;
     public static AnimationAccessor<StaticAnimation> BIPED_SIT;
     public static AnimationAccessor<StaticAnimation> BIPED_JUMP;
@@ -460,14 +480,7 @@ public class Animations {
         BIPED_FLYING = builder.nextAccessor("biped/living/fly", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED));
         BIPED_CREATIVE_IDLE = builder.nextAccessor("biped/living/creative_idle", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED));
         BIPED_CREATIVE_FLYING = builder.nextAccessor("biped/living/creative_fly", (accessor) ->
-            new SelectiveAnimation((entitypatch) -> {
-                    Vec3 view = entitypatch.getOriginal().getViewVector(1.0F);
-                    Vec3 move = entitypatch.getOriginal().getDeltaMovement();
-
-                    double dot = view.dot(move);
-
-                    return dot < 0.0D ? 1 : 0;
-                },
+            new SelectiveAnimation(CREATIVE_FLY_DIRECTION_SELECTOR,
                 accessor,
                 new DirectStaticAnimation(EpicFightSharedConstants.GENERAL_ANIMATION_TRANSITION_TIME, true, EpicFight.identifier("biped/living/creative_fly_forward"), Armatures.BIPED)
                     .addProperty(StaticAnimationProperty.POSE_MODIFIER, Animations.ReusableSources.FLYING_CORRECTION),

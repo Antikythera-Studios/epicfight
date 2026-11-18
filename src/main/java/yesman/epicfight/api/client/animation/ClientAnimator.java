@@ -195,9 +195,10 @@ public class ClientAnimator extends Animator {
 		Map<LivingMotion, AssetAccessor<? extends StaticAnimation>> storage = layerType == Layer.LayerType.BASE_LAYER ? this.livingAnimations : this.compositeLivingAnimations;
 		LivingMotion compareMotion = layerType == Layer.LayerType.BASE_LAYER ? this.currentMotion : this.currentCompositeMotion;
 		Layer layer = layerType == Layer.LayerType.BASE_LAYER ? this.baseLayer : this.baseLayer.compositeLayers.get(animation.get().getPriority());
+		AssetAccessor<? extends StaticAnimation> previousAnimation = storage.get(livingMotion);
 		storage.put(livingMotion, animation);
 		
-		if (livingMotion == compareMotion) {
+		if (livingMotion == compareMotion && previousAnimation != animation) {
 			EntityState state = this.getEntityState();
 			
 			if (!state.inaction()) {
@@ -207,9 +208,10 @@ public class ClientAnimator extends Animator {
 		
 		if (isBaseLayer) {
 			animation.get().getProperty(ClientAnimationProperties.MULTILAYER_ANIMATION).ifPresent(multilayerAnimation -> {
+				AssetAccessor<? extends StaticAnimation> previousComposite = this.compositeLivingAnimations.get(livingMotion);
 				this.compositeLivingAnimations.put(livingMotion, multilayerAnimation);
 				
-				if (livingMotion == this.currentCompositeMotion) {
+				if (livingMotion == this.currentCompositeMotion && previousComposite != multilayerAnimation) {
 					EntityState state = this.getEntityState();
 					
 					if (!state.inaction()) {
@@ -223,6 +225,18 @@ public class ClientAnimator extends Animator {
 	public void setCurrentMotionsAsDefault() {
 		this.defaultLivingAnimations.putAll(this.livingAnimations);
 		this.defaultCompositeLivingAnimations.putAll(this.compositeLivingAnimations);
+	}
+
+	public Map<LivingMotion, AssetAccessor<? extends StaticAnimation>> getDefaultLivingAnimations() {
+		return this.defaultLivingAnimations;
+	}
+
+	public Map<LivingMotion, AssetAccessor<? extends StaticAnimation>> getDefaultCompositeLivingAnimations() {
+		return this.defaultCompositeLivingAnimations;
+	}
+
+	public Map<LivingMotion, AssetAccessor<? extends StaticAnimation>> getCompositeLivingAnimations() {
+		return this.compositeLivingAnimations;
 	}
 	
 	@Override
@@ -313,7 +327,7 @@ public class ClientAnimator extends Animator {
 		this.currentMotion = this.entitypatch.currentLivingMotion;
 		this.currentCompositeMotion = this.entitypatch.currentCompositeMotion;
 
-		if (ANIM_DEBUG && ++this.animDebugTicks % 20 == 0) {
+		if (ANIM_DEBUG && this.entitypatch.getOriginal() == net.minecraft.client.Minecraft.getInstance().player && ++this.animDebugTicks % 20 == 0) {
 			AnimationPlayer p = this.baseLayer.animationPlayer;
 			Pose sample = this.baseLayer.getEnabledPose(this.entitypatch, true, 1.0F);
 			EpicFight.LOGGER.info(

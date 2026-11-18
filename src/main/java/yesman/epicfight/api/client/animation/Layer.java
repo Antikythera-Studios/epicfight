@@ -41,7 +41,21 @@ public class Layer {
 		this.disabled = true;
 	}
 	
+	private static final boolean PA_DEBUG = Boolean.getBoolean("epicfight.animDebug");
+
 	public void playAnimation(AssetAccessor<? extends StaticAnimation> nextAnimation, LivingEntityPatch<?> entitypatch, float transitionTimeModifier) {
+		if (PA_DEBUG && entitypatch.getOriginal() == net.minecraft.client.Minecraft.getInstance().player) {
+			String animName = String.valueOf(nextAnimation.registryName());
+			if (animName.contains("creative_")) {
+				StackTraceElement[] st = Thread.currentThread().getStackTrace();
+				StringBuilder sb = new StringBuilder();
+				for (int i = 2; i < Math.min(st.length, 9); i++) {
+					sb.append(" <- ").append(st[i].getClassName()).append('.').append(st[i].getMethodName()).append(':').append(st[i].getLineNumber());
+				}
+				yesman.epicfight.EpicFight.LOGGER.info("[PA] {}{}", animName, sb);
+			}
+		}
+
 		// Get pose before StaticAnimation#end is called
 		Pose lastPose = this.getCurrentPose(entitypatch);
 
@@ -77,6 +91,17 @@ public class Layer {
 	}
 
 	protected void playLivingAnimation(AssetAccessor<? extends StaticAnimation> nextAnimation, LivingEntityPatch<?> entitypatch) {
+		if (PA_DEBUG && entitypatch.getOriginal() == net.minecraft.client.Minecraft.getInstance().player) {
+			String animName = String.valueOf(nextAnimation.registryName());
+			if (animName.contains("creative_")) {
+				StackTraceElement[] st = Thread.currentThread().getStackTrace();
+				StringBuilder sb = new StringBuilder();
+				for (int i = 2; i < Math.min(st.length, 9); i++) {
+					sb.append(" <- ").append(st[i].getClassName()).append('.').append(st[i].getMethodName()).append(':').append(st[i].getLineNumber());
+				}
+				yesman.epicfight.EpicFight.LOGGER.info("[PA-L] {}{}", animName, sb);
+			}
+		}
 		if (!this.animationPlayer.isEnd()) {
 			this.animationPlayer.getAnimation().get().end(entitypatch, nextAnimation, false);
 		}
@@ -194,6 +219,14 @@ public class Layer {
 	}
 
 	public void off(LivingEntityPatch<?> entitypatch) {
+		if (PA_DEBUG && entitypatch.getOriginal() == net.minecraft.client.Minecraft.getInstance().player) {
+			StackTraceElement[] st = Thread.currentThread().getStackTrace();
+			StringBuilder sb = new StringBuilder();
+			for (int i = 2; i < Math.min(st.length, 10); i++) {
+				sb.append(" <- ").append(st[i].getClassName()).append('.').append(st[i].getMethodName()).append(':').append(st[i].getLineNumber());
+			}
+			yesman.epicfight.EpicFight.LOGGER.info("[OFF] base={} anim={}{}", this.isBaseLayer(), this.animationPlayer.getAnimation(), sb);
+		}
 		if (!this.isDisabled() && !(this.animationPlayer.getAnimation() instanceof LayerOffAnimation)) {
 			if (this.priority == null) {
 				this.disableLayer();
