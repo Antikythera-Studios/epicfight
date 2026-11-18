@@ -40,19 +40,9 @@ import yesman.epicfight.world.capabilities.item.ItemKeywordReloadListener;
 import yesman.epicfight.world.capabilities.item.WeaponTypeReloadListener;
 import yesman.epicfight.world.capabilities.skill.PlayerSkills;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.BiConsumer;
 
-import yesman.epicfight.api.animation.LivingMotion;
-import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.asset.AssetAccessor;
-import yesman.epicfight.api.client.animation.Layer;
-import yesman.epicfight.api.client.animation.property.ClientAnimationProperties;
-
 public interface EpicFightClientBoundPayloadHandler {
-	boolean CLM_DEBUG = Boolean.getBoolean("epicfight.animDebug");
-
 	static void handleAbsorption(final SPAbsorption data, final yesman.epicfight.network.EpicFightPayloadContext context) {
 		Entity entity = context.player().level().getEntity(data.entityId());
 		
@@ -120,70 +110,19 @@ public interface EpicFightClientBoundPayloadHandler {
 
 		EpicFightCapabilities.getUnparameterizedEntityPatch(entity, LivingEntityPatch.class).ifPresent(entitypatch -> {
 			ClientAnimator animator = entitypatch.getClientAnimator();
-
-			// SPChangeLivingMotion can arrive redundantly (e.g. repeated equipment or
-			// resource-pack updates). The reset below rebuilds both motion maps and
-			// replays the currently active living animation, so an identical packet
-			// shows up as a visible restart. Simulate the resulting maps first and
-			// skip when nothing would change.
-			boolean noOp = livingMotionUpdateIsNoOp(animator, data);
-
-			if (CLM_DEBUG) {
-				yesman.epicfight.EpicFight.LOGGER.info("[CLM] entity={} n={} setDefault={} noop={} lm={}",
-					data.entityId(), data.livingMotions().size(), data.setChangesAsDefault(), noOp,
-					entitypatch.currentLivingMotion);
-			}
-
-			if (noOp) {
-				if (data.setChangesAsDefault()) {
-					animator.setCurrentMotionsAsDefault();
-				}
-
-				return;
-			}
-
 			animator.resetLivingAnimations();
 			animator.offAllLayers();
 			animator.resetMotion(false);
 			animator.resetCompositeMotion();
 
 			for (int i = 0; i < data.livingMotions().size(); i++) {
-				animator.addLivingAnimation(data.livingMotions().get(i), data.animations().get(i));
+				entitypatch.getClientAnimator().addLivingAnimation(data.livingMotions().get(i), data.animations().get(i));
 			}
 
 			if (data.setChangesAsDefault()) {
 				animator.setCurrentMotionsAsDefault();
 			}
 		});
-	}
-
-	private static boolean livingMotionUpdateIsNoOp(ClientAnimator animator, SPChangeLivingMotion data) {
-		Map<LivingMotion, AssetAccessor<? extends StaticAnimation>> postBase = new HashMap<>();
-		Map<LivingMotion, AssetAccessor<? extends StaticAnimation>> postComposite = new HashMap<>();
-
-		BiConsumer<LivingMotion, AssetAccessor<? extends StaticAnimation>> apply = (motion, animation) -> {
-			if (animation.get().getLayerType() == Layer.LayerType.BASE_LAYER) {
-				postBase.put(motion, animation);
-				animation.get().getProperty(ClientAnimationProperties.MULTILAYER_ANIMATION).ifPresent(multilayer -> postComposite.put(motion, multilayer));
-			} else {
-				postComposite.put(motion, animation);
-			}
-		};
-
-		animator.getDefaultLivingAnimations().forEach(apply);
-		animator.getDefaultCompositeLivingAnimations().forEach(apply);
-
-		for (int i = 0; i < data.livingMotions().size(); i++) {
-			AssetAccessor<? extends StaticAnimation> animation = data.animations().get(i);
-
-			if (animation == null || !animation.isPresent()) {
-				return false;
-			}
-
-			apply.accept(data.livingMotions().get(i), animation);
-		}
-
-		return postBase.equals(animator.getLivingAnimations()) && postComposite.equals(animator.getCompositeLivingAnimations());
 	}
 	
 	static void handleChangePlayerMode(final SPChangePlayerMode data, final yesman.epicfight.network.EpicFightPayloadContext context) {

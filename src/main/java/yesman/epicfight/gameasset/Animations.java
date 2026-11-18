@@ -114,24 +114,13 @@ public class Animations {
     public static AnimationAccessor<StaticAnimation> BIPED_CREATIVE_IDLE;
     public static AnimationAccessor<SelectiveAnimation> BIPED_CREATIVE_FLYING;
 
-    /**
-     * Creative-flight forward/backward selection driven by the player's
-     * forward input impulse ({@code PlayerPatch.dz} < 0 = holding S) instead
-     * of view-vs-velocity dot product. At modded flight speeds a camera turn
-     * leaves real velocity trailing the view for ~0.5s, so {@code dot < 0}
-     * reads a false "backward" mid-turn and restarts the sub animation
-     * (visible flicker). dz is populated for the local player by
-     * {@code MixinLocalPlayer} ({@code zza}) and for remote players by
-     * {@code CPUpdatePlayerInput}. Non-player patches fall back to the raw
-     * dot selector.
-     */
+    /** Creative flight picks the backward pose only while the player holds back (dz < 0);
+     *  the view/velocity dot product misreads fast camera turns as flying backward. */
     public static final java.util.function.Function<LivingEntityPatch<?>, Integer> CREATIVE_FLY_DIRECTION_SELECTOR = (entitypatch) -> {
-        if (entitypatch instanceof PlayerPatch playerPatch) {
+        if (entitypatch instanceof PlayerPatch<?> playerPatch) {
             return playerPatch.dz < -0.01D ? 1 : 0;
         }
-        Vec3 view = entitypatch.getOriginal().getViewVector(1.0F);
-        Vec3 move = entitypatch.getOriginal().getDeltaMovement();
-        return view.dot(move) < 0.0D ? 1 : 0;
+        return entitypatch.getOriginal().getViewVector(1.0F).dot(entitypatch.getOriginal().getDeltaMovement()) < 0.0D ? 1 : 0;
     };
     public static AnimationAccessor<StaticAnimation> BIPED_MOUNT;
     public static AnimationAccessor<StaticAnimation> BIPED_SIT;

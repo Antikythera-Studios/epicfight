@@ -112,10 +112,6 @@ public class EpicFightFabric implements ModInitializer {
             .sorted(java.util.Comparator.comparing(AnimationManager.AnimationBuilder::namespace))
             .forEach(builder -> builder.task().accept(builder));
 
-        // epicfightx registers its own creative_fly SelectiveAnimation with a
-        // view-vs-velocity dot selector that misreads camera turns at high
-        // flight speeds as "backward" — swap it for the input-driven selector
-        // on both sides (dz is synced to the server via CPUpdatePlayerInput).
         if (FabricLoader.getInstance().isModLoaded("epicfightx")) {
             yesman.epicfight.api.animation.types.SelectiveAnimation.registerSelectorOverride(
                 net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("epicfightx", "biped/living/creative_fly"),

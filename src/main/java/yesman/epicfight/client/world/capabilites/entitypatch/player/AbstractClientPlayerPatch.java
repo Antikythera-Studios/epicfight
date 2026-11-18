@@ -69,12 +69,8 @@ public class AbstractClientPlayerPatch<T extends AbstractClientPlayer> extends P
         EpicSkins.initEpicSkins(this);
     }
 
-    private static final boolean LM_DEBUG = Boolean.getBoolean("epicfight.animDebug");
-
     @Override
     public void updateMotion(boolean considerInaction) {
-        LivingMotion prevMotion = LM_DEBUG && this.original.isLocalPlayer() ? this.currentLivingMotion : null;
-
         if (this.original.getHealth() <= 0.0F) {
             currentLivingMotion = LivingMotions.DEATH;
         } else if (!this.state.updateLivingMotion() && considerInaction) {
@@ -119,11 +115,6 @@ public class AbstractClientPlayerPatch<T extends AbstractClientPlayer> extends P
                         currentLivingMotion = LivingMotions.IDLE;
                 }
             } else {
-                // Input alone isn't enough here: the player keeps drifting on
-                // momentum after releasing the keys, and snapping to the
-                // standing idle pose mid-glide reads as a mode switch.
-                // Keep CREATIVE_FLY while velocity is still meaningful and
-                // only fall back to the hover idle when nearly stationary.
                 if (this.isMoving() || original.getDeltaMovement().lengthSqr() > 0.0025D)
                     currentLivingMotion = LivingMotions.CREATIVE_FLY;
                 else
@@ -175,14 +166,6 @@ public class AbstractClientPlayerPatch<T extends AbstractClientPlayer> extends P
             EpicFightClientEventHooks.Entity.MODIFY_PLAYER_LIVING_MOTION_COMPOSITE.postWithListener(compositeLayerEvent, this.getEventListener());
 
             this.currentCompositeMotion = compositeLayerEvent.getMotion();
-        }
-
-        if (prevMotion != null && prevMotion != this.currentLivingMotion) {
-            yesman.epicfight.EpicFight.LOGGER.info(
-                "[LMD] {}->{} dx={} dz={} flying={} moving={} updState={} considerInaction={} baseEv={}",
-                prevMotion, this.currentLivingMotion, this.dx, this.dz,
-                this.original.getAbilities().flying, this.isMoving(),
-                this.state.updateLivingMotion(), considerInaction, baseLayerEvent.getMotion());
         }
     }
 
