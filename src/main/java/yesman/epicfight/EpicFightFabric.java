@@ -150,6 +150,37 @@ public class EpicFightFabric implements ModInitializer {
             }
         });
 
+        // [SPAWNDBG] Temporary diagnostic: log item drops and thrown-weapon entities
+        // with the call site that spawned them. Enable with -Depicfight.spawnDebug=true
+        if (Boolean.getBoolean("epicfight.spawnDebug")) {
+            java.util.function.BiConsumer<net.minecraft.world.entity.Entity, net.minecraft.world.level.Level> spawnLogger = (entity, level) -> {
+                String detail = null;
+                if (entity instanceof net.minecraft.world.entity.item.ItemEntity itemEntity) {
+                    net.minecraft.world.item.ItemStack stack = itemEntity.getItem();
+                    net.minecraft.world.item.Item item = stack.getItem();
+                    boolean weaponish = item instanceof net.minecraft.world.item.TieredItem
+                        || item instanceof net.minecraft.world.item.ProjectileWeaponItem
+                        || net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item).getNamespace().equals("simplyswords");
+                    if (weaponish)
+                        detail = "drop " + net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item) + " x" + stack.getCount();
+                } else {
+                    String typeId = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
+                    if (typeId.contains("thrown") || typeId.contains("throw") || typeId.contains("sword") || typeId.contains("spear"))
+                        detail = "entity " + typeId;
+                }
+                if (detail == null) return;
+                EpicFight.LOGGER.info("[SPAWNDBG] {}", detail);
+                StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+                for (int i = 2; i < Math.min(trace.length, 18); i++) {
+                    EpicFight.LOGGER.info("[SPAWNDBG]   at {}", trace[i]);
+                }
+            };
+            ServerEntityEvents.ENTITY_LOAD.register(spawnLogger::accept);
+            if (FabricLoader.getInstance().getEnvironmentType() == net.fabricmc.api.EnvType.CLIENT) {
+                net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents.ENTITY_LOAD.register(spawnLogger::accept);
+            }
+        }
+
         // Register entity attributes
         yesman.epicfight.platform.fabric.event.EntityAttributeCreationEvent creationEvent = new yesman.epicfight.platform.fabric.event.EntityAttributeCreationEvent();
         EpicFightAttributes.EventBus.entityAttributeCreationEvent(creationEvent);

@@ -114,11 +114,12 @@ public class Animations {
     public static AnimationAccessor<StaticAnimation> BIPED_CREATIVE_IDLE;
     public static AnimationAccessor<SelectiveAnimation> BIPED_CREATIVE_FLYING;
 
-    /** Creative flight picks the backward pose only while the player holds back (dz < 0);
-     *  the view/velocity dot product misreads fast camera turns as flying backward. */
+    /** Creative flight picks the backward pose only while the player holds back (dz < 0)
+     *  and is actually moving; the view/velocity dot product misreads fast camera turns as
+     *  flying backward, and showing the backward pose at zero speed reads as a vanilla flash. */
     public static final java.util.function.Function<LivingEntityPatch<?>, Integer> CREATIVE_FLY_DIRECTION_SELECTOR = (entitypatch) -> {
         if (entitypatch instanceof PlayerPatch<?> playerPatch) {
-            return playerPatch.dz < -0.01D ? 1 : 0;
+            return playerPatch.dz < -0.01D && entitypatch.getOriginal().getDeltaMovement().lengthSqr() > 0.0025D ? 1 : 0;
         }
         return entitypatch.getOriginal().getViewVector(1.0F).dot(entitypatch.getOriginal().getDeltaMovement()) < 0.0D ? 1 : 0;
     };

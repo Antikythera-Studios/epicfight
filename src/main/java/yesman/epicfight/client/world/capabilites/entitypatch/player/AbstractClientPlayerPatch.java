@@ -115,7 +115,7 @@ public class AbstractClientPlayerPatch<T extends AbstractClientPlayer> extends P
                         currentLivingMotion = LivingMotions.IDLE;
                 }
             } else {
-                if (this.isMoving() || original.getDeltaMovement().lengthSqr() > 0.0025D)
+                if (this.isMoving())
                     currentLivingMotion = LivingMotions.CREATIVE_FLY;
                 else
                     currentLivingMotion = LivingMotions.CREATIVE_IDLE;
