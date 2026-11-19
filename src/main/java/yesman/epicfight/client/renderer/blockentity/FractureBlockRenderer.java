@@ -21,7 +21,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -100,7 +104,22 @@ public class FractureBlockRenderer implements BlockEntityRenderer<FractureBlockE
 	private VertexBuffer buildMesh(BlockState state, FractureBlockEntity blockEntity) {
 		ByteBufferBuilder byteBufferBuilder = new ByteBufferBuilder(2097152);
 		BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-		this.blockRenderDispatcher.renderBreakingTexture(state, blockEntity.getBlockPos().above(), blockEntity.getLevel(), new PoseStack(), bufferBuilder);
+
+		if (state.getRenderShape() == RenderShape.MODEL) {
+			BlockPos pos = blockEntity.getBlockPos().above();
+			this.blockRenderDispatcher.getModelRenderer().tesselateBlock(
+				blockEntity.getLevel(),
+				this.blockRenderDispatcher.getBlockModel(state),
+				state,
+				pos,
+				new PoseStack(),
+				bufferBuilder,
+				false,
+				RandomSource.create(),
+				state.getSeed(pos),
+				OverlayTexture.NO_OVERLAY);
+		}
+
 		MeshData meshData = bufferBuilder.build();
 		VertexBuffer vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		vertexBuffer.bind();

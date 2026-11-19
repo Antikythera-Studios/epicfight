@@ -234,10 +234,12 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
 
     /**
      * Link clips mutate their captured keyframe transforms at evaluation time; the source
-     * poses may be pooled or cached, so transforms are copied before storage.
+     * poses may be pooled or cached, so transforms are copied before storage. A missing
+     * joint must degrade to an identity transform: a null keyframe transform NPEs inside
+     * LinkAnimation#getPoseByTime every frame the link plays.
      */
     private static JointTransform copyIfPresent(JointTransform transform) {
-        return transform == null ? null : JointTransform.empty().copyFromDeep(transform);
+        return transform == null ? JointTransform.empty() : JointTransform.empty().copyFromDeep(transform);
     }
 
     @Override
