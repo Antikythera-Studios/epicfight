@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import yesman.epicfight.api.utils.math.Vec2i;
 import yesman.epicfight.client.gui.ScreenCalculations.AlignDirection;
 import yesman.epicfight.client.gui.ScreenCalculations.HorizontalBasis;

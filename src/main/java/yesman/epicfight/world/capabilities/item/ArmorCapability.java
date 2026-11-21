@@ -6,6 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -15,7 +16,9 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.enchantment.Enchantment;
 import yesman.epicfight.registry.entries.EpicFightAttributes;
+import yesman.epicfight.registry.entries.EpicFightEnchantments;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 import java.util.List;
@@ -34,9 +37,20 @@ public class ArmorCapability extends CapabilityItem {
 	}
 	
 	@Override
-	public void modifyItemTooltip(ItemStack itemstack, List<Component> itemTooltip, LivingEntityPatch<?> entitypatch) {
+	public void modifyItemTooltip(ItemStack itemStack, List<Component> itemTooltip, LivingEntityPatch<?> entitypatch) {
         int index = 0;
         boolean modifyIn = false;
+
+		double weightValue = this.weight;
+		double stunArmorValue = this.stunArmor;
+		Holder<Enchantment> lightEnchantment = entitypatch.getOriginal().level().holderOrThrow(EpicFightEnchantments.LIGHTWEIGHT);
+		Holder<Enchantment> unshakableEnchantment = entitypatch.getOriginal().level().holderOrThrow(EpicFightEnchantments.UNSHAKABLE);
+		if (itemStack.getEnchantmentLevel(lightEnchantment) > 0) {
+			weightValue *= 1 - (itemStack.getEnchantmentLevel(lightEnchantment) * 0.1);
+		}
+		if (itemStack.getEnchantmentLevel(unshakableEnchantment) > 0) {
+			stunArmorValue *= 1 + (itemStack.getEnchantmentLevel(unshakableEnchantment) * 0.07);
+		}
 
         for (int i = 0; i < itemTooltip.size(); i++) {
             Component textComp = itemTooltip.get(i);
@@ -69,21 +83,35 @@ public class ArmorCapability extends CapabilityItem {
         Holder<Attribute> weight = EpicFightAttributes.WEIGHT;
 
         if (this.stunArmor != 0.0D && validateAttribute(entitypatch, stunArmor)) {
-            itemTooltip.add(index, Component.literal("+").append(Component.translatable(stunArmor.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(this.stunArmor))).withStyle(ChatFormatting.BLUE));
+            itemTooltip.add(index, Component.literal("+").append(Component.translatable(stunArmor.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(stunArmorValue))).withStyle(ChatFormatting.BLUE));
         }
 
         if (this.weight != 0.0D && validateAttribute(entitypatch, weight)) {
-            itemTooltip.add(index, Component.literal("+").append(Component.translatable(weight.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(this.weight))).withStyle(ChatFormatting.BLUE));
+            itemTooltip.add(index, Component.literal("+").append(Component.translatable(weight.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(weightValue))).withStyle(ChatFormatting.BLUE));
         }
 	}
 	
-	public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiersForArmor() {
+	public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiersForArmor(LivingEntityPatch<?> patch, EquipmentSlot slot) {
 		Multimap<Holder<Attribute>, AttributeModifier> map = HashMultimap.create();
-		
 		ResourceLocation modifierId = ResourceLocation.withDefaultNamespace("armor." + this.armorType.getName());
-		map.put(EpicFightAttributes.WEIGHT, new AttributeModifier(modifierId, this.weight, Operation.ADD_VALUE));
-		map.put(EpicFightAttributes.STUN_ARMOR, new AttributeModifier(modifierId, this.stunArmor, Operation.ADD_VALUE));
-		
+
+		if (slot.isArmor())
+		{
+			double weight = this.weight;
+			double stunArmor = this.stunArmor;
+			Holder<Enchantment> lightEnchantment = patch.getOriginal().level().holderOrThrow(EpicFightEnchantments.LIGHTWEIGHT);
+			Holder<Enchantment> unshakableEnchantment = patch.getOriginal().level().holderOrThrow(EpicFightEnchantments.UNSHAKABLE);
+			ItemStack stack = patch.getOriginal().getItemBySlot(slot);
+			if (stack.getEnchantmentLevel(lightEnchantment) > 0) {
+				weight *= 1 - (stack.getEnchantmentLevel(lightEnchantment) * 0.1);
+			}
+			if (stack.getEnchantmentLevel(unshakableEnchantment) > 0) {
+				stunArmor *= 1 + (stack.getEnchantmentLevel(unshakableEnchantment) * 0.07);
+			}
+
+			map.put(EpicFightAttributes.WEIGHT, new AttributeModifier(modifierId, weight, Operation.ADD_VALUE));
+			map.put(EpicFightAttributes.STUN_ARMOR, new AttributeModifier(modifierId, stunArmor, Operation.ADD_VALUE));
+		}
         return map;
     }
 
@@ -92,12 +120,23 @@ public class ArmorCapability extends CapabilityItem {
 		Holder<Attribute> stunArmor = EpicFightAttributes.STUN_ARMOR;
 		Holder<Attribute> weight = EpicFightAttributes.WEIGHT;
 
+		double weightValue = this.weight;
+		double stunArmorValue = this.stunArmor;
+		Holder<Enchantment> lightEnchantment = entitypatch.getOriginal().level().holderOrThrow(EpicFightEnchantments.LIGHTWEIGHT);
+		Holder<Enchantment> unshakableEnchantment = entitypatch.getOriginal().level().holderOrThrow(EpicFightEnchantments.UNSHAKABLE);
+		if (itemStack.getEnchantmentLevel(lightEnchantment) > 0) {
+			weightValue *= 1 - (itemStack.getEnchantmentLevel(lightEnchantment) * 0.1);
+		}
+		if (itemStack.getEnchantmentLevel(unshakableEnchantment) > 0) {
+			stunArmorValue *= 1 + (itemStack.getEnchantmentLevel(unshakableEnchantment) * 0.07);
+		}
+
 		if (this.stunArmor != 0.0D && validateAttribute(entitypatch, stunArmor)) {
-			itemTooltip.add(Component.literal("+").append(Component.translatable(stunArmor.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(this.stunArmor))).withStyle(ChatFormatting.BLUE));
+			itemTooltip.add(Component.literal("+").append(Component.translatable(stunArmor.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(stunArmorValue))).withStyle(ChatFormatting.BLUE));
 		}
 
 		if (this.weight != 0.0D && validateAttribute(entitypatch, weight)) {
-			itemTooltip.add(Component.literal("+").append(Component.translatable(weight.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(this.weight))).withStyle(ChatFormatting.BLUE));
+			itemTooltip.add(Component.literal("+").append(Component.translatable(weight.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(weightValue))).withStyle(ChatFormatting.BLUE));
 		}
 	}
 

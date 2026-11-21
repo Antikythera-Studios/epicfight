@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.ApiStatus;
@@ -40,6 +41,7 @@ import yesman.epicfight.particle.HitParticleType;
 import yesman.epicfight.registry.deferred.holders.DeferredCustomData;
 import yesman.epicfight.registry.deferred.holders.DeferredPreset;
 import yesman.epicfight.registry.entries.EpicFightAttributes;
+import yesman.epicfight.registry.entries.EpicFightEnchantments;
 import yesman.epicfight.registry.entries.EpicFightParticles;
 import yesman.epicfight.registry.entries.EpicFightSounds;
 import yesman.epicfight.skill.Skill;
@@ -153,10 +155,15 @@ public class CapabilityItem {
 			Holder<Attribute> armorNegation = EpicFightAttributes.ARMOR_NEGATION;
 			Holder<Attribute> impact = EpicFightAttributes.IMPACT;
 			Holder<Attribute> maxStrikes = EpicFightAttributes.MAX_STRIKES;
+			Holder<Enchantment> impactful = entitypatch.getOriginal().level().holderOrThrow(EpicFightEnchantments.IMPACTFUL);
+			Holder<Enchantment> armorPiercing = entitypatch.getOriginal().level().holderOrThrow(EpicFightEnchantments.ARMOR_PIERCING);
+
 
 			if (attribute.containsKey(armorNegation) && validateAttribute(entitypatch, armorNegation)) {
 				double value = attribute.get(armorNegation).amount() + entitypatch.getOriginal().getAttribute(armorNegation).getBaseValue();
-
+				if (itemStack.getEnchantmentLevel(armorPiercing) > 0) {
+					value *= 1.0D + itemStack.getEnchantmentLevel(armorPiercing) * 0.05D;
+				}
 				if (value > 0.0D) {
 					itemTooltip.add(index, Component.literal(" ").append(Component.translatable(armorNegation.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(value))));
 				}
@@ -164,7 +171,9 @@ public class CapabilityItem {
 
 			if (attribute.containsKey(impact) && validateAttribute(entitypatch, impact)) {
 				double value = attribute.get(impact).amount() + entitypatch.getOriginal().getAttribute(impact).getBaseValue();
-
+				if (itemStack.getEnchantmentLevel(impactful) > 0) {
+					value *= (1.0F + itemStack.getEnchantmentLevel(impactful) * 0.07F);
+				}
 				if (value > 0.0D) {
 					int i = itemStack.getEnchantmentLevel(entitypatch.getOriginal().level().holderOrThrow(Enchantments.KNOCKBACK));
 					value *= (1.0F + i * 0.12F);
@@ -205,7 +214,8 @@ public class CapabilityItem {
 		index++;
 		
 		Map<Holder<Attribute>, AttributeModifier> attribute = this.getDamageAttributesInCondition(style);
-		
+
+
 		if (attribute != null) {
 			if (!modifyIn) {
 				itemTooltip.add(index, Component.literal(""));
@@ -217,10 +227,15 @@ public class CapabilityItem {
 			Holder<Attribute> armorNegation = EpicFightAttributes.ARMOR_NEGATION;
 			Holder<Attribute> impact = EpicFightAttributes.IMPACT;
 			Holder<Attribute> maxStrikes = EpicFightAttributes.MAX_STRIKES;
-			
+			Holder<Enchantment> impactful = entitypatch.getOriginal().level().holderOrThrow(EpicFightEnchantments.IMPACTFUL);
+			Holder<Enchantment> armorPiercing = entitypatch.getOriginal().level().holderOrThrow(EpicFightEnchantments.ARMOR_PIERCING);
+
+
 			if (attribute.containsKey(armorNegation) && validateAttribute(entitypatch, armorNegation)) {
 				double value = attribute.get(armorNegation).amount() + entitypatch.getOriginal().getAttribute(armorNegation).getBaseValue();
-
+				if (itemstack.getEnchantmentLevel(armorPiercing) > 0) {
+					value *= 1.0D + itemstack.getEnchantmentLevel(armorPiercing) * 0.05D;
+				}
 				if (value > 0.0D) {
 					itemTooltip.add(index, Component.literal(" ").append(Component.translatable(armorNegation.value().getDescriptionId() + ".value", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(value))));
 				}
@@ -228,7 +243,9 @@ public class CapabilityItem {
 			
 			if (attribute.containsKey(impact) && validateAttribute(entitypatch, impact)) {
 				double value = attribute.get(impact).amount() + entitypatch.getOriginal().getAttribute(impact).getBaseValue();
-
+				if (itemstack.getEnchantmentLevel(impactful) > 0) {
+					value *= (1.0F + itemstack.getEnchantmentLevel(impactful) * 0.07F);
+				}
 				if (value > 0.0D) {
 					int i = itemstack.getEnchantmentLevel(entitypatch.getOriginal().level().holderOrThrow(Enchantments.KNOCKBACK));
 					value *= (1.0F + i * 0.12F);
@@ -409,7 +426,7 @@ public class CapabilityItem {
 	public final Map<Holder<Attribute>, AttributeModifier> getDamageAttributesInCondition(Style style) {
 		Map<Holder<Attribute>, AttributeModifier> attributes = this.attributeMap.getOrDefault(style, Maps.newHashMap());
 		this.attributeMap.getOrDefault(Styles.COMMON, Maps.newHashMap()).forEach(attributes::putIfAbsent);
-		
+
 		return attributes;
 	}
 	

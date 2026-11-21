@@ -71,7 +71,7 @@ public abstract class PatchedLivingEntityRenderer<E extends LivingEntity, T exte
 					if (reader != null) {
 						reader.close();
 					}
-				} catch (IOException e) {
+				} catch (IOException ignored) {
 				}
 			}
 		}

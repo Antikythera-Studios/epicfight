@@ -4,18 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [21.17.3] - 2026-5-14
+## [21.17.4] - 2026-06-09
+### Additions
+- Added 4 new enchantments that improve the player's combat experience.
+  - Lightweight: Reduces the weight of a player's armor.
+  - Unshakable: Increases the stun armor
+  - Impactful: Increases the impact of the weapon.
+  - Armor Piercing: Increases the Armor Negation of a weapon. Similar to Breach but is non-exclusive to the Mace.
+### Fixes
+- Fixed the client-server desync regarding Guard and HoldableSkill
+## [21.17.3] - 2026-05-14
 ### Additions
 - Added Item Specific Overrides to Builder to allow any explicit tier configurations.
 - Added Simply Tooltips Compatibility with a plethora of Epic Fight's own features.
 ### Changes
 - Used `@WrapOperation` instead of `@Redirect` to improve compatibility with other mods' mixins.
+- Updated GeckoLib compatibility 
 ### Deprecations
-- Deprecated `setWeaponData()` as `modifyBuilder()` made the formet method redundant.
+- Deprecated `setWeaponData()` as `modifyBuilder()` made the former method redundant.
 ### Fixes
 - More inheritance issues regarding `WeaponCapability`
-- Custom Data in Item Presets not working due to logic error.
+- Custom Data in Item Presets was not working due to a logic error.
 - Skills not using `isWeaponCategory()`
 
 ## [21.17.2] - 2026-05-12

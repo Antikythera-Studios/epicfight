@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.Mth;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.api.utils.side.ClientOnly;
 import yesman.epicfight.api.event.EpicFightEventHooks;
 import yesman.epicfight.api.event.types.player.SkillCastEvent;
@@ -404,6 +405,7 @@ public class SkillContainer {
     }
 
     public void activate() {
+        EpicFight.LOGGER.debug("SkillContainer activate: {} for player {}", this.getSlotId(), this.executor.getOriginal().getId());
         if (!this.isActivated) {
             this.prevDuration = this.maxDuration;
             this.duration = this.maxDuration;

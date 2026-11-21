@@ -50,7 +50,7 @@ public class RangedWeaponCapability extends CapabilityItem {
         private ZoomInType zoomInType = ZoomInType.USE_TICK;
 
         protected Builder() {
-            this.category = WeaponCategories.BOW;
+            this.category = WeaponCategories.RANGED;
             this.constructor = RangedWeaponCapability::new;
             this.rangeAnimationModifiers = Maps.newHashMap();
         }

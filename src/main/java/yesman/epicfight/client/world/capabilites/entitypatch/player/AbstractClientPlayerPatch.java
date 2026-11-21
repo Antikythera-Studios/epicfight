@@ -43,6 +43,8 @@ import yesman.epicfight.network.server.SPEntityPairingPacket;
 import yesman.epicfight.registry.entries.EpicFightParticles;
 import yesman.epicfight.registry.entries.EpicFightSkills;
 import yesman.epicfight.registry.entries.EpicFightSounds;
+import yesman.epicfight.skill.SkillSlots;
+import yesman.epicfight.skill.guard.GuardSkill;
 import yesman.epicfight.world.capabilities.entitypatch.EntityDecorations.RenderAttributeModifier;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
@@ -135,9 +137,19 @@ public class AbstractClientPlayerPatch<T extends AbstractClientPlayer> extends P
 
             if (customLivingMotion == null) customLivingMotion = offhandItemCap.getLivingMotion(this, InteractionHand.OFF_HAND);
 
+
             // When item capabilities has custom living motion
             if (customLivingMotion != null)
                 currentCompositeMotion = customLivingMotion;
+            else /*TODO: Fix up this issue from an event perspective*/if (
+                    getSkill(SkillSlots.GUARD).isActivated() && getSkill(SkillSlots.GUARD).getSkill() instanceof GuardSkill guardSkill &&
+                            // Use the active combat cap so guarding works with an offhand-only weapon
+                            // in mirror mode -- otherwise the bare mainhand would fail the available-weapon
+                            // check and the BLOCK motion would never trigger on the visual side.
+                            guardSkill.isHoldingWeaponAvailable(this, this.getPrimaryItemCapability(), GuardSkill.BlockType.GUARD)
+            ) {
+                currentCompositeMotion = LivingMotions.BLOCK;
+            }
             else if (this.original.isUsingItem()) {
                     UseAnim useAnim = this.original.getUseItem().getUseAnimation();
                 if (useAnim == UseAnim.BLOCK)

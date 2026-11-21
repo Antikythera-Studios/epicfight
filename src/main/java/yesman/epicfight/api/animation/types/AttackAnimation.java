@@ -51,12 +51,26 @@ import java.util.*;
 public class AttackAnimation extends ActionAnimation {
 	/** Entities that collided **/
 	public static final SharedVariableKey<List<Entity>> ATTACK_TRIED_ENTITIES = AnimationVariables.unsynchShared(animator -> new ArrayList<> (), false);
-	
 	/** Entities that actually hurt **/
 	public static final SharedVariableKey<List<LivingEntity>> ACTUALLY_HIT_ENTITIES = AnimationVariables.unsynchShared(animator -> new ArrayList<> (), false);
-	
 	public final Phase[] phases;
-	
+
+	public float getStartup() {
+		return this.getTransitionTime() + this.phases[0].preDelay;
+	}
+
+	public float getActiveTime()
+	{
+		float lastActive = this.phases[this.phases.length - 1].contact;
+		float firstStartup = getTransitionTime() + this.phases[0].preDelay;
+		return lastActive - firstStartup;
+	}
+
+	public float getEndlag()
+	{
+		return this.phases[this.phases.length - 1].recovery;
+	}
+
 	public AttackAnimation(float transitionTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, AnimationAccessor<? extends AttackAnimation> accessor, AssetAccessor<? extends Armature> armature) {
 		this(transitionTime, accessor, armature, new Phase(0.0F, antic, preDelay, contact, recovery, Float.MAX_VALUE, colliderJoint, collider));
 	}
@@ -67,7 +81,7 @@ public class AttackAnimation extends ActionAnimation {
 	
 	public AttackAnimation(float transitionTime, AnimationAccessor<? extends AttackAnimation> accessor, AssetAccessor<? extends Armature> armature, Phase... phases) {
 		super(transitionTime, accessor, armature);
-		
+
 		this.addProperty(ActionAnimationProperty.COORD_SET_BEGIN, MoveCoordFunctions.TRACE_TARGET_DISTANCE);
 		this.addProperty(ActionAnimationProperty.COORD_SET_TICK, MoveCoordFunctions.TRACE_TARGET_DISTANCE);
 		this.addProperty(ActionAnimationProperty.COORD_GET, MoveCoordFunctions.MODEL_COORD);

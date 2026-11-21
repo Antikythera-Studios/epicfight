@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.Vec3;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -281,7 +282,9 @@ public class GuardSkill extends Skill implements HoldableSkill {
 	@Override
 	public void startHolding(SkillContainer container) {
 		container.activate();
-		container.runOnServer(serverplayerpatch -> EpicFightNetworkManager.sendToAllPlayerTrackingThisEntity(SPSetSkillContainerValue.activate(container.getSlot(), true, serverplayerpatch.getOriginal().getId()), serverplayerpatch.getOriginal()));
+		int id = container.getExecutor().getId();
+        EpicFight.LOGGER.debug("GuardSkill startHolding: {}", id);
+		container.runOnServer(serverplayerpatch -> EpicFightNetworkManager.sendToAllPlayerTrackingThisEntity(SPSetSkillContainerValue.activate(container.getSlot(), true, container.getExecutor().getOriginal().getId()), serverplayerpatch.getOriginal()));
 	}
 	
 	@Override

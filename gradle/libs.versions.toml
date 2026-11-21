@@ -1,5 +1,5 @@
 [versions]
-mod = "21.17.3"
+mod = "21.17.4"
 java = "21"
 
 # Minecraft
@@ -42,7 +42,7 @@ simplytooltips = "0.1.3"
 fzzy = "0.7.6+1.21+neoforge"
 kotlin = "5.11.0"
 simplyswords = "1.63.0-1.21.1"
-
+mca = "8247422"
 
 
 # Helper Gradle-plugins
@@ -53,6 +53,8 @@ modPublish = "1.1.0"
 mixin = { module = "org.spongepowered:mixin", version.ref = "mixin" }
 
 forgeconfigapiport-common = { module = "fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi", version.ref = "forgeconfigapiport" }
+
+mcaReborn = {module ="curse.maven:minecraft-comes-alive-reborn-535291", version.ref = "mca"}
 
 jei-common-api = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
 jei-neoforge-api = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }

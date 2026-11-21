@@ -76,7 +76,7 @@ public class SkillBookScreen extends Screen {
         WEAPON_CATEGORY_ICONS.put(WeaponCategories.LONGSWORD, new ItemStack(EpicFightItems.IRON_LONGSWORD.get()));
         WEAPON_CATEGORY_ICONS.put(WeaponCategories.DAGGER, new ItemStack(EpicFightItems.IRON_DAGGER.get()));
         WEAPON_CATEGORY_ICONS.put(WeaponCategories.SHIELD, new ItemStack(Items.SHIELD));
-        WEAPON_CATEGORY_ICONS.put(WeaponCategories.BOW, new ItemStack(Items.BOW));
+        WEAPON_CATEGORY_ICONS.put(WeaponCategories.RANGED, new ItemStack(Items.BOW));
 
         ATTRIBUTE_ICONS.put(Attributes.MAX_HEALTH, new TextureInfo(SKILLBOOK_BACKGROUND, 22, 195, 10, 10));
         ATTRIBUTE_ICONS.put(EpicFightAttributes.MAX_STAMINA, new TextureInfo(SKILLBOOK_BACKGROUND, 42, 195, 10, 10));

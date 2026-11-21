@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import yesman.epicfight.EpicFight;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.client.animation.ClientAnimator;
 import yesman.epicfight.api.data.reloader.ItemCapabilityReloadListener;
@@ -103,7 +104,7 @@ public interface EpicFightClientBoundPayloadHandler {
 	
 	static void handleChangeLivingMotion(final SPChangeLivingMotion data, final IPayloadContext context) {
 		Entity entity = context.player().level().getEntity(data.entityId());
-		
+
 		EpicFightCapabilities.getUnparameterizedEntityPatch(entity, LivingEntityPatch.class).ifPresent(entitypatch -> {
 			ClientAnimator animator = entitypatch.getClientAnimator();
 			animator.resetLivingAnimations();
@@ -277,9 +278,9 @@ public interface EpicFightClientBoundPayloadHandler {
 	}
 	
 	static void handleSetSkillContainerValue(final SPSetSkillContainerValue data, final IPayloadContext context) {
-		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player(), PlayerPatch.class).ifPresent(playerpatch -> {
+		EpicFight.LOGGER.debug("SPSetSkillContainerValue: {}", data.entityId());
+		EpicFightCapabilities.getUnparameterizedEntityPatch(context.player().level().getEntity(data.entityId()), PlayerPatch.class).ifPresent(playerpatch -> {
 			SkillContainer container = playerpatch.getSkill(data.skillSlot());
-			
 			switch (data.target()) {
 			case ENABLE -> container.setDisabled(data.boolVal());
 			case ACTIVATE -> { if (data.boolVal()) container.activate(); else container.deactivate(); }

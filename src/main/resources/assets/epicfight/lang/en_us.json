@@ -71,6 +71,10 @@
   "entity.epicfight.area_effect_breath": "Dragon Breath",
 
   "epicfight.gui.attribute": "Epic Fight Attributes:",
+  "enchantment.epicfight.lightweight": "Lightweight",
+  "enchantment.epicfight.unshakable": "Unshakable",
+  "enchantment.epicfight.impactful": "Impactful",
+  "enchantment.epicfight.armor_piercing": "Armor Piercing",
 
   "epicfight.skillNotFound": "Unknown skill: %s",
   "epicfight.invalid_skill": "Invalid skill: %s",
