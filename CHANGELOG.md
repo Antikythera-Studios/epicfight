@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Fixes
+- Render layers that a mod adds to the vanilla renderer after Epic Fight built its patched renderer were silently dropped, so the geometry vanished as soon as the patched renderer replaced the vanilla one. `initLayerLast` only patched the layers present at that moment; unregistered layers now fall back to `RenderOriginalModelLayer` the same way, which fixes the Sophisticated Backpacks backpack (and other late-registered layers) disappearing in battle mode.
+
 ## [21.17.3] - 2026-5-14
 ### Additions
 - Added Item Specific Overrides to Builder to allow any explicit tier configurations.
