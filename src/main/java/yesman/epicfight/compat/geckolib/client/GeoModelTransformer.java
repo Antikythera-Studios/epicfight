@@ -290,6 +290,10 @@ public class GeoModelTransformer extends HumanoidModelTransformer {
 			List<AnimatedPolygon> xyClipPolygons = Lists.newArrayList();
 			
 			for (GeoQuad polygon : cube.quads()) {
+				if (polygon == null) {
+					continue;
+				}
+				
 				Matrix4f matrix = poseStack.last().pose();
 				
 				ModelPart.Vertex pos0 = getTranslatedVertex(polygon.vertices()[0], matrix);
@@ -483,6 +487,10 @@ public class GeoModelTransformer extends HumanoidModelTransformer {
 			List<AnimatedPolygon> polygons = Lists.newArrayList();
 			
 			for (GeoQuad quad : cube.quads()) {
+				if (quad == null) {
+					continue;
+				}
+				
 				Matrix4f matrix = poseStack.last().pose();
 				ModelPart.Vertex pos0 = getTranslatedVertex(quad.vertices()[0], matrix);
 				ModelPart.Vertex pos1 = getTranslatedVertex(quad.vertices()[1], matrix);
@@ -597,9 +605,15 @@ public class GeoModelTransformer extends HumanoidModelTransformer {
 		double maxZ = Double.MIN_VALUE;
 		
 		Matrix4f matrix = poseStack.last().pose();
+		boolean hasVertex = false;
 		
 		for (GeoQuad quad : cube.quads()) {
+			if (quad == null) {
+				continue;
+			}
+			
 			for (GeoVertex v : quad.vertices()) {
+				hasVertex = true;
 				Vector4f translatedPosition = new Vector4f(v.position(), 1.0F);
 				translatedPosition.mul(matrix);
 				
@@ -627,6 +641,16 @@ public class GeoModelTransformer extends HumanoidModelTransformer {
 					maxZ = translatedPosition.z();
 				}
 			}
+		}
+		
+		if (!hasVertex) {
+			// A cube whose faces are all omitted carries no geometry to measure, so the sentinels above would produce
+			// a meaningless centre. Its pivot is where the bone placed it, which is the best available answer.
+			Vec3 pivot = cube.pivot();
+			Vector4f translatedPivot = new Vector4f((float) pivot.x, (float) pivot.y, (float) pivot.z, 1.0F);
+			translatedPivot.mul(matrix);
+			
+			return new Vec3(translatedPivot.x(), translatedPivot.y(), translatedPivot.z());
 		}
 		
 		return new Vec3(minX + (maxX - minX) * 0.5D, minY + (maxY - minY) * 0.5D, minZ + (maxZ - minZ) * 0.5D);

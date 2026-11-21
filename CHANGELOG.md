@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Fixes
+- GeckoLib armour models that omit faces in their per-face UV no longer break the armour bake. `GeoModelTransformer` dereferenced the `null` quads GeckoLib leaves for those faces, the exception made `HumanoidModelBaker` add the item to `EXCEPTIONAL_MODELS`, and the armour was then permanently rendered with the vanilla model instead of its own texture.
+
 ## [21.17.3] - 2026-5-14
 ### Additions
 - Added Item Specific Overrides to Builder to allow any explicit tier configurations.
