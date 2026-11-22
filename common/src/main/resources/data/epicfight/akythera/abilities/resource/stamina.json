@@ -1,0 +1,9 @@
+{
+  "parent": "akythera:stored_ability_resource_ctor",
+  "properties": {
+    "kind": "consumptive",
+    "max": 15.0,
+    "regen_delay": 30,
+    "regen_per_tick": 0.15
+  }
+}

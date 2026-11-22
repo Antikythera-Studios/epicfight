@@ -50,8 +50,6 @@ package guivnf.epicfight.akythera.providers;
 
 // Import section is empty. Use auto import feature in IDE
 
-import com.yesman.akythera.api.animation.notify.impl.BlockJumpNotifyState;
-import com.yesman.akythera.api.animation.notify.impl.KeepMomentumNotifyState;
 import com.yesman.akythera.api.asset.animation.AnimationManager;
 import com.yesman.akythera.api.data.provider.AnimationSequenceProvider;
 import com.yesman.akythera.core.animation.ik.IKType;
@@ -59,6 +57,7 @@ import com.yesman.akythera.core.animation.notify.AnimationNotifyTrack;
 import com.yesman.akythera.core.animation.playable.AnimationSequence;
 import com.yesman.akythera.core.math.TimeWindow;
 import com.yesman.akythera.core.registry.AkytheraRegistries;
+import guivnf.epicfight.world.animation.KeepMomentumNotifyState;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -697,9 +696,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.09F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land")),
                 0.05F,
@@ -717,9 +714,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.15F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard")),
                 0.05F,
@@ -737,9 +732,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.14F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_run_backward")),
                 0.05F,
@@ -757,9 +750,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.12F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_run_backward_left")),
                 0.05F,
@@ -777,9 +768,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.15F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_run_backward_right")),
                 0.05F,
@@ -797,9 +786,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.14F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_run_forward")),
                 0.05F,
@@ -817,9 +804,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.12F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_run_forward_left")),
                 0.05F,
@@ -837,9 +822,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.15F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_run_forward_right")),
                 0.05F,
@@ -857,9 +840,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.11F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_run_left")),
                 0.05F,
@@ -877,9 +858,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.14F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_run_right")),
                 0.05F,
@@ -897,9 +876,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.17F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_walk_backward")),
                 0.05F,
@@ -917,9 +894,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.17F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_walk_backward_left")),
                 0.05F,
@@ -937,9 +912,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.2F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_walk_backward_right")),
                 0.05F,
@@ -957,9 +930,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.21F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_walk_forward")),
                 0.05F,
@@ -977,9 +948,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.19F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_walk_forward_left")),
                 0.05F,
@@ -997,9 +966,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.2F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_walk_forward_right")),
                 0.05F,
@@ -1017,9 +984,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.15F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_walk_left")),
                 0.05F,
@@ -1037,9 +1002,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.0F), TimeWindow.create(0.0F, 0.19F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_hard_walk_right")),
                 0.05F,
@@ -1057,9 +1020,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.06F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_run_backward")),
                 0.05F,
@@ -1077,9 +1038,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.1F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_run_backward_left")),
                 0.05F,
@@ -1097,9 +1056,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.05F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_run_backward_right")),
                 0.05F,
@@ -1117,9 +1074,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.08F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_run_forward")),
                 0.05F,
@@ -1137,9 +1092,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.08F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_run_forward_left")),
                 0.05F,
@@ -1157,9 +1110,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.07F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_run_forward_right")),
                 0.05F,
@@ -1177,9 +1128,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.1F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_run_left")),
                 0.05F,
@@ -1197,9 +1146,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.05F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_run_right")),
                 0.05F,
@@ -1217,9 +1164,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.05F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_walk_backward")),
                 0.05F,
@@ -1237,9 +1182,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.1F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_walk_backward_left")),
                 0.05F,
@@ -1257,9 +1200,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.06F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_walk_backward_right")),
                 0.05F,
@@ -1277,9 +1218,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.06F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_walk_forward")),
                 0.05F,
@@ -1297,9 +1236,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.08F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_walk_forward_left")),
                 0.05F,
@@ -1317,9 +1254,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.06F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_walk_forward_right")),
                 0.05F,
@@ -1337,9 +1272,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.11F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_walk_left")),
                 0.05F,
@@ -1357,9 +1290,7 @@ public final class EpicfightAnimationSequences extends AnimationSequenceProvider
             new AnimationSequence(
                 new AnimationNotifyTrack(
                     List.of(),
-                    List.of(
-                        new AnimationNotifyTrack.NotifyStateInTimeWindow(new BlockJumpNotifyState(0.5F), TimeWindow.create(0.0F, 0.06F))
-                    )
+                    List.of()
                 ),
                 AnimationManager.accessor(Identifier.parse("epicfight:humanoid/locomotion/land_walk_right")),
                 0.05F,

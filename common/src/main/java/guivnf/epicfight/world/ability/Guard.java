@@ -1,10 +1,13 @@
 package guivnf.epicfight.world.ability;
 
 import com.yesman.akythera.api.event.BuiltInEventHooks;
+import com.yesman.akythera.api.world.ability.AbilityResourceRef;
 import com.yesman.akythera.api.world.ability.AbilitySystemComponent;
 import com.yesman.akythera.api.world.ability.AbilityTag;
+import com.yesman.akythera.api.world.ability.StoredAbilityResource;
 import com.yesman.akythera.api.world.patch.entity.LivingEntityPatch;
 import guivnf.epicfight.EpicFight;
+import guivnf.epicfight.akythera.providers.EpicfightAbilityResources;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,13 +39,17 @@ public final class Guard {
             if (from == null || source.is(DamageTypeTags.BYPASSES_SHIELD) || entity.invulnerableTime > 10) return;
             if (from.subtract(entity.position()).horizontal().dot(Vec3.directionFromRotation(0.0F, entity.getYHeadRot())) <= 0.0D) return;
 
+            StoredAbilityResource stamina = StoredAbilityResource.get(new AbilityResourceRef.ByData(EpicfightAbilityResources.STAMINA));
+
+            if (stamina == null) return;
+
             float amount = event.getAmount();
-            boolean paid = EpicFightAbilityResources.STAMINA.consume(patch, BASE_COST + amount * STAMINA_PER_DAMAGE);
+            boolean paid = stamina.consume(patch, BASE_COST + amount * STAMINA_PER_DAMAGE);
 
             if (paid) {
                 event.setAmount(amount * GUARDED_DAMAGE);
             } else {
-                EpicFightAbilityResources.STAMINA.write(patch, 0.0F);
+                stamina.write(patch, 0.0F);
             }
 
             AbilityTag.ENUM_MANAGER.get(EpicFight.identifier(paid ? "event/guard_hit" : "event/guard_break")).ifPresent(abilitySystem::triggerEvent);

@@ -159,7 +159,7 @@ public final class PlayerAnimatorScript implements AnimatorScript {
 ), "pelvis", ModifyBoneDriver.Space.MODEL, () -> VectorUtils.vec3(swimFlip, 0.0D, 0.0D), () -> 0.0F), "body", ModifyBoneDriver.Space.MODEL, () -> VectorUtils.vec3(((swimFlipLead - swimFlip) * 0.5F), 0.0D, 0.0D), () -> 0.0F)))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.CRAWL, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).isSwimming() && atSurface), null, 0, 0.3F, false, 0))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.SWIM, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).isSwimming() && !(atSurface)), null, 0, 0.3F, false, 0))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.GO_UNDER, (from, _) -> ((((EntityPatch<?>) this.animator.getOwner()).isShiftKeyDown() && (((EntityPatch<?>) this.animator.getOwner()).getWaterSurfaceDepth() < 1.5F)) && isMoving), null, 0, 0.2F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.GO_UNDER, (from, _) -> ((((EntityPatch<?>) this.animator.getOwner()).isShiftKeyDown() && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getWaterSurfaceDepth() < 1.5F)) && isMoving), null, 0, 0.2F, false, 0))
         .addState(EpicfightFSMAnimationState.CRAWL, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.CRAWL, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/swim_crawl")))))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.TREAD, (from, _) -> !(((EntityPatch<?>) this.animator.getOwner()).isSwimming()), null, 0, 0.3F, false, 0))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.SWIM, (from, _) -> !(atSurface), null, 0, 0.4F, false, 0))
@@ -169,7 +169,7 @@ public final class PlayerAnimatorScript implements AnimatorScript {
         .addState(EpicfightFSMAnimationState.DIVE_IN, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.DIVE_IN, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/water_dive_end")))))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.SWIM, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).isSwimming() && !(atSurface)), null, 0, 0.4F, false, 0))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.CRAWL, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).isSwimming() && atSurface), null, 0, 0.4F, false, 0))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.SURFACE, (from, _) -> ((((EntityPatch<?>) this.animator.getOwner()).getWaterSurfaceDepth() < 1.3F) && (AnimationStateMachine.driverOf(from).getTime() > 1.0F)), null, 0, 0.4F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.SURFACE, (from, _) -> ((((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getWaterSurfaceDepth() < 1.3F) && (AnimationStateMachine.driverOf(from).getTime() > 1.0F)), null, 0, 0.4F, false, 0))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.TREAD, (from, _) -> (AnimationStateMachine.driverOf(from).isFinished() || swimDown), null, 0, 0.4F, false, 0))
         .addState(EpicfightFSMAnimationState.LEAP_IN, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.LEAP_IN, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/water_jump_end")))))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.SWIM, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).isSwimming() && !(atSurface)), null, 0, 0.4F, false, 0))
@@ -192,51 +192,51 @@ public final class PlayerAnimatorScript implements AnimatorScript {
         .addState(EpicfightFSMAnimationState.ON_GROUND, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.ON_GROUND, new CachedPoseReference("GroundMove", this.animator, false)))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && diveEntry), null, 0, 0.15F, false, 1))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LEAP, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (leapEntry && !(diveEntry))), null, 0, 0.15F, false, 1))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.JUMP, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getVerticalSpeed() > 0.0F)), null, 0, 0.1F, false, 0))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getFallHeight() > 0.6F)), null, 0, 0.2F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.JUMP, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getVerticalSpeed() > 0.0F)), null, 0, 0.1F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getFallHeight() > 0.6F)), null, 0, 0.2F, false, 0))
         .addState(EpicfightFSMAnimationState.JUMP, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.JUMP, new PlayRateDriver(AnimatorScript.instantiateBlendSpace2D(ResourceKey.create(AkytheraRegistries.DataPack.BLEND_SPACE_2D_KEY, Identifier.parse("epicfight:humanoid/locomotion/jump")), () -> moveYRot, () -> (float) (speed)), () -> 0.5F)))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE, (from, _) -> diveEntry, null, 0, 0.15F, false, 1))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LEAP, (from, _) -> (leapEntry && !(diveEntry)), null, 0, 0.15F, false, 1))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> ((((EntityPatch<?>) this.animator.getOwner()).getFallHeight() > 1.3F) || AnimationStateMachine.driverOf(from).isFinished()), null, 0, 0.4F, false, 0))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND_HEAVY, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).onGround() && (((EntityPatch<?>) this.animator.getOwner()).getFallHeight() > 2.45F)), null, 0, 0.1F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> ((((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getFallHeight() > 1.3F) || AnimationStateMachine.driverOf(from).isFinished()), null, 0, 0.4F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND_HEAVY, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).onGround() && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getFallHeight() > 2.45F)), null, 0, 0.1F, false, 0))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND, (from, _) -> ((EntityPatch<?>) this.animator.getOwner()).onGround(), null, 0, 0.1F, false, 0))
         .addState(EpicfightFSMAnimationState.FALL, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.FALL, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/fall")))))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE, (from, _) -> diveEntry, null, 0, 0.2F, false, 1))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LEAP, (from, _) -> (leapEntry && !(diveEntry)), null, 0, 0.2F, false, 1))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND_HEAVY, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).onGround() && (((EntityPatch<?>) this.animator.getOwner()).getFallHeight() > 2.45F)), null, 0, 0.1F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND_HEAVY, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).onGround() && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getFallHeight() > 2.45F)), null, 0, 0.1F, false, 0))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND, (from, _) -> ((EntityPatch<?>) this.animator.getOwner()).onGround(), null, 0, 0.1F, false, 0))
         .addState(EpicfightFSMAnimationState.LAND, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.LAND, new AdditiveBlendDriver(new CachedPoseReference("GroundMove", this.animator, false), AnimatorScript.instantiateBlendSpace2D(ResourceKey.create(AkytheraRegistries.DataPack.BLEND_SPACE_2D_KEY, Identifier.parse("epicfight:humanoid/locomotion/land")), () -> moveYRot, () -> (float) (speed)), () -> landDepth)))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.JUMP, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getVerticalSpeed() > 0.0F)), null, 0, 0.1F, false, 0))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getFallHeight() > 0.6F)), null, 0, 0.2F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.JUMP, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getVerticalSpeed() > 0.0F)), null, 0, 0.1F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getFallHeight() > 0.6F)), null, 0, 0.2F, false, 0))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_GROUND, (from, _) -> AnimationStateMachine.driverOf(from).isFinished(), null, 0, 0.2F, false, 0))
         .addState(EpicfightFSMAnimationState.LAND_HEAVY, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.LAND_HEAVY, new AdditiveBlendDriver(new CachedPoseReference("GroundMove", this.animator, false), AnimatorScript.instantiateBlendSpace2D(ResourceKey.create(AkytheraRegistries.DataPack.BLEND_SPACE_2D_KEY, Identifier.parse("epicfight:humanoid/locomotion/land_hard")), () -> moveYRot, () -> (float) (speed)), () -> landDepth)))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.JUMP, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getVerticalSpeed() > 0.0F)), null, 0, 0.1F, false, 0))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getFallHeight() > 0.6F)), null, 0, 0.2F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.JUMP, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getVerticalSpeed() > 0.0F)), null, 0, 0.1F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.FALL, (from, _) -> (!(((EntityPatch<?>) this.animator.getOwner()).onGround()) && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getFallHeight() > 0.6F)), null, 0, 0.2F, false, 0))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_GROUND, (from, _) -> AnimationStateMachine.driverOf(from).isFinished(), null, 0, 0.2F, false, 0))
         .addState(EpicfightFSMAnimationState.DIVE, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.DIVE, new AnimationStateMachine<>(
     this.animator.getOwner(),
     AnimationStateMachine.stateModelBuilder()
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE_STREAM, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).getFallHeight() > 0.6F), null, 0, 0.2F, false, 2))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE_STREAM, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getFallHeight() > 0.6F), null, 0, 0.2F, false, 2))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE_START, (from, _) -> true, null, 0, 0.2F, false, 1))
         .addState(EpicfightFSMAnimationState.DIVE_START, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.DIVE_START, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/water_angel_start")))))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE_STREAM, (from, _) -> ((AnimationStateMachine.driverOf(from).getPhase() > 0.75F) && (((EntityPatch<?>) this.animator.getOwner()).getVerticalSpeed() < 0.0F)), null, 0, 0.35F, false, 1))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE_STREAM, (from, _) -> ((AnimationStateMachine.driverOf(from).getPhase() > 0.75F) && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getVerticalSpeed() < 0.0F)), null, 0, 0.35F, false, 1))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE_LOOP, (from, _) -> AnimationStateMachine.driverOf(from).isFinished(), null, 0, 0.25F, false, 0))
-        .addState(EpicfightFSMAnimationState.DIVE_LOOP, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.DIVE_LOOP, AnimatorScript.instantiateBlendSpace2D(ResourceKey.create(AkytheraRegistries.DataPack.BLEND_SPACE_2D_KEY, Identifier.parse("epicfight:humanoid/locomotion/water_angel")), () -> ((EntityPatch<?>) this.animator.getOwner()).getVerticalSpeed(), () -> 0.0F)))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE_STREAM, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).getVerticalSpeed() < -8.0F), null, 0, 0.35F, false, 0))
+        .addState(EpicfightFSMAnimationState.DIVE_LOOP, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.DIVE_LOOP, AnimatorScript.instantiateBlendSpace2D(ResourceKey.create(AkytheraRegistries.DataPack.BLEND_SPACE_2D_KEY, Identifier.parse("epicfight:humanoid/locomotion/water_angel")), () -> ((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getVerticalSpeed(), () -> 0.0F)))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.DIVE_STREAM, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getVerticalSpeed() < -8.0F), null, 0, 0.35F, false, 0))
         .addState(EpicfightFSMAnimationState.DIVE_STREAM, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.DIVE_STREAM, new OrientBodyDriver(animator, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/water_dive_loop"))), "body_bend", OrientBodyDriver.PitchSource.MOTION, () -> VectorUtils.vec3(85.0D, 0.0D, 20.0D), () -> 1.0F)))
 )))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND_HEAVY, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).onGround() && (((EntityPatch<?>) this.animator.getOwner()).getFallHeight() > 2.45F)), null, 0, 0.1F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND_HEAVY, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).onGround() && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getFallHeight() > 2.45F)), null, 0, 0.1F, false, 0))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND, (from, _) -> ((EntityPatch<?>) this.animator.getOwner()).onGround(), null, 0, 0.1F, false, 0))
         .addState(EpicfightFSMAnimationState.LEAP, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.LEAP, new AnimationStateMachine<>(
     this.animator.getOwner(),
     AnimationStateMachine.stateModelBuilder()
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LEAP_LOOP, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).getFallHeight() > 0.6F), null, 0, 0.2F, false, 1))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LEAP_LOOP, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getFallHeight() > 0.6F), null, 0, 0.2F, false, 1))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LEAP_START, (from, _) -> true, null, 0, 0.2F, false, 0))
         .addState(EpicfightFSMAnimationState.LEAP_START, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.LEAP_START, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/water_jump_start")))))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LEAP_LOOP, (from, _) -> AnimationStateMachine.driverOf(from).isFinished(), null, 0, 0.15F, false, 0))
         .addState(EpicfightFSMAnimationState.LEAP_LOOP, AnimationStateMachine.stateInstanceBuilder(EpicfightFSMAnimationState.LEAP_LOOP, AnimatorScript.instantiateAnimSequence(ResourceKey.create(AkytheraRegistries.DataPack.ANIM_SEQUENCE_KEY, Identifier.parse("epicfight:humanoid/locomotion/common/water_jump_loop")))))
 )))
-        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND_HEAVY, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).onGround() && (((EntityPatch<?>) this.animator.getOwner()).getFallHeight() > 2.45F)), null, 0, 0.1F, false, 0))
+        .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND_HEAVY, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).onGround() && (((EntityPatch<?>) this.animator.getOwner()).getEntityMovementComponent().getFallHeight() > 2.45F)), null, 0, 0.1F, false, 0))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.LAND, (from, _) -> ((EntityPatch<?>) this.animator.getOwner()).onGround(), null, 0, 0.1F, false, 0))
 ), "head", ModifyBoneDriver.Space.MODEL, () -> VectorUtils.vec3((headPitch * headLook), (headYaw * headLook), 0.0D), () -> headLock)))
         .transitTo(new AnimationStateTransition<>(EpicfightFSMAnimationState.ON_AIR, (from, _) -> (((EntityPatch<?>) this.animator.getOwner()).isFlying() && !(((EntityPatch<?>) this.animator.getOwner()).onGround())), null, 0, 0.2F, false, 0))
@@ -293,19 +293,19 @@ public final class PlayerAnimatorScript implements AnimatorScript {
         headYaw = ((LivingEntityPatch<?>) cse_15_0).getHeadYawOffset(partialTick);
         headPitch = ((EntityPatch<?>) cse_15_0).getXRot(partialTick);
         sprintRate = MathUtils.speedMatchRate(cse_33_0, 3.47F, 0.5F, 1.6F);
-        var cse_65_0 = ((EntityPatch<?>) cse_15_0).getWaterSurfaceDepth();
+        var cse_65_0 = ((EntityPatch<?>) cse_15_0).getEntityMovementComponent().getWaterSurfaceDepth();
         inWater = ((((EntityPatch<?>) cse_15_0).isUnderWater() || ((EntityPatch<?>) cse_15_0).isSwimming()) || (!(((EntityPatch<?>) cse_15_0).onGround()) && (cse_65_0 > 1.0F)));
         atSurface = ((cse_65_0 - ((EntityPatch<?>) cse_15_0).getBbHeight()) < 0.9F);
-        waterDrop = ((EntityPatch<?>) cse_15_0).getWaterDrop(3);
+        waterDrop = ((EntityPatch<?>) cse_15_0).getEntityMovementComponent().getWaterDrop(3);
         var cse_77_0 = ((EntityPatch<?>) cse_15_0).onGround();
         var cse_78_0 = ((EntityPatch<?>) cse_15_0).isInWater();
-        var cse_79_0 = ((EntityPatch<?>) cse_15_0).getVerticalSpeed();
-        ledgeDrop = (waterDrop - ((EntityPatch<?>) cse_15_0).getHeightAboveTakeoff());
+        var cse_79_0 = ((EntityPatch<?>) cse_15_0).getEntityMovementComponent().getVerticalSpeed();
+        ledgeDrop = (waterDrop - ((EntityPatch<?>) cse_15_0).getEntityMovementComponent().getHeightAboveTakeoff());
         var cse_80_0 = (!(cse_77_0) && !(cse_78_0));
         var cse_81_0 = (!(cse_77_0) && (!(cse_78_0) || (cse_79_0 < 0.0F)));
         var cse_82_0 = ((ledgeDrop > 2.0F) && (waterDrop > 0.0F));
         diveEntry = ((diveEntry || (cse_80_0 && (((ledgeDrop > 10.0F) && (waterDrop > 0.0F)) && ((isSprinting || (cse_79_0 > 0.0F)) && ((((EntityPatch<?>) cse_15_0).getVelocityYaw() > -20.0F) && (((EntityPatch<?>) cse_15_0).getVelocityYaw() < 20.0F)))))) && cse_81_0);
-        leapEntry = ((leapEntry || (cse_80_0 && (cse_82_0 && ((cse_79_0 > 0.0F) || (((EntityPatch<?>) cse_15_0).getFallHeight() > 0.05F))))) && cse_81_0);
+        leapEntry = ((leapEntry || (cse_80_0 && (cse_82_0 && ((cse_79_0 > 0.0F) || (((EntityPatch<?>) cse_15_0).getEntityMovementComponent().getFallHeight() > 0.05F))))) && cse_81_0);
         swimTurn = (headYaw * 2.0F);
         swimDown = (((((inWater && !(cse_77_0)) && ((EntityPatch<?>) cse_15_0).isShiftKeyDown()) && !(isMoving)) && !(diveEntry)) && !(leapEntry));
         swimUp = (inWater && !(atSurface) && !(isMoving) && !(((EntityPatch<?>) cse_15_0).isShiftKeyDown()) && (cse_79_0 > ((swimUp) ? 0.3F : 1.0F)));

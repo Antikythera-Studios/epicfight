@@ -1,0 +1,64 @@
+{
+  "animations": [
+    "epicfight:humanoid/montage/sword_auto3_v2"
+  ],
+  "fade_in_time": 0.12,
+  "fade_out_time": 0.25,
+  "loops": false,
+  "root_motion": true,
+  "ik_type": "akythera:none",
+  "preview_entity_type": "minecraft:player",
+  "notify_tracks": {
+    "tracks": [
+      {
+        "name": "Track1",
+        "notifies": [
+          {
+            "notify": {
+              "sound": {
+                "sound_id": "epicfight:whoosh"
+              },
+              "type": "akythera:play_sound"
+            },
+            "time": 0.222
+          }
+        ]
+      },
+      {
+        "name": "Locks",
+        "notify_states": [
+          {
+            "notify_state": {
+              "type": "akythera:lock_movement",
+              "rotation": "face_view"
+            },
+            "from": 0.0,
+            "to": 0.24
+          },
+          {
+            "notify_state": {
+              "type": "akythera:lock_movement",
+              "rotation": "locked"
+            },
+            "from": 0.24,
+            "to": 0.5
+          }
+        ]
+      },
+      {
+        "name": "Hurt",
+        "notify_states": [
+          {
+            "notify_state": {
+              "socket": "armature/right_hand_socket",
+              "ignore_invulnerable_time": true,
+              "type": "akythera:living_hurt"
+            },
+            "from": 0.173,
+            "to": 0.367
+          }
+        ]
+      }
+    ]
+  }
+}
