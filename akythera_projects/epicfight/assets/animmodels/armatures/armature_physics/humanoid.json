@@ -1,0 +1,756 @@
+{
+  "bodies": {
+    "right_leg_bend": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.1875,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              0.25,
+              0.375,
+              0.25
+            ]
+          },
+          "length": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 24.8
+    },
+    "left_leg": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.1795,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              0.25,
+              0.359,
+              0.25
+            ]
+          },
+          "length": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 21.8,
+      "buoyancy_scale": 1.4
+    },
+    "left_arm": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              6.889506364228301E-18,
+              0.08055551245285958,
+              1.3779012725589248E-17
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              0.25541559837662214,
+              0.39743550561609037,
+              0.2752267382782302
+            ]
+          },
+          "length": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 29.1,
+      "buoyancy_scale": 1.3
+    },
+    "left_leg_bend": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.1875,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              0.25,
+              0.375,
+              0.25
+            ]
+          },
+          "length": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 24.8
+    },
+    "right_arm_bend": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              -2.2096513116285118E-9,
+              0.18434696792975838,
+              0.017644381197771897
+            ],
+            "rotation": [
+              0.04839627312693769,
+              5.841477728758616E-10,
+              -4.233542402784952E-11,
+              0.9988282138323
+            ],
+            "sca": [
+              0.25789277668271354,
+              0.37038578797414357,
+              0.24253842173898268
+            ]
+          },
+          "length": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 21.7
+    },
+    "head": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.2511981495033804,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "length": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 32.0,
+      "buoyancy_scale": 0.25
+    },
+    "body_bend": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.1974113561741375,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "length": [
+            0.5,
+            0.35,
+            0.25
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 28.4,
+      "center_of_mass_offset": [
+        0.0,
+        0.0,
+        -0.06
+      ],
+      "buoyancy_scale": 1.2
+    },
+    "body": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.19551049067944842,
+              0.0
+            ],
+            "rotation": [
+              -0.014632167257013889,
+              0.0,
+              0.0,
+              0.9998929441101996
+            ],
+            "sca": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "length": [
+            0.5,
+            0.37,
+            0.25
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 43.9,
+      "center_of_mass_offset": [
+        0.0,
+        0.0,
+        -0.06
+      ],
+      "buoyancy_scale": 1.2
+    },
+    "left_arm_bend": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.18434696792975838,
+              0.017644381197771897
+            ],
+            "rotation": [
+              0.04839627312693769,
+              0.0,
+              0.0,
+              0.9988282138323
+            ],
+            "sca": [
+              0.2405043510469472,
+              0.37038578797414357,
+              0.261810935418527
+            ]
+          },
+          "length": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 21.7
+    },
+    "right_leg": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              0.0,
+              0.1795,
+              0.0
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              0.25,
+              0.359,
+              0.25
+            ]
+          },
+          "length": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 21.8,
+      "buoyancy_scale": 1.4
+    },
+    "right_arm": {
+      "colliders": [
+        {
+          "transform": {
+            "location": [
+              4.516392068346027E-17,
+              0.0753928069280218,
+              -3.611086673107723E-17
+            ],
+            "rotation": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "sca": [
+              0.25541559837662214,
+              0.39743550561609037,
+              0.2752267382782302
+            ]
+          },
+          "length": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "shape": "akythera:oriented_box"
+        }
+      ],
+      "mass": 29.1,
+      "buoyancy_scale": 1.3
+    }
+  },
+  "constraints": {
+    "right_leg_bend": [
+      {
+        "x": {
+          "min": -90.0,
+          "max": 0.0
+        },
+        "y": {
+          "min": -10.0,
+          "max": 10.0
+        },
+        "z": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "type": "akythera:limit_rotation"
+      }
+    ],
+    "left_leg": [
+      {
+        "x": {
+          "min": -90.0,
+          "max": 30.0
+        },
+        "y": {
+          "min": -30.0,
+          "max": 30.0
+        },
+        "z": {
+          "min": -45.0,
+          "max": 45.0
+        },
+        "type": "akythera:limit_rotation"
+      }
+    ],
+    "right_arm_bend": [
+      {
+        "x": {
+          "min": -5.0,
+          "max": 95.0
+        },
+        "y": {
+          "min": -10.0,
+          "max": 10.0
+        },
+        "z": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "type": "akythera:limit_rotation"
+      }
+    ],
+    "left_arm": [
+      {
+        "x": {
+          "min": -170.0,
+          "max": 170.0
+        },
+        "y": {
+          "min": -60.0,
+          "max": 60.0
+        },
+        "z": {
+          "min": -90.0,
+          "max": 90.0
+        },
+        "type": "akythera:limit_rotation"
+      }
+    ],
+    "left_leg_bend": [
+      {
+        "x": {
+          "min": -90.0,
+          "max": 0.0
+        },
+        "y": {
+          "min": -10.0,
+          "max": 10.0
+        },
+        "z": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "type": "akythera:limit_rotation"
+      }
+    ],
+    "left_arm_bend": [
+      {
+        "x": {
+          "min": -5.0,
+          "max": 95.0
+        },
+        "y": {
+          "min": -10.0,
+          "max": 10.0
+        },
+        "z": {
+          "min": 0.0,
+          "max": 0.0
+        },
+        "type": "akythera:limit_rotation"
+      }
+    ],
+    "right_leg": [
+      {
+        "x": {
+          "min": -90.0,
+          "max": 30.0
+        },
+        "y": {
+          "min": -30.0,
+          "max": 30.0
+        },
+        "z": {
+          "min": -45.0,
+          "max": 45.0
+        },
+        "type": "akythera:limit_rotation"
+      }
+    ],
+    "right_arm": [
+      {
+        "x": {
+          "min": -170.0,
+          "max": 170.0
+        },
+        "y": {
+          "min": -60.0,
+          "max": 60.0
+        },
+        "z": {
+          "min": -90.0,
+          "max": 90.0
+        },
+        "type": "akythera:limit_rotation"
+      }
+    ],
+    "left_knee": [
+      {
+        "target": "left_leg_bend",
+        "map_from": {
+          "x": {
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "x": {
+            "source": "x",
+            "max": -45.0
+          }
+        },
+        "extrapolate": true,
+        "type": "akythera:transformation"
+      },
+      {
+        "target": "left_leg_bend",
+        "map_from": {
+          "x": {
+            "max": -90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        },
+        "type": "akythera:transformation"
+      }
+    ],
+    "right_elbow": [
+      {
+        "target": "right_arm_bend",
+        "map_from": {
+          "x": {
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "x": {
+            "source": "x",
+            "max": -45.0
+          }
+        },
+        "extrapolate": true,
+        "type": "akythera:transformation"
+      },
+      {
+        "target": "right_arm_bend",
+        "map_from": {
+          "x": {
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        },
+        "type": "akythera:transformation"
+      }
+    ],
+    "left_elbow": [
+      {
+        "target": "left_arm_bend",
+        "map_from": {
+          "x": {
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "x": {
+            "source": "x",
+            "max": -45.0
+          }
+        },
+        "extrapolate": true,
+        "type": "akythera:transformation"
+      },
+      {
+        "target": "left_arm_bend",
+        "map_from": {
+          "x": {
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        },
+        "type": "akythera:transformation"
+      }
+    ],
+    "body_bend": [
+      {
+        "x": {
+          "min": -45.0,
+          "max": 45.0
+        },
+        "y": {
+          "min": -30.0,
+          "max": 30.0
+        },
+        "z": {
+          "min": -25.0,
+          "max": 25.0
+        },
+        "type": "akythera:limit_rotation"
+      }
+    ],
+    "right_knee": [
+      {
+        "target": "right_leg_bend",
+        "map_from": {
+          "x": {
+            "max": 90.0
+          }
+        },
+        "map_to": {
+          "x": {
+            "source": "x",
+            "max": -45.0
+          }
+        },
+        "extrapolate": true,
+        "type": "akythera:transformation"
+      },
+      {
+        "target": "right_leg_bend",
+        "map_from": {
+          "x": {
+            "max": -90.0
+          }
+        },
+        "map_to": {
+          "channel": "scale",
+          "y": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          },
+          "z": {
+            "source": "x",
+            "min": 1.0,
+            "max": 1.4142
+          }
+        },
+        "type": "akythera:transformation"
+      }
+    ],
+    "head": [
+      {
+        "x": {
+          "min": -60.0,
+          "max": 60.0
+        },
+        "y": {
+          "min": -70.0,
+          "max": 70.0
+        },
+        "z": {
+          "min": -35.0,
+          "max": 35.0
+        },
+        "type": "akythera:limit_rotation"
+      }
+    ]
+  },
+  "simulation": {
+    "gravity_scale": 2.1200001,
+    "friction": 0.5506667,
+    "restitution": 0.38646156,
+    "sleep_speed": 0.524359
+  },
+  "ik_chains": [
+    {
+      "tip_bone": "right_leg_bend",
+      "chain_length": 2,
+      "solver": {
+        "type": "akythera:two_bone"
+      },
+      "stepping": {
+        "distance_threshold": 0.12,
+        "angular_threshold": 20.0,
+        "step_height": 0.08,
+        "ray_max_distance": 0.3,
+        "step_cooldown": 0.0,
+        "prediction": 0.2,
+        "reset_distance": 0.05,
+        "reset_angle": 8.0,
+        "turn_lead": "right",
+        "gait_group": "a",
+        "hold_facing": true
+      }
+    },
+    {
+      "tip_bone": "left_leg_bend",
+      "chain_length": 2,
+      "solver": {
+        "type": "akythera:two_bone"
+      },
+      "stepping": {
+        "distance_threshold": 0.12,
+        "angular_threshold": 20.0,
+        "step_height": 0.08,
+        "ray_max_distance": 0.3,
+        "step_cooldown": 0.0,
+        "prediction": 0.2,
+        "reset_distance": 0.05,
+        "reset_angle": 8.0,
+        "turn_lead": "left",
+        "gait_group": "b",
+        "hold_facing": true
+      }
+    }
+  ],
+  "root_fitting": {
+    "enabled": true,
+    "max_drop": 0.15,
+    "max_pitch": 0.0,
+    "max_roll": 0.0
+  },
+  "body_turn": {
+    "enabled": true,
+    "turn_time": 0.15,
+    "max_turn_speed": 400.0,
+    "steady_bones": [
+      "head"
+    ]
+  }
+}

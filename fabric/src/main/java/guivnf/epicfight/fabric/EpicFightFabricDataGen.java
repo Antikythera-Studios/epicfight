@@ -2,10 +2,12 @@ package guivnf.epicfight.fabric;
 
 import com.yesman.akythera.api.data.provider.AnimationSequenceProvider;
 import com.yesman.akythera.api.data.provider.BlendSpace2DProvider;
+import com.yesman.akythera.api.data.provider.AbilityResourceBlueprintProvider;
 import com.yesman.akythera.core.registry.AkytheraRegistries;
 //import guivnf.epicfight.akythera.providers.EpicfightAnimationMontages;
 import guivnf.epicfight.akythera.providers.EpicfightAnimationSequences;
 import guivnf.epicfight.akythera.providers.EpicfightBlendSpace2Ds;
+import guivnf.epicfight.akythera.providers.EpicfightAbilityResources;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
@@ -22,6 +24,7 @@ public final class EpicFightFabricDataGen implements DataGeneratorEntrypoint {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
         pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<@NonNull AnimationSequenceProvider>) EpicfightAnimationSequences::new);
         pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<@NonNull BlendSpace2DProvider>) EpicfightBlendSpace2Ds::new);
+        pack.addProvider((FabricDataGenerator.Pack.Factory<@NonNull AbilityResourceBlueprintProvider>) EpicfightAbilityResources::new);
         //pack.addProvider((DataProvider.Factory<@NonNull AnimationMontageProvider>) EpicfightAnimationMontages::new);
     }
 }

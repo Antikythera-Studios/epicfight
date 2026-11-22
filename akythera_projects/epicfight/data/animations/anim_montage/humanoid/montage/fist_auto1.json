@@ -1,0 +1,76 @@
+{
+  "animations": [
+    "epicfight:humanoid/montage/fist_auto1"
+  ],
+  "fade_in_time": 0.12,
+  "fade_out_time": 0.25,
+  "loops": false,
+  "root_motion": true,
+  "play_rate": 1.2,
+  "ik_type": "akythera:none",
+  "preview_entity_type": "minecraft:player",
+  "notify_tracks": {
+    "tracks": [
+      {
+        "name": "Track1",
+        "notifies": [
+          {
+            "notify": {
+              "sound": {
+                "sound_id": "epicfight:whoosh"
+              },
+              "type": "akythera:play_sound"
+            },
+            "time": 0.333
+          }
+        ]
+      },
+      {
+        "name": "Locks",
+        "notify_states": [
+          {
+            "notify_state": {
+              "type": "akythera:lock_movement"
+            },
+            "from": 0.0,
+            "to": 0.317
+          },
+          {
+            "notify_state": {
+              "rotation": "locked",
+              "type": "akythera:lock_movement"
+            },
+            "from": 0.317,
+            "to": 0.8333
+          }
+        ]
+      },
+      {
+        "name": "Hurt",
+        "notify_states": [
+          {
+            "notify_state": {
+              "socket": "armature/left_fist",
+              "ignore_invulnerable_time": true,
+              "type": "akythera:living_hurt"
+            },
+            "from": 0.3,
+            "to": 0.5
+          }
+        ]
+      },
+      {
+        "name": "Motion Warp",
+        "notify_states": [
+          {
+            "notify_state": {
+              "type": "akythera:motion_warping"
+            },
+            "from": 0.0,
+            "to": 0.8319703
+          }
+        ]
+      }
+    ]
+  }
+}

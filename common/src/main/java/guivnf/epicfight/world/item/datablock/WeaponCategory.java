@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 
 public interface WeaponCategory extends EnumerableDataBlock {
     EnumerableDataBlockManager<WeaponCategory> ENUM_MANAGER = new EnumerableDataBlockManager<>(
-        "weapon_category",
+        "epicfight/weapon_category",
         RecordCodecBuilder.mapCodec(
             instance ->
                 instance.group(

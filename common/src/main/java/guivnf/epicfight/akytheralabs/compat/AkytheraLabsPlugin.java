@@ -1,12 +1,16 @@
 package guivnf.epicfight.akytheralabs.compat;
 
 import com.yesman.akythera.client.compat.IClientModPlugin;
+import com.yesman.akytheralabs.SourceImports;
 import com.yesman.akytheralabs.SourceTemplateEngine;
 import com.yesman.akytheralabs.akythera.itempatch.component.ItemPatchComponentHolders;
 import com.yesman.akytheralabs.dataholder.DataBlockRegistries;
+import com.yesman.akytheralabs.dataholder.DataHolderMapper;
 import guivnf.epicfight.EpicFight;
 import guivnf.epicfight.akytheralabs.dataholder.EpicFightWeaponPropertiesHolder;
+import guivnf.epicfight.akytheralabs.dataholder.KeepMomentumNotifyStateHolder;
 import guivnf.epicfight.akytheralabs.dataholder.WeaponCategoryHolder;
+import guivnf.epicfight.world.animation.KeepMomentumNotifyState;
 import guivnf.epicfight.world.item.datablock.WeaponCategory;
 
 public final class AkytheraLabsPlugin implements IClientModPlugin {
@@ -21,8 +25,10 @@ public final class AkytheraLabsPlugin implements IClientModPlugin {
         );
 
         DataBlockRegistries.register(WeaponCategory.ENUM_MANAGER, WeaponCategoryHolder::new, WeaponCategoryHolder.CODEC);
+        DataHolderMapper.registerNotifyState(KeepMomentumNotifyState.CODEC, KeepMomentumNotifyStateHolder::new);
 
         // Resolve this jar's components/weapon_properties.ftl for source export.
         SourceTemplateEngine.addTemplateSource(EpicFightWeaponPropertiesHolder.class);
+        SourceImports.registerModule(EpicFight.class);
     }
 }
