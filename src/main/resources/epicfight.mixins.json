@@ -43,8 +43,7 @@
         "client.ElytraLayerAccessor",
         "client.ContainerObjectSelectionListEntryAccessor",
         "client.KeyMappingAccessor",
-        "client.MinecraftAccessor",
-        "client.ParticleEngineProvidersAccessor"
+        "client.MinecraftAccessor"
     ],
     "mixins": [
         "common.MixinDefaultAttributes",

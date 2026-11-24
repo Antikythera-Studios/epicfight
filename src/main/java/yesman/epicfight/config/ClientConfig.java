@@ -141,8 +141,8 @@ public class ClientConfig {
 
     // Graphic Config values
     public static boolean bloodEffects = true;
-    public static boolean activateComputeShader = true;
-    public static boolean activatePersistentBuffer = true;
+    public static boolean activateComputeShader = false;
+    public static boolean activatePersistentBuffer = false;
     public static boolean groundSlams = true;
 
     // Model Config values

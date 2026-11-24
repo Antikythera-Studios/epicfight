@@ -44,37 +44,11 @@ public class SkillDataManager {
 
 	public void registerData(Holder<SkillDataKey<?>> key) {
 		key = normalizeKey(key);
-
-		if (!this.hasData(key)) {
-			this.data.put(key, key.value().defaultValue());
-		}
-	}
-
-	/// Addon data keys can go unregistered on a container whose skill class is
-	/// outside the key's referencingSkillClasses (see [SkillDataKeyCallbacks]),
-	/// and remote-player containers never receive non-synced keys. Rather than
-	/// letting boxed-type callers NPE on a null return, register the key on
-	/// first touch with the same default [registerData] would have seeded.
-	private void warnAutoRegister(Holder<SkillDataKey<?>> key) {
-		if (this.autoRegisteredKeys.add(key)) {
-			String name = key.unwrapKey().map(k -> k.location().toString()).orElseGet(key::toString);
-			EpicFight.LOGGER.warn("[EpicFight] Unregistered skill data key {} accessed on slot {} — auto-registering with its default value", name, this.container.getSlot());
-		}
-	}
-
-	private Object autoRegister(Holder<SkillDataKey<?>> key) {
-		try {
-			SkillDataKey<?> dataKey = key.value();
-
-			if (dataKey != null) {
-				this.data.put(key, dataKey.defaultValue());
-			}
-		} catch (RuntimeException ignored) {
-			// Unbound holder — nothing to seed; callers get null as before
+		if (this.hasData(key)) {
+			throw new IllegalStateException(key + " is already registered!");
 		}
 
-		this.warnAutoRegister(key);
-		return this.data.get(key);
+		this.data.put(key, key.value().defaultValue());
 	}
 
 	public void transferDataTo(SkillDataManager dest) {
@@ -162,7 +136,7 @@ public class SkillDataManager {
 	@SuppressWarnings("unchecked")
 	public <T> T getDataValue(DeferredHolderShim<SkillDataKey<?>, ? extends SkillDataKey<T>> key) {
 		Holder<SkillDataKey<?>> normalized = normalizeKey(key);
-		return this.hasData(normalized) ? (T)this.data.get(normalized) : (T)this.autoRegister(normalized);
+		return this.hasData(normalized) ? (T)this.data.get(normalized) : null;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -193,7 +193,6 @@ public class AnimationTrailParticle extends AbstractTrailParticle<LivingEntityPa
 	protected boolean canContinue() {
 		AnimationPlayer animPlayer = this.owner.getAnimator().getPlayerFor(this.animation);
 		boolean cont = this.owner.getOriginal().isAlive() && this.animation == animPlayer.getRealAnimation() && animPlayer.getElapsedTime() <= this.trailInfo.endTime();
-		if (yesman.epicfight.api.animation.types.StaticAnimation.TRAIL_DEBUG && !cont) yesman.epicfight.EpicFight.LOGGER.info("[TRAILDBG] canContinue=false alive={} animMatch={} elapsed={} endTime={} playing={}", this.owner.getOriginal().isAlive(), this.animation == animPlayer.getRealAnimation(), animPlayer.getElapsedTime(), this.trailInfo.endTime(), animPlayer.getRealAnimation());
 		return cont;
 	}
 	
@@ -326,28 +325,24 @@ public class AnimationTrailParticle extends AbstractTrailParticle<LivingEntityPa
 			int idx = (int)Double.doubleToRawLongBits(ySpeed);
 			Entity entity = level.getEntity(eid);
 
-			if (yesman.epicfight.api.animation.types.StaticAnimation.TRAIL_DEBUG) yesman.epicfight.EpicFight.LOGGER.info("[TRAILDBG] provider eid={} animid={} jointId={} idx={} entity={}", eid, animid, jointId, idx, entity != null);
 			if (entity == null) {
 				return null;
 			}
 
 			LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(entity, LivingEntityPatch.class);
 
-			if (yesman.epicfight.api.animation.types.StaticAnimation.TRAIL_DEBUG) yesman.epicfight.EpicFight.LOGGER.info("[TRAILDBG] provider patch={}", entitypatch != null);
 			if (entitypatch == null) {
 				return null;
 			}
 
 			AnimationAccessor<? extends StaticAnimation> animation = AnimationManager.byId(animid);
 
-			if (yesman.epicfight.api.animation.types.StaticAnimation.TRAIL_DEBUG) yesman.epicfight.EpicFight.LOGGER.info("[TRAILDBG] provider byId({})={} name={}", animid, animation != null, animation != null ? animation.registryName() : "null");
 			if (animation == null) {
 				return null;
 			}
 
 			Optional<List<TrailInfo>> trailInfo = animation.get().getProperty(ClientAnimationProperties.TRAIL_EFFECT);
 
-			if (yesman.epicfight.api.animation.types.StaticAnimation.TRAIL_DEBUG) yesman.epicfight.EpicFight.LOGGER.info("[TRAILDBG] provider trailProp present={} idx={} size={}", trailInfo.isPresent(), idx, trailInfo.map(java.util.List::size).orElse(-1));
 			if (trailInfo.isEmpty()) {
 				return null;
 			}

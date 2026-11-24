@@ -85,19 +85,10 @@ public class FractureBlockRenderer implements BlockEntityRenderer<FractureBlockE
 		poseStack.translate(0.5D, 0.5D, 0.5D);
 		poseStack.mulPose(rotate);
 		poseStack.translate(translate.x(), translate.y() + bouncingAnimation, translate.z());
-		poseStack.translate(-0.5D, -0.5D, -0.5D);
-
-		float[] shaderColor = RenderSystem.getShaderColor().clone();
-		RenderType renderType = RenderType.cutout();
-		renderType.setupRenderState();
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		Matrix4f modelViewMatrix = new Matrix4f(RenderSystem.getModelViewMatrix()).mul(poseStack.last().pose());
-		vertexBuffer.bind();
-		vertexBuffer.drawWithShader(modelViewMatrix, RenderSystem.getProjectionMatrix(), RenderSystem.getShader());
-		VertexBuffer.unbind();
-		renderType.clearRenderState();
-		RenderSystem.setShaderColor(shaderColor[0], shaderColor[1], shaderColor[2], shaderColor[3]);
-
+		poseStack.translate(-0.5D, -0.5D, -0.5D);	
+		
+		this.blockRenderDispatcher.renderBreakingTexture(blockEntity.getOriginalBlockState(), blockEntity.getBlockPos().above(), blockEntity.getLevel(), poseStack, multiBufferSource.getBuffer(RenderType.cutout()));
+		
 		poseStack.popPose();
 	}
 

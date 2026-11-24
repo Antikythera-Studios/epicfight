@@ -49,16 +49,9 @@ public class EpicFightNetworkManager {
     }
 
     public static void sendToAllPlayerTrackingThisEntity(CustomPacketPayload message, Entity entity, CustomPacketPayload... others) {
-        // Iterate tracking players manually. ChunkMap.getPlayers returns everyone
-        // with the chunk loaded — including the tracked entity itself when it is a
-        // player. Vanilla's tracked set never contains the owner, so self must be
-        // excluded or the source client's own packets echo back (e.g. the model yaw
-        // the client just set would overwrite its newer value a round-trip later).
+        // Iterate tracking players manually
         if (entity.level() instanceof ServerLevel serverLevel) {
             serverLevel.getChunkSource().chunkMap.getPlayers(entity.chunkPosition(), false).forEach(player -> {
-                if (player == entity) {
-                    return;
-                }
                 ServerPlayNetworking.send(player, message);
                 for (CustomPacketPayload other : others) {
                     ServerPlayNetworking.send(player, other);
