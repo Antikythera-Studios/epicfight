@@ -274,6 +274,7 @@ public class LivingAnimationsScreen extends Screen {
 	
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+		this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 		int yBegin = 32;
 		int yEnd = this.height - 45;
 		
@@ -291,7 +292,9 @@ public class LivingAnimationsScreen extends Screen {
         guiGraphics.fillGradient(RenderType.guiOverlay(), 0, yBegin, this.width, yBegin + 4, -16777216, 0, 0);
 		guiGraphics.fillGradient(RenderType.guiOverlay(), 0, yEnd, this.width, yEnd + 1, 0, -16777216, 0);
 		
-		super.render(guiGraphics, mouseX, mouseY, partialTick);
+		for (net.minecraft.client.gui.components.Renderable renderable : this.renderables) {
+			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
+		}
 	}
 	
 	private static final Map<LivingMotion, AssetAccessor<? extends StaticAnimation>> LIVING_ANIMTIONS = Maps.newHashMap();

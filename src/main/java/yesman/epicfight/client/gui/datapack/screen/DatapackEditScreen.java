@@ -294,6 +294,17 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 		}
 	}
 	
+	/// Exception text that never collapses to "null" (NPEs and bare exceptions have no message).
+	private static String describe(Throwable e) {
+		Throwable cause = e;
+		
+		while (cause.getMessage() == null && cause.getCause() != null) {
+			cause = cause.getCause();
+		}
+		
+		return cause.getMessage() != null ? cause.getMessage() : cause.toString() + (cause.getStackTrace().length > 0 ? " at " + cause.getStackTrace()[0] : "");
+	}
+	
 	public boolean exportDataPack(String packName) {
 		ZipOutputStream out = null;
 		File zipFile = null;
@@ -339,7 +350,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 			
 			return true;
 		} catch (Exception e) {
-			this.minecraft.setScreen(new MessageScreen<>("Failed to export datapack", e.getMessage(), this, (button2) -> this.minecraft.setScreen(this), 400, 110).autoCalculateHeight());
+			this.minecraft.setScreen(new MessageScreen<>("Failed to export datapack", describe(e), this, (button2) -> this.minecraft.setScreen(this), 400, 110).autoCalculateHeight());
 			e.printStackTrace();
 			
 			try {
@@ -423,12 +434,6 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 	
 	@Override
 	protected void init() {
-		// Enable stencil buffer to render a grid inside the area
-		// Note: RenderTarget.enableStencil() is a NeoForge-only method and not available in vanilla 1.21.1.
-		// The stencil buffer may not be explicitly enabled on Fabric, but grid rendering still works
-		// because the default framebuffer may already have stencil bits allocated.
-		Minecraft.getInstance().getMainRenderTarget();
-
         if (this.tabNavigationBar != null) this.removeWidget(this.tabNavigationBar);
         if (this.bottomButtons != null) this.bottomButtons.visitWidgets(this::removeWidget);
         if (this.sideNavigationBarOpener != null) this.removeWidget(this.sideNavigationBarOpener);
@@ -561,7 +566,9 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 		guiGraphics.blit(Screen.FOOTER_SEPARATOR, 0, Mth.roundToward(this.height - 36 - 2, 2), 0.0F, 0.0F, this.width, 2, 32, 2);
-		super.render(guiGraphics, mouseX, mouseY, partialTick);
+		for (net.minecraft.client.gui.components.Renderable renderable : this.renderables) {
+			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
+		}
 	}
 	
 	private <T> MessageScreen<T> createExportScreen() {
@@ -1273,7 +1280,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 					out.closeEntry();
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new IllegalStateException("Failded to export " + packEntry.getKey() +". "+ e.getMessage());
+					throw new IllegalStateException("Failed to export " + packEntry.getKey() + ". " + describe(e));
 				}
 			}
 		}
@@ -2209,7 +2216,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 					out.closeEntry();
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new IllegalStateException("Failded to export " + packEntry.getKey() +". "+ e.getMessage());
+					throw new IllegalStateException("Failed to export " + packEntry.getKey() + ". " + describe(e));
 				} finally {
 					packEntry.getValue().putString("item_type", sItemType);
 				}
@@ -2777,7 +2784,7 @@ public class DatapackEditScreen extends Screen implements ExtraEntryProvider {
 					out.closeEntry();
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new IllegalStateException("Failded to export " + packEntry.getKey() +". "+ e.getMessage());
+					throw new IllegalStateException("Failed to export " + packEntry.getKey() + ". " + describe(e));
 				}
 			}
 		}
