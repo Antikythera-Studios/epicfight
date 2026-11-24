@@ -50,12 +50,9 @@ import java.util.stream.Stream;
 
 public class WeaponTypeReloadListener extends SimpleJsonResourceReloadListener {
     public static void registerDefaultWeaponTypes() {
-        // Ensure ItemPresetManager.BUILDERS is populated from the registry before exporting.
-        // This is safe to call multiple times — acceptEvent() clears and rebuilds.
-        if (ItemPresetManager.getEntries().isEmpty()) {
-            ExCapBuilderCreationEvent builderEvent = EpicFightEventHooks.Registry.EX_CAP_BUILDER_CREATION.post(new ExCapBuilderCreationEvent());
-            ItemPresetManager.acceptEvent(builderEvent);
-        }
+        // Rebuild BUILDERS from the live registry every time: on Fabric this first runs during mod init,
+        // before other mods have registered their presets, so a one-time 'if empty' guard hid them from the editor.
+        ItemPresetManager.acceptEvent(EpicFightEventHooks.Registry.EX_CAP_BUILDER_CREATION.post(new ExCapBuilderCreationEvent()));
 
         Map<ResourceLocation, Function<Item, ? extends CapabilityItem.Builder<?>>> typeEntry = Maps.newHashMap();
 

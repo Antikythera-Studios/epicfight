@@ -329,7 +329,17 @@ public class RenderEngine implements IEventBasedEngine {
 
     public static boolean isLocalPlayerInFirstPerson(Entity entity) {
         Minecraft minecraft = Minecraft.getInstance();
-        return entity.is(minecraft.player) && minecraft.screen == null && minecraft.options.getCameraType().isFirstPerson();
+        // The shader shadow pass is rendered from the sun, so the player must look the same as in third person (with a head).
+        return entity.is(minecraft.player) && minecraft.screen == null && minecraft.options.getCameraType().isFirstPerson() && !IrisShadowPass.isActive();
+    }
+
+    /// Holder class so Iris classes are only loaded when Iris is installed.
+    private static final class IrisShadowPass {
+        private static final boolean IRIS_LOADED = net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("iris");
+
+        static boolean isActive() {
+            return IRIS_LOADED && net.irisshaders.iris.api.v0.IrisApi.getInstance().isRenderingShadowPass();
+        }
     }
 
     public void addBossEventOwner(UUID uuid, BossPatch bosspatch) {

@@ -11,6 +11,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -46,6 +49,41 @@ public class MixinParticleEngine {
 	@Final
 	private TextureManager textureManager;
 
+	@Shadow
+	@Final
+	private Int2ObjectMap<net.minecraft.client.particle.ParticleProvider<?>> providers;
+
+	private static int trailDebugCounter;
+
+	@Inject(at = @At(value = "HEAD"), method = "createParticle")
+	private void epicfight$probeCreateParticle(net.minecraft.core.particles.ParticleOptions options, double x, double y, double z, double xs, double ys, double zs, CallbackInfoReturnable<Particle> cir) {
+		if (yesman.epicfight.api.animation.types.StaticAnimation.TRAIL_DEBUG) {
+			net.minecraft.resources.ResourceLocation key = net.minecraft.core.registries.BuiltInRegistries.PARTICLE_TYPE.getKey(options.getType());
+			if (!"minecraft".equals(key.getNamespace())) {
+				int rawId = net.minecraft.core.registries.BuiltInRegistries.PARTICLE_TYPE.getId(options.getType());
+				yesman.epicfight.EpicFight.LOGGER.info("[TRAILDBG] createParticle type={} rawId={} provider={}", key, rawId, providers.get(rawId));
+			}
+		}
+	}
+
+	@Inject(at = @At(value = "HEAD"), method = "makeParticle")
+	private void epicfight$probeMakeParticle(net.minecraft.core.particles.ParticleOptions options, double x, double y, double z, double xs, double ys, double zs, CallbackInfoReturnable<Particle> cir) {
+		if (yesman.epicfight.api.animation.types.StaticAnimation.TRAIL_DEBUG) {
+			net.minecraft.resources.ResourceLocation key = net.minecraft.core.registries.BuiltInRegistries.PARTICLE_TYPE.getKey(options.getType());
+			if (!"minecraft".equals(key.getNamespace())) {
+				int rawId = net.minecraft.core.registries.BuiltInRegistries.PARTICLE_TYPE.getId(options.getType());
+				yesman.epicfight.EpicFight.LOGGER.info("[TRAILDBG]   makeParticle type={} rawId={} providerFound={}", key, rawId, providers.get(rawId) != null);
+			}
+		}
+	}
+
+	@Inject(at = @At(value = "HEAD"), method = "add")
+	private void epicfight$probeAdd(Particle particle, CallbackInfo ci) {
+		if (yesman.epicfight.api.animation.types.StaticAnimation.TRAIL_DEBUG && particle != null && !particle.getClass().getName().startsWith("net.minecraft")) {
+			yesman.epicfight.EpicFight.LOGGER.info("[TRAILDBG]   add particle {}", particle.getClass().getName());
+		}
+	}
+
 	@Inject(at = @At(value = "TAIL"), method = "<init>")
 	private void epicfight$constructor(ClientLevel pLevel, TextureManager pTextureManager, CallbackInfo callbackInfo) {
 		this.particles = Maps.newTreeMap(ClientEngine.makeCustomLowestParticleRenderTypeComparator(RENDER_ORDER));
@@ -70,6 +108,10 @@ public class MixinParticleEngine {
 
 				if (RENDER_ORDER.contains(type) || queue == null || queue.isEmpty()) {
 					continue;
+				}
+
+				if (yesman.epicfight.api.animation.types.StaticAnimation.TRAIL_DEBUG && trailDebugCounter++ % 40 == 0) {
+					yesman.epicfight.EpicFight.LOGGER.info("[TRAILDBG] render pass: custom type {} queue={} totalTypes={}", type, queue.size(), this.particles.size());
 				}
 
 				if (!drew) {

@@ -92,8 +92,14 @@ public final class EpicFightReloadListeners {
         helper.registerReloadListener(wrap("meshes", Meshes.INSTANCE));
         helper.registerReloadListener(wrap("animation_manager_client", AnimationManager.getInstance()));
         helper.registerReloadListener(wrap("item_skins", ItemSkinsReloadListener.INSTANCE));
+        helper.registerReloadListener(wrap("fracture_mesh_cache", new net.minecraft.server.packs.resources.ResourceManagerReloadListener() {
+            @Override
+            public void onResourceManagerReload(net.minecraft.server.packs.resources.ResourceManager resourceManager) {
+                yesman.epicfight.client.renderer.blockentity.FractureBlockRenderer.clearMeshCache();
+            }
+        }));
 
-        EpicFight.LOGGER.info("EpicFight client reload listeners registered (4)");
+        EpicFight.LOGGER.info("EpicFight client reload listeners registered (5)");
     }
 
     /**

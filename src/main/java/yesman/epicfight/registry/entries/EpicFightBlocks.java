@@ -14,5 +14,5 @@ public final class EpicFightBlocks {
 	
 	public static final DeferredRegisterShim<Block> REGISTRY = new DeferredRegisterShim<>(Registries.BLOCK, EpicFight.MODID);
 	
-	public static final DeferredHolderShim<Block, FractureBlock> FRACTURE = REGISTRY.register("fracture_block", () -> new FractureBlock(BlockBehaviour.Properties.of()));
+	public static final DeferredHolderShim<Block, FractureBlock> FRACTURE = REGISTRY.register("fracture_block", () -> new FractureBlock(BlockBehaviour.Properties.of().noTerrainParticles()));
 }

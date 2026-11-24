@@ -85,20 +85,22 @@ public class AnimationClip {
 			time = 0.0F;
 		}
 
+		pose.getJointTransformData().keySet().retainAll(this.jointTransforms.keySet());
+
 		if (this.bakedTimes != null && this.bakedTimes.length > 0) {
 			// Binary search; each iteration must shrink the interval or the loop cannot end.
 			int begin = 0, end = this.bakedTimes.length - 1;
 
 			while (end - begin > 1) {
 				int mid = begin + (end - begin) / 2;
-				
+
 				if (this.bakedTimes[mid] > time) {
 					end = mid;
 				} else {
 					begin = mid;
 				}
 			}
-			
+
 			float span = this.bakedTimes[end] - this.bakedTimes[begin];
 			float delta = span <= 0.0F || !Float.isFinite(span) ? 0.0F
 				: Mth.clamp((time - this.bakedTimes[begin]) / span, 0.0F, 1.0F);
