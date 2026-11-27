@@ -7,12 +7,30 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import yesman.epicfight.api.event.impl.VanillaEntityEventHooks;
 import yesman.epicfight.api.client.camera.EpicFightCameraAPI;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 @Mixin(value = Player.class)
 public abstract class MixinPlayer {
+	// Player#actuallyHurt does not call super, so the LivingEntity mixin never sees players being hurt.
+	// Without these, players get no Epic Fight stun/knockback and attackers get no weapon-innate charge on them.
+	@ModifyVariable(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"), argsOnly = true, ordinal = 0)
+	private float epicfight$actuallyHurtPre(float amount, DamageSource damageSource) {
+		float[] modified = {amount};
+		VanillaEntityEventHooks.onCalculateDamagePre((Player)(Object)this, damageSource, amount, v -> modified[0] = v);
+		return modified[0];
+	}
+
+	@Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("TAIL"))
+	private void epicfight$actuallyHurtPost(DamageSource damageSource, float amount, CallbackInfo info) {
+		VanillaEntityEventHooks.onCalculateDamagePost((Player)(Object)this, damageSource, amount);
+	}
+
 	@WrapOperation(
 		at = @At(
 			value = "INVOKE",

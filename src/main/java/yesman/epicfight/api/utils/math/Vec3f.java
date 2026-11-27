@@ -190,17 +190,19 @@ public class Vec3f extends Vec2f {
 		return OpenMatrix4f.transform3v(OpenMatrix4f.createRotatorDeg(degree, axis), src, dest);
 	}
 	
-	private static final Vector3f SRC = new Vector3f();
-	private static final Vector3f TRANSFORM_RESULT = new Vector3f();
+	private static final ThreadLocal<Vector3f> SRC = ThreadLocal.withInitial(Vector3f::new);
+	private static final ThreadLocal<Vector3f> TRANSFORM_RESULT = ThreadLocal.withInitial(Vector3f::new);
 	
 	public static Vec3f rotate(Quaternionf rot, Vec3f src, Vec3f dest) {
 		if (dest == null) {
 			dest = new Vec3f();
 		}
 		
-		SRC.set(src.x, src.y, src.z);
-		rot.transform(SRC, TRANSFORM_RESULT);
-		dest.set(TRANSFORM_RESULT.x, TRANSFORM_RESULT.y, TRANSFORM_RESULT.z);
+		Vector3f srcVec = SRC.get();
+		Vector3f result = TRANSFORM_RESULT.get();
+		srcVec.set(src.x, src.y, src.z);
+		rot.transform(srcVec, result);
+		dest.set(result.x, result.y, result.z);
 		
 		return dest;
 	}
@@ -387,7 +389,9 @@ public class Vec3f extends Vec2f {
 	}
 	
 	public static int getMostSimilar(Vec3f start, Vec3f end, Vec3f... vectors) {
-		Vec3f.sub(end, start, BASIS_DIRECTION);
+		Vec3f basis = BASIS_DIRECTION.get();
+		Vec3f comparision = COMPARISION.get();
+		Vec3f.sub(end, start, basis);
 		float maxDot = Float.MIN_VALUE;
 		int index = -1;
 		
@@ -400,8 +404,8 @@ public class Vec3f extends Vec2f {
 				continue;
 			}
 			
-			Vec3f.sub(vectors[i], start, COMPARISION);
-			float dot = Vec3f.dot(BASIS_DIRECTION, COMPARISION) / BASIS_DIRECTION.length() * COMPARISION.length();
+			Vec3f.sub(vectors[i], start, comparision);
+			float dot = Vec3f.dot(basis, comparision) / basis.length() * comparision.length();
 			
 			if (dot > maxDot) {
 				maxDot = dot;
@@ -412,11 +416,13 @@ public class Vec3f extends Vec2f {
 		return index;
 	}
 	
-	private static final Vec3f BASIS_DIRECTION = new Vec3f();
-	private static final Vec3f COMPARISION = new Vec3f();
+	private static final ThreadLocal<Vec3f> BASIS_DIRECTION = ThreadLocal.withInitial(Vec3f::new);
+	private static final ThreadLocal<Vec3f> COMPARISION = ThreadLocal.withInitial(Vec3f::new);
 	
 	public static int getMostSimilar(Vec3f start, Vec3f end, List<Vec3f> vectors) {
-		Vec3f.sub(end, start, BASIS_DIRECTION);
+		Vec3f basis = BASIS_DIRECTION.get();
+		Vec3f comparision = COMPARISION.get();
+		Vec3f.sub(end, start, basis);
 		float maxDot = Float.MIN_VALUE;
 		int index = -1;
 		
@@ -429,8 +435,8 @@ public class Vec3f extends Vec2f {
 				continue;
 			}
 			
-			Vec3f.sub(vectors.get(i), start, COMPARISION);
-			float dot = Vec3f.dot(BASIS_DIRECTION, COMPARISION) / BASIS_DIRECTION.length() * COMPARISION.length();
+			Vec3f.sub(vectors.get(i), start, comparision);
+			float dot = Vec3f.dot(basis, comparision) / basis.length() * comparision.length();
 			
 			if (dot > maxDot) {
 				maxDot = dot;
@@ -457,11 +463,12 @@ public class Vec3f extends Vec2f {
 		return new Vec3f((float)vec3.x(), (float)vec3.y(), (float)vec3.z());
 	}
 	
-	private static final OpenMatrix4f DEST = new OpenMatrix4f();
+	private static final ThreadLocal<OpenMatrix4f> DEST = ThreadLocal.withInitial(OpenMatrix4f::new);
 	
 	public Vec3f rotateDegree(Vec3f axis, float degree) {
-		OpenMatrix4f.ofRotationDegree(degree, axis, DEST);
-		OpenMatrix4f.transform3v(DEST, this, this);
+		OpenMatrix4f dest = DEST.get();
+		OpenMatrix4f.ofRotationDegree(degree, axis, dest);
+		OpenMatrix4f.transform3v(dest, this, this);
 		return this;
 	}
 }

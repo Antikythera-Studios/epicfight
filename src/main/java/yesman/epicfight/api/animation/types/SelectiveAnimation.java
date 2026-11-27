@@ -17,6 +17,12 @@ import java.util.function.Function;
 public class SelectiveAnimation extends StaticAnimation {
 	public static final IndependentVariableKey<Integer> PREVIOUS_STATE = AnimationVariables.unsyncIndependent((animator) -> 0, true);
 
+	private static final java.util.Map<net.minecraft.resources.ResourceLocation, Function<LivingEntityPatch<?>, Integer>> SELECTOR_OVERRIDES = new java.util.concurrent.ConcurrentHashMap<>();
+
+	public static void registerSelectorOverride(net.minecraft.resources.ResourceLocation animationId, Function<LivingEntityPatch<?>, Integer> selector) {
+		SELECTOR_OVERRIDES.put(animationId, selector);
+	}
+
 	private final Function<LivingEntityPatch<?>, Integer> selector;
 	private final List<AssetAccessor<? extends StaticAnimation>> animationsInEachState;
 
@@ -32,7 +38,7 @@ public class SelectiveAnimation extends StaticAnimation {
 
 		for (AssetAccessor<? extends StaticAnimation> subAnimations : this.animationsInEachState) {
 			subAnimations.get().addEvents(SimpleEvent.create((entitypatch, animation, params) -> {
-				int currentStateId = this.selector.apply(entitypatch);
+				int currentStateId = SELECTOR_OVERRIDES.getOrDefault(this.getAccessor().registryName(), this.selector).apply(entitypatch);
 				Optional<Integer> prevState = entitypatch.getAnimator().getVariables().get(PREVIOUS_STATE, this.getAccessor());
 
 				prevState.ifPresentOrElse(prevStateId -> {
@@ -52,7 +58,7 @@ public class SelectiveAnimation extends StaticAnimation {
 	public void begin(LivingEntityPatch<?> entitypatch) {
 		super.begin(entitypatch);
 
-		int result = this.selector.apply(entitypatch);
+		int result = SELECTOR_OVERRIDES.getOrDefault(this.getAccessor().registryName(), this.selector).apply(entitypatch);
 		entitypatch.getAnimator().getVariables().put(PREVIOUS_STATE, this.getAccessor(), result);
 		entitypatch.getAnimator().playAnimation(this.animationsInEachState.get(result), 0.0F);
 	}
@@ -81,4 +87,4 @@ public class SelectiveAnimation extends StaticAnimation {
 	public Layer.LayerType getLayerType() {
 		return this.animationsInEachState.get(0).get().getLayerType();
 	}
-}
+}

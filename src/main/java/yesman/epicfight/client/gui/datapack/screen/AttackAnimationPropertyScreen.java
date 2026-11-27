@@ -326,7 +326,9 @@ public class AttackAnimationPropertyScreen extends Screen {
         guiGraphics.fillGradient(RenderType.guiOverlay(), 0, yBegin, this.width, yBegin + 4, -16777216, 0, 0);
 		guiGraphics.fillGradient(RenderType.guiOverlay(), 0, yEnd, this.width, yEnd + 1, 0, -16777216, 0);
 		
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		for (net.minecraft.client.gui.components.Renderable renderable : this.renderables) {
+			renderable.render(guiGraphics, mouseX, mouseY, partialTicks);
+		}
 	}
 	
 	public enum LayerOptions {

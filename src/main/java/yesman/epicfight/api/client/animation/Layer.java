@@ -181,7 +181,13 @@ public class Layer {
 	}
 	
 	public Pose getEnabledPose(LivingEntityPatch<?> entitypatch, boolean useCurrentMotion, float partialTick) {
-		Pose pose = this.animationPlayer.getCurrentPose(entitypatch, partialTick);
+		return this.getEnabledPose(entitypatch, useCurrentMotion, partialTick, new Pose());
+	}
+
+	/** {@link #getEnabledPose(LivingEntityPatch, boolean, float)} writing into {@code pose},
+	 *  reusing its stored joint transforms. */
+	public Pose getEnabledPose(LivingEntityPatch<?> entitypatch, boolean useCurrentMotion, float partialTick, Pose pose) {
+		this.animationPlayer.getCurrentPose(entitypatch, partialTick, pose);
 		this.animationPlayer.getAnimation().get().getJointMaskEntry(entitypatch, useCurrentMotion).ifPresent((jointEntry) -> pose.disableJoint((entry) -> jointEntry.isMasked(this.getLivingMotion(entitypatch, useCurrentMotion), entry.getKey())));
 
 		return pose;

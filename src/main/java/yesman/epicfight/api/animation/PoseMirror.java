@@ -3,8 +3,6 @@ package yesman.epicfight.api.animation;
 import org.joml.Quaternionf;
 import yesman.epicfight.api.utils.math.Vec3f;
 
-
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -54,46 +52,55 @@ public final class PoseMirror {
      *  baseline pose mirrors (chest, body, etc.) while the camera-driven rotation is identity in
      *  both endpoints and never blends through forward. */
     public static JointTransform mirrorJointTransform(JointTransform source, JointTransform dest, boolean preserveFrontResult) {
-        dest.copyFrom(source);
-
         Vec3f t = dest.translation();
-        t.set(-t.x, t.y, t.z);
+        Vec3f sourceTranslation = source.translation();
+        t.set(-sourceTranslation.x, sourceTranslation.y, sourceTranslation.z);
 
         // A reflection across the X = 0 plane conjugates a rotation (qx, qy, qz, qw) into
         // (qx, -qy, -qz, qw). The rotation axis reflects (X stays, Y/Z flip) and the rotation
         // handedness flips; the two together reduce to negating qy and qz.
         Quaternionf q = dest.rotation();
-        q.set(q.x, -q.y, -q.z, q.w);
+        Quaternionf sourceRotation = source.rotation();
+        q.set(sourceRotation.x, -sourceRotation.y, -sourceRotation.z, sourceRotation.w);
 
         // Scale is invariant: each joint's local axes mirror together with its geometry, so
         // axis-aligned scale values describe the same shape on either side.
+        dest.scale().set(source.scale());
 
         // The auxiliary transform stack (PARENT/JOINT_LOCAL_TRANSFORM / ANIMATION_TRANSFORM/
         // also has to be reflected. JointMask.KEEP_CHILD_LOCROT writes X-asymmetric data
         // here -- a half-X chest delta into PARENT and the chest's currentToLowest delta into
         // JOINT_LOCAL_TRANSFORM -- so the masked legs follow the upper body during guard. If we
-        // leave these entries un-mirrored, copyFrom shallow-copies the source TransformEntries
-        // straight into dest and the leg compensation pulls toward the un-mirrored chest pose
-        // even though the rendered chest is on the other side. That's the "legs misplaced when
-        // walking + guarding on offhand" bug -- amplified by sneak because the chest delta the
-        // modifier corrects for grows. Rebuild each entry with a freshly-mirrored JointTransform
-        // and a new TransformEntry so the source pose stays untouched.
+        // leave these entries un-mirrored, the leg compensation pulls toward the un-mirrored
+        // chest pose even though the rendered chest is on the other side. That's the "legs
+        // misplaced when walking + guarding on offhand" bug -- amplified by sneak because the
+        // chest delta the modifier corrects for grows. Each entry is mirrored into dest's own
+        // TransformEntry objects (reused when already present) so the source pose stays
+        // untouched and repeated mirroring stays allocation-free.
         Map<String, JointTransform.TransformEntry> entries = dest.entries();
+        Map<String, JointTransform.TransformEntry> sourceEntries = source.entries();
 
-        if (!entries.isEmpty()) {
-            Map<String, JointTransform.TransformEntry> mirrored = new HashMap<>(entries.size());
+        entries.keySet().removeIf(key -> !sourceEntries.containsKey(key));
 
-            for (Map.Entry<String, JointTransform.TransformEntry> e : entries.entrySet()) {
-                if (preserveFrontResult && JointTransform.RESULT1.equals(e.getKey())) {
-                    mirrored.put(e.getKey(), e.getValue());
-                    continue;
+        for (Map.Entry<String, JointTransform.TransformEntry> e : sourceEntries.entrySet()) {
+            JointTransform.TransformEntry destEntry = entries.get(e.getKey());
+
+            if (preserveFrontResult && JointTransform.RESULT1.equals(e.getKey())) {
+                if (destEntry == null) {
+                    entries.put(e.getKey(), new JointTransform.TransformEntry(e.getValue().multiplyFunction, e.getValue().transform.copy()));
+                } else {
+                    destEntry.multiplyFunction = e.getValue().multiplyFunction;
+                    destEntry.transform.copyFrom(e.getValue().transform);
                 }
-                JointTransform mirroredTransform = mirrorJointTransform(e.getValue().transform, JointTransform.empty());
-                mirrored.put(e.getKey(), new JointTransform.TransformEntry(e.getValue().multiplyFunction, mirroredTransform));
+                continue;
             }
 
-            entries.clear();
-            entries.putAll(mirrored);
+            if (destEntry == null) {
+                entries.put(e.getKey(), new JointTransform.TransformEntry(e.getValue().multiplyFunction, mirrorJointTransform(e.getValue().transform, JointTransform.empty())));
+            } else {
+                destEntry.multiplyFunction = e.getValue().multiplyFunction;
+                mirrorJointTransform(e.getValue().transform, destEntry.transform);
+            }
         }
 
         return dest;
@@ -140,13 +147,21 @@ public final class PoseMirror {
      *    so the body's overall facing reflects -- otherwise the throw lean ends up backward
      *    on offhand. */
     public static Pose mirrorPose(Pose source, boolean preserveRoot) {
-        Pose dest = new Pose();
+        return mirrorPose(source, new Pose(), preserveRoot);
+    }
+
+    /** {@link #mirrorPose(Pose, boolean)} writing into {@code dest}, reusing its stored
+     *  {@link JointTransform} objects so repeated mirroring stays allocation-free. Joints in
+     *  {@code dest} whose mirrored name has no source counterpart are dropped. */
+    public static Pose mirrorPose(Pose source, Pose dest, boolean preserveRoot) {
+        dest.getJointTransformData().keySet().removeIf(name -> !source.hasTransform(mirrorJointName(name)));
+
         for (Map.Entry<String, JointTransform> entry : source.getJointTransformData().entrySet()) {
             String sourceName = entry.getKey();
             String mirroredName = mirrorJointName(sourceName);
 
             if (preserveRoot && "Root".equals(sourceName)) {
-                dest.putJointData(sourceName, JointTransform.empty().copyFrom(entry.getValue()));
+                dest.getOrCreateJointTransform(sourceName).copyFrom(entry.getValue());
                 continue;
             }
 
@@ -169,7 +184,7 @@ public final class PoseMirror {
             //     by {@code poseTick} that one is already world-aligned and reflecting it
             //     would invert camera tracking.
             boolean preserveFrontResult = preserveRoot || "Head".equals(sourceName);
-            dest.putJointData(mirroredName, mirrorJointTransform(entry.getValue(), JointTransform.empty(), preserveFrontResult));
+            mirrorJointTransform(entry.getValue(), dest.getOrCreateJointTransform(mirroredName), preserveFrontResult);
         }
         return dest;
     }

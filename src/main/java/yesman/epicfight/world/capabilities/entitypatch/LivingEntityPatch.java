@@ -207,6 +207,9 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
         }
     }
 
+    private static final ThreadLocal<Vec3f[]> POSE_AXIS_STORAGE = ThreadLocal.withInitial(() -> new Vec3f[] {new Vec3f(), new Vec3f()});
+    private static final ThreadLocal<JointTransform> POSE_JT_SCRATCH = ThreadLocal.withInitial(JointTransform::empty);
+
     public void poseTick(DynamicAnimation animation, Pose pose, float elapsedTime, float partialTick) {
         if (pose.hasTransform("Head") && this.armature.hasJoint("Head")) {
             if (animation.doesHeadRotFollowEntityHead()) {
@@ -215,11 +218,16 @@ public abstract class LivingEntityPatch<T extends LivingEntity> extends Hurtable
                 // frontResult, so the yaw injected below survives the mirror untouched and we no
                 // longer pre-negate under isMirrorMode (which used to snap the head at the
                 // moment the F-swap flipped mirror state).
-                OpenMatrix4f toOriginalRotation = new OpenMatrix4f(this.armature.getBoundTransformFor(pose, this.armature.searchJointByName("Head"))).removeScale().removeTranslation().invert();
-                Vec3f xAxis = OpenMatrix4f.transform3v(toOriginalRotation, Vec3f.X_AXIS, null);
-                Vec3f yAxis = OpenMatrix4f.transform3v(toOriginalRotation, Vec3f.Y_AXIS, null);
-                OpenMatrix4f headRotation = OpenMatrix4f.createRotatorDeg(headRelativeRot, yAxis).rotateDeg(-Mth.rotLerp(partialTick, this.original.xRotO, this.original.getXRot()), xAxis);
-                pose.orElseEmpty("Head").frontResult(JointTransform.fromMatrix(headRotation), OpenMatrix4f::mul);
+                OpenMatrix4f[] scratch = Armature.evalScratch();
+                OpenMatrix4f toOriginalRotation = this.armature.getBoundTransformFor(pose, this.armature.searchJointByName("Head"), scratch[6]);
+                OpenMatrix4f.removeScale(toOriginalRotation, toOriginalRotation);
+                OpenMatrix4f.removeTranslation(toOriginalRotation, toOriginalRotation);
+                toOriginalRotation.invert();
+                Vec3f[] axes = POSE_AXIS_STORAGE.get();
+                Vec3f xAxis = OpenMatrix4f.transform3v(toOriginalRotation, Vec3f.X_AXIS, axes[0]);
+                Vec3f yAxis = OpenMatrix4f.transform3v(toOriginalRotation, Vec3f.Y_AXIS, axes[1]);
+                OpenMatrix4f headRotation = OpenMatrix4f.ofRotationDegree(headRelativeRot, yAxis, scratch[7]).rotateDeg(-Mth.rotLerp(partialTick, this.original.xRotO, this.original.getXRot()), xAxis);
+                pose.orElseEmpty("Head").frontResult(JointTransform.fromMatrix(headRotation, POSE_JT_SCRATCH.get()), OpenMatrix4f::mul);
             }
         }
     }

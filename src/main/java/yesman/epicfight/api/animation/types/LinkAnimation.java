@@ -79,10 +79,21 @@ public class LinkAnimation extends DynamicAnimation implements AnimationAccessor
 		return (T)this.toAnimation.get().getModifiedLinkState(stateFactor, state, entitypatch, time);
 	}
 	
+	private final ThreadLocal<Pose> nextPoseScratch = ThreadLocal.withInitial(Pose::new);
+
 	@Override
 	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
-		Pose nextStartingPose = this.toAnimation.get().getPoseByTime(entitypatch, this.nextStartTime, partialTicks);
-		
+		return this.getPoseByTime(entitypatch, time, partialTicks, new Pose());
+	}
+
+	@Override
+	public Pose getPoseByTime(LivingEntityPatch<?> entitypatch, float time, float partialTicks, Pose pose) {
+		Pose scratch = this.nextPoseScratch.get();
+		// loadDeep only adds joints; drop leftovers from earlier animations so the loop
+		// below iterates exactly the joints the destination pose actually has.
+		scratch.getJointTransformData().clear();
+		Pose nextStartingPose = scratch.loadDeep(this.toAnimation.get().getPoseByTime(entitypatch, this.nextStartTime, partialTicks));
+
 		/**
 		 * Update dest pose
 		 */
@@ -90,13 +101,23 @@ public class LinkAnimation extends DynamicAnimation implements AnimationAccessor
 			if (this.animationClip.hasJointTransform(entry.getKey())) {
 				Keyframe[] keyframe = this.animationClip.getJointTransform(entry.getKey()).getKeyframes();
 				JointTransform jt = keyframe[keyframe.length - 1].transform();
-				JointTransform newJt = nextStartingPose.getJointTransformData().get(entry.getKey());
+				JointTransform newJt = entry.getValue();
+
+				if (jt == null || newJt == null) {
+					continue;
+				}
+
 				newJt.translation().set(jt.translation());
-				jt.copyFrom(newJt);
+				jt.copyFromDeep(newJt);
 			}
 		}
-		
-		return super.getPoseByTime(entitypatch, time, partialTicks);
+
+		// Compute the base pose directly: delegating to super.getPoseByTime(4-arg) routes back
+		// into this.getPoseByTime(3-arg) and recurses forever.
+		this.getRawPose(time, pose);
+		this.modifyPose(this, pose, entitypatch, time, partialTicks);
+
+		return pose;
 	}
 	
 	@Override

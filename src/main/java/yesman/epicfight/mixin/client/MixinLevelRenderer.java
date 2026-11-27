@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import yesman.epicfight.api.client.camera.EpicFightCameraAPI;
 import yesman.epicfight.client.renderer.EpicFightFrustumHolder;
@@ -84,5 +85,17 @@ public class MixinLevelRenderer {
         int g = color >> 8 & 255;
         int b = color & 255;
         if (EpicFightCameraAPI.getInstance().shouldHighlightTarget(local17)) this.renderBuffers.outlineBufferSource().setColor(r, g, b, 255);
+	}
+
+	@Inject(at = @At(value = "HEAD"), method = "addParticleInternal(Lnet/minecraft/core/particles/ParticleOptions;ZZDDDDDD)Lnet/minecraft/client/particle/Particle;")
+	private void epicfight$probeAddParticleInternal(net.minecraft.core.particles.ParticleOptions options, boolean force, boolean decreased, double x, double y, double z, double xs, double ys, double zs, CallbackInfoReturnable<net.minecraft.client.particle.Particle> cir) {
+		if (yesman.epicfight.api.animation.types.StaticAnimation.TRAIL_DEBUG) {
+			net.minecraft.resources.ResourceLocation key = net.minecraft.core.registries.BuiltInRegistries.PARTICLE_TYPE.getKey(options.getType());
+			if (key != null && !"minecraft".equals(key.getNamespace())) {
+				net.minecraft.world.phys.Vec3 cam = this.minecraft.gameRenderer.getMainCamera().getPosition();
+				double dist2 = cam.distanceToSqr(x, y, z);
+				yesman.epicfight.EpicFight.LOGGER.info("[TRAILDBG]   addParticleInternal type={} force={} decreased={} spawnPos=({},{},{}) camDist2={} dropByDist={}", key, force, decreased, x, y, z, (long)dist2, !force && dist2 > 1024.0);
+			}
+		}
 	}
 }

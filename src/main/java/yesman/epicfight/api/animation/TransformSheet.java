@@ -131,9 +131,20 @@ public class TransformSheet {
 		if (interpolationInfo == InterpolationInfo.INVALID) {
 			return JointTransform.empty();
 		}
-		
+
 		JointTransform trasnform = JointTransform.interpolate(this.keyframes[interpolationInfo.prev].transform(), this.keyframes[interpolationInfo.next].transform(), interpolationInfo.delta);
 		return trasnform;
+	}
+
+	/** Writes the interpolated transform into {@code dest}; returns the original
+	 *  {@link JointTransform#empty()} sentinel on {@link InterpolationInfo#INVALID}. */
+	public JointTransform getInterpolatedTransform(InterpolationInfo interpolationInfo, JointTransform dest) {
+		if (interpolationInfo == InterpolationInfo.INVALID) {
+			dest.clearAll();
+			return dest;
+		}
+
+		return JointTransform.interpolate(this.keyframes[interpolationInfo.prev].transform(), this.keyframes[interpolationInfo.next].transform(), interpolationInfo.delta, dest);
 	}
 	
 	public TransformSheet extend(TransformSheet target) {

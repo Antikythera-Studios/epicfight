@@ -37,6 +37,14 @@ public class EntityEventListener {
         return this.eventListeners.containsKey(event) ? this.eventListeners.get(event).stream().map(subscriber -> (EventListener<T>)subscriber) : Stream.empty();
     }
 
+    /// Cheap emptiness check mirroring [EntityEventListener#getListenersFor] -
+    /// lets callers skip merge/sort fast paths when no entity listeners exist.
+    @ApiStatus.Internal
+    public boolean hasListenersFor(EventHook<? extends Event> event) {
+        List<EventListener<? extends LivingEntityPatchEvent>> list = this.eventListeners.get(event);
+        return list != null && !list.isEmpty();
+    }
+
     /// Registers an event with default priority
     /// @param identifier specify the subscriber identifier to be referenced by other events, it will be stored at [EventContext]
     ///                   use this subscriber identifier to remove the listener

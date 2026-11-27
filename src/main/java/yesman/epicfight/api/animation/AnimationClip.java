@@ -68,9 +68,16 @@ public class AnimationClip {
 	}
 	
 	public final Pose getPoseInTime(float time) {
-		Pose pose = new Pose();
+		return this.getPoseInTime(time, new Pose());
+	}
 
-        if (time < 0.0F) {
+	/**
+	 * Fills {@code pose} with the clip's pose at {@code time}, reusing the joint transforms
+	 * already stored in {@code pose}. Joints present in {@code pose} but absent from this
+	 * clip are dropped so the result matches a freshly-built pose.
+	 */
+	public final Pose getPoseInTime(float time, Pose pose) {
+		if (time < 0.0F) {
             time = this.clipTime + time;
         }
 
@@ -78,34 +85,36 @@ public class AnimationClip {
 			time = 0.0F;
 		}
 
+		pose.getJointTransformData().keySet().retainAll(this.jointTransforms.keySet());
+
 		if (this.bakedTimes != null && this.bakedTimes.length > 0) {
 			// Binary search; each iteration must shrink the interval or the loop cannot end.
 			int begin = 0, end = this.bakedTimes.length - 1;
-			
+
 			while (end - begin > 1) {
 				int mid = begin + (end - begin) / 2;
-				
+
 				if (this.bakedTimes[mid] > time) {
 					end = mid;
 				} else {
 					begin = mid;
 				}
 			}
-			
+
 			float span = this.bakedTimes[end] - this.bakedTimes[begin];
 			float delta = span <= 0.0F || !Float.isFinite(span) ? 0.0F
 				: Mth.clamp((time - this.bakedTimes[begin]) / span, 0.0F, 1.0F);
 			TransformSheet.InterpolationInfo iInfo = new TransformSheet.InterpolationInfo(begin, end, delta);
-			
-			for (String jointName : this.jointTransforms.keySet()) {
-				pose.putJointData(jointName, this.jointTransforms.get(jointName).getInterpolatedTransform(iInfo));
+
+			for (Map.Entry<String, TransformSheet> entry : this.jointTransforms.entrySet()) {
+				entry.getValue().getInterpolatedTransform(iInfo, pose.getOrCreateJointTransform(entry.getKey()));
 			}
 		} else {
-			for (String jointName : this.jointTransforms.keySet()) {
-				pose.putJointData(jointName, this.jointTransforms.get(jointName).getInterpolatedTransform(time));
+			for (Map.Entry<String, TransformSheet> entry : this.jointTransforms.entrySet()) {
+				entry.getValue().getInterpolatedTransform(entry.getValue().getInterpolationInfo(time), pose.getOrCreateJointTransform(entry.getKey()));
 			}
 		}
-		
+
 		return pose;
 	}
 	

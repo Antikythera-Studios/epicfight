@@ -23,6 +23,7 @@ import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.client.animation.ClientAnimator;
 import yesman.epicfight.api.client.animation.Layer;
+import yesman.epicfight.api.client.camera.EpicFightCameraAPI;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
 import yesman.epicfight.api.client.event.types.entity.ModifyPlayerLivingMotionEvent;
 import yesman.epicfight.api.client.event.types.render.ValidatePlayerModelEvent;
@@ -322,7 +323,19 @@ public class AbstractClientPlayerPatch<T extends AbstractClientPlayer> extends P
     public void poseTick(DynamicAnimation animation, Pose pose, float elapsedTime, float partialTick) {
         if (pose.hasTransform("Head") && this.armature.hasJoint("Head")) {
             if (animation.doesHeadRotFollowEntityHead()) {
-                float headRelativeRot = Mth.rotLerp(partialTick, Mth.wrapDegrees(this.modelYRotO - this.original.yHeadRotO), Mth.wrapDegrees(this.modelYRot - this.original.yHeadRot));
+                float headRelativeRot;
+
+                if (this.original.isLocalPlayer() && this.getEntityState().inaction()) {
+                    // yHeadRot/yHeadRotO only update once per tick (tickHeadTurn), so while
+                    // turning the head basis snaps in tick-sized steps against the locked
+                    // model yaw. During inaction the head basis is the live view rotation
+                    // (entity yaw, or the camera yaw in TPS mode) — use the frame-rate basis
+                    // from getYRotForHead so the head tracks turning smoothly.
+                    float headBasisYRot = EpicFightCameraAPI.getInstance().getYRotForHead(this.original);
+                    headRelativeRot = Mth.rotLerp(partialTick, Mth.wrapDegrees(this.modelYRotO - this.original.yHeadRotO), Mth.wrapDegrees(this.modelYRot - headBasisYRot));
+                } else {
+                    headRelativeRot = Mth.rotLerp(partialTick, Mth.wrapDegrees(this.modelYRotO - this.original.yHeadRotO), Mth.wrapDegrees(this.modelYRot - this.original.yHeadRot));
+                }
 
                 OpenMatrix4f headTransform = this.armature.getBoundTransformFor(pose, this.armature.searchJointByName("Head"));
                 OpenMatrix4f toOriginalRotation = headTransform.removeScale().removeTranslation().invert();

@@ -42,6 +42,7 @@ import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.api.utils.side.ClientOnly;
 import yesman.epicfight.client.events.engine.RenderEngine;
+import yesman.epicfight.client.particle.AnimationTrailParticle;
 import yesman.epicfight.client.renderer.EpicFightRenderTypes;
 import yesman.epicfight.client.renderer.RenderingTool;
 import yesman.epicfight.client.renderer.patched.item.RenderItemBase;
@@ -55,6 +56,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class StaticAnimation extends DynamicAnimation implements InverseKinematicsProvider {
+    public static final boolean TRAIL_DEBUG = Boolean.getBoolean("epicfight.trailDebug");
     public static final IndependentVariableKey<Boolean> NO_PHYSICS = AnimationVariables.unsyncIndependent(animator -> false, true);
 
     public static String getFileHash(ResourceLocation rl) {
@@ -213,21 +215,31 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
 
             for (String jointName : joint1) {
                 Keyframe[] keyframes = new Keyframe[3];
-                keyframes[0] = new Keyframe(0.0F, data1.get(jointName));
-                keyframes[1] = new Keyframe(linkTime, firstPose.get(jointName));
-                keyframes[2] = new Keyframe(totalTime, data2.get(jointName));
+                keyframes[0] = new Keyframe(0.0F, copyIfPresent(data1.get(jointName)));
+                keyframes[1] = new Keyframe(linkTime, copyIfPresent(firstPose.get(jointName)));
+                keyframes[2] = new Keyframe(totalTime, copyIfPresent(data2.get(jointName)));
                 TransformSheet sheet = new TransformSheet(keyframes);
                 dest.getAnimationClip().addJointTransform(jointName, sheet);
             }
         } else {
             for (String jointName : joint1) {
                 Keyframe[] keyframes = new Keyframe[2];
-                keyframes[0] = new Keyframe(0.0F, data1.get(jointName));
-                keyframes[1] = new Keyframe(totalTime, data2.get(jointName));
+                keyframes[0] = new Keyframe(0.0F, copyIfPresent(data1.get(jointName)));
+                keyframes[1] = new Keyframe(totalTime, copyIfPresent(data2.get(jointName)));
                 TransformSheet sheet = new TransformSheet(keyframes);
                 dest.getAnimationClip().addJointTransform(jointName, sheet);
             }
         }
+    }
+
+    /**
+     * Link clips mutate their captured keyframe transforms at evaluation time; the source
+     * poses may be pooled or cached, so transforms are copied before storage. A missing
+     * joint must degrade to an identity transform: a null keyframe transform NPEs inside
+     * LinkAnimation#getPoseByTime every frame the link plays.
+     */
+    private static JointTransform copyIfPresent(JointTransform transform) {
+        return transform == null ? JointTransform.empty() : JointTransform.empty().copyFromDeep(transform);
     }
 
     @Override
@@ -249,6 +261,10 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
         });
 
         if (entitypatch.isLogicalClient()) {
+            if (TRAIL_DEBUG) {
+                java.util.Optional<java.util.List<TrailInfo>> dbg = this.getProperty(ClientAnimationProperties.TRAIL_EFFECT);
+                EpicFight.LOGGER.info("[TRAILDBG] begin {} id={} trailProp={} count={}", this.getRegistryName(), this.getId(), dbg.isPresent(), dbg.map(java.util.List::size).orElse(-1));
+            }
             this.getProperty(ClientAnimationProperties.TRAIL_EFFECT).ifPresent(trailInfos -> {
                 int idx = 0;
 
@@ -271,16 +287,23 @@ public class StaticAnimation extends DynamicAnimation implements InverseKinemati
                         ItemStack stack = entitypatch.getAdvancedHoldingItemStack(resolvedHand);
                         RenderItemBase renderitembase = RenderEngine.getInstance().getItemRenderer(stack);
 
+                        if (TRAIL_DEBUG) EpicFight.LOGGER.info("[TRAILDBG]   itemSkin hand={} stack={} renderer={} rendererTrail={}", resolvedHand, stack.getItem(), renderitembase != null, renderitembase != null && renderitembase.trailInfo() != null);
                         if (renderitembase != null && renderitembase.trailInfo() != null) {
                             trailInfo = renderitembase.trailInfo().overwrite(trailInfo);
                         }
                     }
 
+                    if (TRAIL_DEBUG) {
+                        net.minecraft.resources.ResourceLocation pkey = net.minecraft.core.registries.BuiltInRegistries.PARTICLE_TYPE.getKey(trailInfo.particle() != null ? trailInfo.particle().getType() : null);
+                        EpicFight.LOGGER.info("[TRAILDBG]   trail[{}] playable={} particle={} key={} overrideLimiter={} joint={} tex={} time={}-{} interp={} life={} upd={} level={}", idx-1, trailInfo.playable(), trailInfo.particle(), pkey, trailInfo.particle() != null && trailInfo.particle().getType().getOverrideLimiter(), trailInfo.joint(), trailInfo.texturePath(), trailInfo.startTime(), trailInfo.endTime(), trailInfo.interpolateCount(), trailInfo.trailLifetime(), trailInfo.updateInterval(), entitypatch.getOriginal().level().getClass().getSimpleName());
+                    }
                     if (!trailInfo.playable()) {
                         continue;
                     }
 
-                    entitypatch.getOriginal().level().addParticle(trailInfo.particle(), eid, 0, animid, jointId, index, 0);
+                    if (TRAIL_DEBUG) EpicFight.LOGGER.info("[TRAILDBG]   spawnByProvider type={} level={}", trailInfo.particle(), entitypatch.getOriginal().level().getClass().getName());
+                    AnimationTrailParticle.spawnByProvider(entitypatch.getOriginal(), trailInfo.particle(), eid, 0, animid, jointId, index, 0);
+                    if (TRAIL_DEBUG) EpicFight.LOGGER.info("[TRAILDBG]   spawnByProvider done");
                 }
             });
         }

@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -380,21 +379,11 @@ public class Grid extends ObjectSelectionList<Grid.Row> implements DataBindingCo
 		this.rowEditButtons.forEach((button) -> button.render(guiGraphics, mouseX, mouseY, partialTick));
 		
 		int color = this.isFocused() ? -1 : this.isActive() ? -6250336 : -12566463;
-		GL11.glEnable(GL11.GL_STENCIL_TEST);
-		
-		RenderSystem.stencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
-		RenderSystem.stencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
-		RenderSystem.stencilMask(0xFF);
-		// Clear doesn't work if stencil mask is set to 0
-		RenderSystem.clear(GL11.GL_STENCIL_BUFFER_BIT, true);
-		
 		guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), color);
-		RenderSystem.stencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-		RenderSystem.stencilMask(0x00);
-		
+		// Scissor instead of the stencil buffer: Fabric's main render target has no stencil attachment (NeoForge's enableStencil() patch)
+		guiGraphics.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
 		this.renderListItems(guiGraphics, mouseX, mouseY, partialTick);
-		
-		GL11.glDisable(GL11.GL_STENCIL_TEST);
+		guiGraphics.disableScissor();
 		
 		if (this.editingWidget != null) {
 			int rowTop = this.getRowTop(this.rowposition);

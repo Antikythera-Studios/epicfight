@@ -113,6 +113,16 @@ public class Animations {
     public static AnimationAccessor<StaticAnimation> BIPED_FLYING;
     public static AnimationAccessor<StaticAnimation> BIPED_CREATIVE_IDLE;
     public static AnimationAccessor<SelectiveAnimation> BIPED_CREATIVE_FLYING;
+
+    /** Creative flight picks the backward pose only while the player holds back (dz < 0)
+     *  and is actually moving; the view/velocity dot product misreads fast camera turns as
+     *  flying backward, and showing the backward pose at zero speed reads as a vanilla flash. */
+    public static final java.util.function.Function<LivingEntityPatch<?>, Integer> CREATIVE_FLY_DIRECTION_SELECTOR = (entitypatch) -> {
+        if (entitypatch instanceof PlayerPatch<?> playerPatch) {
+            return playerPatch.dz < -0.01D && entitypatch.getOriginal().getDeltaMovement().lengthSqr() > 0.0025D ? 1 : 0;
+        }
+        return entitypatch.getOriginal().getViewVector(1.0F).dot(entitypatch.getOriginal().getDeltaMovement()) < 0.0D ? 1 : 0;
+    };
     public static AnimationAccessor<StaticAnimation> BIPED_MOUNT;
     public static AnimationAccessor<StaticAnimation> BIPED_SIT;
     public static AnimationAccessor<StaticAnimation> BIPED_JUMP;
@@ -460,14 +470,7 @@ public class Animations {
         BIPED_FLYING = builder.nextAccessor("biped/living/fly", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED));
         BIPED_CREATIVE_IDLE = builder.nextAccessor("biped/living/creative_idle", (accessor) -> new StaticAnimation(true, accessor, Armatures.BIPED));
         BIPED_CREATIVE_FLYING = builder.nextAccessor("biped/living/creative_fly", (accessor) ->
-            new SelectiveAnimation((entitypatch) -> {
-                    Vec3 view = entitypatch.getOriginal().getViewVector(1.0F);
-                    Vec3 move = entitypatch.getOriginal().getDeltaMovement();
-
-                    double dot = view.dot(move);
-
-                    return dot < 0.0D ? 1 : 0;
-                },
+            new SelectiveAnimation(CREATIVE_FLY_DIRECTION_SELECTOR,
                 accessor,
                 new DirectStaticAnimation(EpicFightSharedConstants.GENERAL_ANIMATION_TRANSITION_TIME, true, EpicFight.identifier("biped/living/creative_fly_forward"), Armatures.BIPED)
                     .addProperty(StaticAnimationProperty.POSE_MODIFIER, Animations.ReusableSources.FLYING_CORRECTION),

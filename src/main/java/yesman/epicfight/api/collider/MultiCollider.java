@@ -42,41 +42,68 @@ public abstract class MultiCollider<T extends Collider> extends Collider {
 		return null;
 	}
 	
+	/**
+	 * Sub-collider working copies, pooled across calls: {@link Collider#transform} fully
+	 * rewrites a collider's world-space state, so the copies only need re-creating when the
+	 * number of sampled colliders or the template set changes.
+	 */
+	private final List<T> colliderPool = Lists.newArrayList();
+	private int pooledNumberOf = -1;
+	
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Entity> updateAndSelectCollideEntity(LivingEntityPatch<?> entitypatch, AttackAnimation attackAnimation, float prevElapsedTime, float elapsedTime, Joint joint, float attackSpeed) {
 		int numberOf = Math.max(Math.round((this.numberOfColliders + attackAnimation.getProperty(AttackAnimationProperty.EXTRA_COLLIDERS).orElse(0)) * attackSpeed), this.numberOfColliders);
 		float partialScale = 1.0F / (numberOf - 1);
 		float interpolation = 0.0F;
-		List<Collider> colliders = Lists.newArrayList();
 		LivingEntity original = entitypatch.getOriginal();
 		float index = 0.0F;
 		float interIndex = Math.min((float)(this.numberOfColliders - 1) / (numberOf - 1), 1.0F);
 		
+		if (this.pooledNumberOf != numberOf) {
+			this.colliderPool.clear();
+			this.pooledNumberOf = numberOf;
+		}
+		
 		for (int i = 0; i < numberOf; i++) {
-			colliders.add(this.colliders.get((int)index).deepCopy());
+			if (this.colliderPool.size() <= i) {
+				this.colliderPool.add((T) this.colliders.get((int)index).deepCopy());
+			}
+			
 			index += interIndex;
 		}
 		
+		List<T> colliders = this.colliderPool;
 		AABB outerBox = null;
+		Armature armature = entitypatch.getArmature();
+		OpenMatrix4f[] scratch = Armature.evalScratch();
+		Pose pose = COLLIDER_POSE.get();
+		boolean rootJoint = armature.rootJoint.equals(joint);
+		
+		if (rootJoint) {
+			pose.retainJoints(ROOT_ONLY);
+			JointTransform rootTransform = pose.getOrCreateJointTransform("Root");
+			rootTransform.clearAll();
+			attackAnimation.modifyPose(attackAnimation, pose, entitypatch, elapsedTime, 1.0F);
+		}
 		
 		for (Collider collider : colliders) {
-			OpenMatrix4f transformMatrix;
-			Armature armature = entitypatch.getArmature();
+			OpenMatrix4f transformMatrix = scratch[6];
 			
-			if (armature.rootJoint.equals(joint)) {
-				Pose rootPose = new Pose();
-				rootPose.putJointData("Root", JointTransform.empty());
-				attackAnimation.modifyPose(attackAnimation, rootPose, entitypatch, elapsedTime, 1.0F);
-				transformMatrix = rootPose.orElseEmpty("Root").getAnimationBoundMatrix(entitypatch.getArmature().rootJoint, new OpenMatrix4f()).removeTranslation();
+			if (rootJoint) {
+				JointTransform rootTransform = pose.orElseEmpty("Root");
+				rootTransform.getAnimationBoundMatrix(armature.rootJoint, scratch[3].setIdentity(), transformMatrix, scratch[0], scratch[1], scratch[2]);
+				OpenMatrix4f.removeTranslation(transformMatrix, transformMatrix);
 			} else {
 				float interpolateTime = prevElapsedTime + (elapsedTime - prevElapsedTime) * interpolation;
-				transformMatrix = armature.getBoundTransformFor(attackAnimation.getPoseByTime(entitypatch, interpolateTime, 1.0F), joint);
+				pose.loadDeep(attackAnimation.getPoseByTime(entitypatch, interpolateTime, 1.0F));
+				armature.getBoundTransformFor(pose, joint, transformMatrix);
 			}
 			
 			double x = entitypatch.getXOld() + (original.getX() - entitypatch.getXOld()) * interpolation;
 			double y = entitypatch.getYOld() + (original.getY() - entitypatch.getYOld()) * interpolation;
 			double z = entitypatch.getZOld() + (original.getZ() - entitypatch.getZOld()) * interpolation;
-			OpenMatrix4f mvMatrix = OpenMatrix4f.createTranslation(-(float)x, (float)y, -(float)z);
+			OpenMatrix4f mvMatrix = OpenMatrix4f.ofTranslation(-(float)x, (float)y, -(float)z, scratch[7]);
 			transformMatrix.mulFront(mvMatrix.mulBack(entitypatch.getModelMatrix(interpolation)));
 			collider.transform(transformMatrix);
 			interpolation += partialScale;

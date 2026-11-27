@@ -53,7 +53,7 @@ public class SkillArgument implements ArgumentType<Holder<Skill>> {
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> commandContext, SuggestionsBuilder suggestionsBuilder) {
-		final SkillCategory skillCategory = (commandContext.getNodes().size() > 5 && commandContext.getNodes().get(4).getNode() instanceof LiteralCommandNode<?> literalNode) ? nullParam(SkillSlot.ENUM_MANAGER.getOrThrow(literalNode.getLiteral())) : null;
+		final SkillCategory skillCategory = (commandContext.getNodes().size() > 4 && commandContext.getNodes().get(4).getNode() instanceof LiteralCommandNode<?> literalNode) ? nullParam(SkillSlot.ENUM_MANAGER.getOrThrow(literalNode.getLiteral())) : null;
 		
 		return SharedSuggestionProvider.suggestResource(
 			EpicFightRegistries.SKILL.stream()

@@ -21,14 +21,16 @@ public class JointTransform {
 	public static final String RESULT2 = "overwrite_rotation";
 	
 	public static class TransformEntry {
-		public final MatrixOperation multiplyFunction;
+		public MatrixOperation multiplyFunction;
 		public final JointTransform transform;
-		
+
 		public TransformEntry(MatrixOperation multiplyFunction, JointTransform transform) {
 			this.multiplyFunction = multiplyFunction;
 			this.transform = transform;
 		}
 	}
+
+	private static final ThreadLocal<OpenMatrix4f[]> ENTRY_TMP = ThreadLocal.withInitial(() -> OpenMatrix4f.allocateMatrixArray(3));
 	
 	private final Map<String, TransformEntry> entries = Maps.newHashMap();
 	private final Vec3f translation;
@@ -39,6 +41,11 @@ public class JointTransform {
 		this.translation = translation;
 		this.rotation = rotation;
 		this.scale = scale;
+	}
+
+	public void clearAll() {
+		this.clearTransform();
+		this.entries.clear();
 	}
 	
 	public Vec3f translation() {
@@ -79,55 +86,154 @@ public class JointTransform {
 		this.rotation.set(newQ);
 		this.scale.set(newS);
 		this.entries.putAll(jt.entries);
-		
+
+		return this;
+	}
+
+	/**
+	 * Deep variant of {@link #copyFrom}: entries are copied into this transform's own
+	 * {@link TransformEntry}/{@link JointTransform} objects (reused when present) so the
+	 * result shares no entry transforms with {@code jt}.
+	 */
+	public JointTransform copyFromDeep(JointTransform jt) {
+		this.translation.set(jt.translation());
+		this.rotation.set(jt.rotation());
+		this.scale.set(jt.scale);
+		this.entries.keySet().removeIf(key -> !jt.entries.containsKey(key));
+
+		for (Map.Entry<String, TransformEntry> entry : jt.entries.entrySet()) {
+			TransformEntry dest = this.entries.get(entry.getKey());
+			TransformEntry src = entry.getValue();
+
+			if (dest == null) {
+				this.entries.put(entry.getKey(), new TransformEntry(src.multiplyFunction, src.transform.copy()));
+			} else {
+				dest.multiplyFunction = src.multiplyFunction;
+				dest.transform.copyFrom(src.transform);
+			}
+		}
+
 		return this;
 	}
 	
 	public void jointLocal(JointTransform transform, MatrixOperation multiplyFunction) {
-		this.entries.put(JOINT_LOCAL_TRANSFORM, new TransformEntry(multiplyFunction, this.mergeIfExist(JOINT_LOCAL_TRANSFORM, transform)));
+		this.mergeOrPut(JOINT_LOCAL_TRANSFORM, transform, multiplyFunction);
 	}
-	
+
 	public void parent(JointTransform transform, MatrixOperation multiplyFunction) {
-		this.entries.put(PARENT, new TransformEntry(multiplyFunction, this.mergeIfExist(PARENT, transform)));
+		this.mergeOrPut(PARENT, transform, multiplyFunction);
 	}
-	
+
 	public void animationTransform(JointTransform transform, MatrixOperation multiplyFunction) {
-		this.entries.put(ANIMATION_TRANSFORM, new TransformEntry(multiplyFunction, this.mergeIfExist(ANIMATION_TRANSFORM, transform)));
+		this.mergeOrPut(ANIMATION_TRANSFORM, transform, multiplyFunction);
 	}
-	
+
 	public void frontResult(JointTransform transform, MatrixOperation multiplyFunction) {
-		this.entries.put(RESULT1, new TransformEntry(multiplyFunction, this.mergeIfExist(RESULT1, transform)));
+		this.mergeOrPut(RESULT1, transform, multiplyFunction);
 	}
-	
+
 	public void overwriteRotation(JointTransform transform) {
-		this.entries.put(RESULT2, new TransformEntry(OpenMatrix4f::mul, this.mergeIfExist(RESULT2, transform)));
+		this.mergeOrPut(RESULT2, transform, OpenMatrix4f::mul);
 	}
-	
+
+	/**
+	 * Merges {@code transform} into the named entry (result = existing op applied as
+	 * {@code op(new, existing)}) and stores {@code multiplyFunction} as the entry's op,
+	 * replicating {@link AnimationTransformEntry#put}. The stored transform is owned by the
+	 * entry and rewritten in place so repeated modifier writes stay allocation-free.
+	 */
+	private void mergeOrPut(String entryName, JointTransform transform, MatrixOperation multiplyFunction) {
+		TransformEntry entry = this.entries.get(entryName);
+
+		if (entry == null) {
+			this.entries.put(entryName, new TransformEntry(multiplyFunction, transform.copy()));
+			return;
+		}
+
+		OpenMatrix4f[] tmp = ENTRY_TMP.get();
+		transform.toMatrix(tmp[0], tmp[2]);
+		entry.transform.toMatrix(tmp[1], tmp[2]);
+		JointTransform.fromMatrix(entry.multiplyFunction.mul(tmp[0], tmp[1], tmp[2]), entry.transform);
+		entry.multiplyFunction = multiplyFunction;
+	}
+
 	public JointTransform mergeIfExist(String entryName, JointTransform transform) {
 		if (this.entries.containsKey(entryName)) {
 			TransformEntry transformEntry = this.entries.get(entryName);
 			return JointTransform.mul(transform, transformEntry.transform, transformEntry.multiplyFunction);
 		}
-		
+
 		return transform;
 	}
-	
+
 	public OpenMatrix4f getAnimationBoundMatrix(Joint joint, OpenMatrix4f parentTransform) {
-		AnimationTransformEntry animationTransformEntry = new AnimationTransformEntry();
-		
-		for (Map.Entry<String, TransformEntry> entry : this.entries.entrySet()) {
-			animationTransformEntry.put(entry.getKey(), entry.getValue().transform.toMatrix(), entry.getValue().multiplyFunction);
-		}
-		
-		animationTransformEntry.put(ANIMATION_TRANSFORM, this.toMatrix(), OpenMatrix4f::mul);
-		animationTransformEntry.put(JOINT_LOCAL_TRANSFORM, joint.getLocalTransform());
-		animationTransformEntry.put(PARENT, parentTransform);
-		
-		return animationTransformEntry.getResult();
+		return this.getAnimationBoundMatrix(joint, parentTransform, new OpenMatrix4f(), new OpenMatrix4f(), new OpenMatrix4f(), new OpenMatrix4f());
 	}
-	
+
+	/**
+	 * Computes the animation-bound matrix for {@code joint} directly into {@code dest}
+	 * (scratch {@code tmp1}..{@code tmp3} must not alias {@code dest} or {@code parentTransform}).
+	 * Equivalent to running an {@link AnimationTransformEntry}: the result is
+	 * PARENT * JOINT_LOCAL_TRANSFORM * ANIMATION_TRANSFORM * RESULT1 * RESULT2, where the
+	 * PARENT/JOINT_LOCAL_TRANSFORM/ANIMATION_TRANSFORM slots merge any same-named entry
+	 * transform ahead of the runtime matrix via the entry's stored operation.
+	 */
+	public OpenMatrix4f getAnimationBoundMatrix(Joint joint, OpenMatrix4f parentTransform, OpenMatrix4f dest, OpenMatrix4f tmp1, OpenMatrix4f tmp2, OpenMatrix4f tmp3) {
+		TransformEntry entry = this.entries.get(PARENT);
+
+		if (entry == null) {
+			dest.load(parentTransform);
+		} else {
+			entry.transform.toMatrix(tmp1, tmp3);
+			entry.multiplyFunction.mul(tmp1, parentTransform, dest);
+		}
+
+		entry = this.entries.get(JOINT_LOCAL_TRANSFORM);
+
+		if (entry == null) {
+			OpenMatrix4f.mul(dest, joint.getLocalTransform(), dest);
+		} else {
+			entry.transform.toMatrix(tmp1, tmp3);
+			entry.multiplyFunction.mul(tmp1, joint.getLocalTransform(), tmp2);
+			OpenMatrix4f.mul(dest, tmp2, dest);
+		}
+
+		entry = this.entries.get(ANIMATION_TRANSFORM);
+		this.toMatrix(tmp1, tmp3);
+
+		if (entry == null) {
+			OpenMatrix4f.mul(dest, tmp1, dest);
+		} else {
+			entry.transform.toMatrix(tmp2, tmp3);
+			entry.multiplyFunction.mul(tmp2, tmp1, tmp2);
+			OpenMatrix4f.mul(dest, tmp2, dest);
+		}
+
+		entry = this.entries.get(RESULT1);
+
+		if (entry != null) {
+			entry.transform.toMatrix(tmp1, tmp3);
+			entry.multiplyFunction.mul(dest, tmp1, dest);
+		}
+
+		entry = this.entries.get(RESULT2);
+
+		if (entry != null) {
+			entry.transform.toMatrix(tmp1, tmp3);
+			entry.multiplyFunction.mul(dest, tmp1, dest);
+		}
+
+		return dest;
+	}
+
 	public OpenMatrix4f toMatrix() {
 		return new OpenMatrix4f().translate(this.translation).mulBack(OpenMatrix4f.fromQuaternion(this.rotation)).scale(this.scale);
+	}
+
+	/** Writes {@link #toMatrix()} into {@code dest}; {@code rotScratch} is used as the rotation
+	 *  basis matrix and must not alias {@code dest}. */
+	public OpenMatrix4f toMatrix(OpenMatrix4f dest, OpenMatrix4f rotScratch) {
+		return dest.setIdentity().translate(this.translation).mulBack(OpenMatrix4f.fromQuaternion(this.rotation, rotScratch)).scale(this.scale);
 	}
 	
 	@Override
@@ -163,19 +269,34 @@ public class JointTransform {
 		
 		progression = Mth.clamp(progression, 0.0F, 1.0F);
 		interpolateTransform(prev, next, progression, dest);
-		dest.entries.clear();
-		
+
+		dest.entries.keySet().removeIf(key -> !prev.entries.containsKey(key) && !next.entries.containsKey(key));
+
 		for (Map.Entry<String, TransformEntry> entry : prev.entries.entrySet()) {
 			JointTransform transform = next.entries.containsKey(entry.getKey()) ? next.entries.get(entry.getKey()).transform : JointTransform.empty();
-			dest.entries.put(entry.getKey(), new TransformEntry(entry.getValue().multiplyFunction, interpolateTransform(entry.getValue().transform, transform, progression, null)));
-		}
-		
-		for (Map.Entry<String, TransformEntry> entry : next.entries.entrySet()) {
-			if (!dest.entries.containsKey(entry.getKey())) {
-				dest.entries.put(entry.getKey(), new TransformEntry(entry.getValue().multiplyFunction, interpolateTransform(JointTransform.empty(), entry.getValue().transform, progression, null)));
+			TransformEntry destEntry = dest.entries.get(entry.getKey());
+
+			if (destEntry == null) {
+				dest.entries.put(entry.getKey(), new TransformEntry(entry.getValue().multiplyFunction, interpolateTransform(entry.getValue().transform, transform, progression, JointTransform.empty())));
+			} else {
+				destEntry.multiplyFunction = entry.getValue().multiplyFunction;
+				interpolateTransform(entry.getValue().transform, transform, progression, destEntry.transform);
 			}
 		}
-		
+
+		for (Map.Entry<String, TransformEntry> entry : next.entries.entrySet()) {
+			if (!prev.entries.containsKey(entry.getKey())) {
+				TransformEntry destEntry = dest.entries.get(entry.getKey());
+
+				if (destEntry == null) {
+					dest.entries.put(entry.getKey(), new TransformEntry(entry.getValue().multiplyFunction, interpolateTransform(JointTransform.empty(), entry.getValue().transform, progression, JointTransform.empty())));
+				} else {
+					destEntry.multiplyFunction = entry.getValue().multiplyFunction;
+					interpolateTransform(JointTransform.empty(), entry.getValue().transform, progression, destEntry.transform);
+				}
+			}
+		}
+
 		return dest;
 	}
 	
@@ -197,6 +318,15 @@ public class JointTransform {
 	
 	public static JointTransform fromMatrix(OpenMatrix4f matrix) {
 		return new JointTransform(matrix.toTranslationVector(), matrix.toQuaternion(), matrix.toScaleVector());
+	}
+
+	/** Decomposes {@code matrix} into {@code dest} (TRS in-place, entries cleared). */
+	public static JointTransform fromMatrix(OpenMatrix4f matrix, JointTransform dest) {
+		matrix.toTranslationVector(dest.translation);
+		matrix.toQuaternion(dest.rotation);
+		matrix.toScaleVector(dest.scale);
+		dest.entries.clear();
+		return dest;
 	}
 	
 	public static JointTransform translationRotation(Vec3f vec, Quaternionf quat) {

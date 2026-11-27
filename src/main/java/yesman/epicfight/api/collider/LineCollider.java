@@ -39,7 +39,7 @@ public class LineCollider extends Collider {
 	
 	@Override
 	public void transform(OpenMatrix4f mat) {
-		this.worldVec = OpenMatrix4f.transform(mat.removeTranslation(), this.modelVec);
+		this.worldVec = OpenMatrix4f.transform(OpenMatrix4f.removeTranslation(mat, Armature.evalScratch()[0]), this.modelVec);
 		super.transform(mat);
 	}
 	

@@ -76,7 +76,7 @@ public abstract class ProjectilePatch<T extends Projectile> extends EntityPatch<
 	public void onAddedToLevel() {
 		if (this.getOriginal().level().isClientSide()) {
 			double entityId = Double.longBitsToDouble((long)this.getOriginal().getId());
-			this.getOriginal().level().addParticle(EpicFightParticles.PROJECTILE_TRAIL.get(), entityId, 0, 0, 0, 0, 0);
+			yesman.epicfight.client.particle.AnimationTrailParticle.spawnByProvider(this.getOriginal(), EpicFightParticles.PROJECTILE_TRAIL.get(), entityId, 0, 0, 0, 0, 0);
 		}
 	}
 	

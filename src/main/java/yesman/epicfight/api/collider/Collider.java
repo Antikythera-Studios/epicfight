@@ -24,6 +24,12 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class Collider {
+	/** Scratch poses shared by the collider pose-evaluation paths; collider queries run on the
+	 *  tick thread (and the F3+B debug path on the render thread), so they are thread-local. */
+	protected static final ThreadLocal<Pose> COLLIDER_POSE = ThreadLocal.withInitial(Pose::new);
+	protected static final ThreadLocal<Pose> COLLIDER_POSE_2 = ThreadLocal.withInitial(Pose::new);
+	protected static final java.util.Set<String> ROOT_ONLY = java.util.Set.of("Root");
+	
 	protected final Vec3 modelCenter;
 	protected final AABB outerAABB;
 	protected Vec3 worldCenter;
@@ -45,15 +51,19 @@ public abstract class Collider {
 	private static final float MOUNTED_COLLIDER_SCALE = 1.75F;
 
 	public List<Entity> updateAndSelectCollideEntity(LivingEntityPatch<?> entitypatch, AttackAnimation attackAnimation, float prevElapsedTime, float elapsedTime, Joint joint, float attackSpeed) {
-		OpenMatrix4f transformMatrix;
 		Armature armature = entitypatch.getArmature();
+		OpenMatrix4f[] scratch = Armature.evalScratch();
+		OpenMatrix4f transformMatrix = scratch[6];
 		boolean mirror = entitypatch.isMirrorMode() && !armature.rootJoint.equals(joint);
-
+		Pose pose = COLLIDER_POSE.get();
+		
 		if (armature.rootJoint.equals(joint)) {
-			Pose rootPose = new Pose();
-			rootPose.putJointData("Root", JointTransform.empty());
-			attackAnimation.modifyPose(attackAnimation, rootPose, entitypatch, elapsedTime, 1.0F);
-			transformMatrix = rootPose.orElseEmpty("Root").getAnimationBoundMatrix(armature.rootJoint, new OpenMatrix4f()).removeTranslation();
+			pose.retainJoints(ROOT_ONLY);
+			JointTransform rootTransform = pose.getOrCreateJointTransform("Root");
+			rootTransform.clearAll();
+			attackAnimation.modifyPose(attackAnimation, pose, entitypatch, elapsedTime, 1.0F);
+			rootTransform.getAnimationBoundMatrix(armature.rootJoint, scratch[3].setIdentity(), transformMatrix, scratch[0], scratch[1], scratch[2]);
+			OpenMatrix4f.removeTranslation(transformMatrix, transformMatrix);
 		} else if (mirror) {
 			// Match the renderer's mirror exactly: PoseMirror.mirrorPose swaps R/L joint data
 			// (with X-translation negated and qy/qz inverted), and the rendered weapon is the
@@ -63,15 +73,17 @@ public abstract class Collider {
 			// "MirrorX matrix in front of the bound transform" approximation drifted because
 			// bind(Tool_L) is not the X-reflection of bind(Tool_R) once you account for parent
 			// joints' bind orientations.
-			Pose mirrored = PoseMirror.mirrorPose(attackAnimation.getPoseByTime(entitypatch, elapsedTime, 1.0F));
+			pose.loadDeep(attackAnimation.getPoseByTime(entitypatch, elapsedTime, 1.0F));
+			Pose mirrored = PoseMirror.mirrorPose(pose, COLLIDER_POSE_2.get(), false);
 			Joint mirroredJoint = armature.searchJointByName(PoseMirror.mirrorJointName(joint.getName()));
 			if (mirroredJoint == null) mirroredJoint = joint;
-			transformMatrix = armature.getBoundTransformFor(mirrored, mirroredJoint);
+			armature.getBoundTransformFor(mirrored, mirroredJoint, transformMatrix);
 		} else {
-			transformMatrix = armature.getBoundTransformFor(attackAnimation.getPoseByTime(entitypatch, elapsedTime, 1.0F), joint);
+			pose.loadDeep(attackAnimation.getPoseByTime(entitypatch, elapsedTime, 1.0F));
+			armature.getBoundTransformFor(pose, joint, transformMatrix);
 		}
-
-		OpenMatrix4f toWorldCoord = OpenMatrix4f.createTranslation(-(float)entitypatch.getOriginal().getX(), (float)entitypatch.getOriginal().getY(), -(float)entitypatch.getOriginal().getZ());
+		
+		OpenMatrix4f toWorldCoord = OpenMatrix4f.ofTranslation(-(float)entitypatch.getOriginal().getX(), (float)entitypatch.getOriginal().getY(), -(float)entitypatch.getOriginal().getZ(), scratch[7]);
 		transformMatrix.mulFront(toWorldCoord.mulBack(entitypatch.getModelMatrix(1.0F)));
 
 		// When the attacker is a passenger (chicken jockey, skeleton trap, etc) the rider's hand
